@@ -62,7 +62,7 @@ export function AppHeader() {
       </div>
       <div className="h-right">
         <button className="tour-btn" onClick={startTour}>
-          <Sparkles size={14} /> Take the tour
+          <Sparkles size={14} /> Internal Tour
         </button>
         <button className="h-iconbtn" aria-label="Help"><HelpCircle size={19} /></button>
         <button className="h-iconbtn" aria-label="Notifications"><Bell size={19} /></button>
