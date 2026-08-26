@@ -88,3 +88,7 @@ data/google-token.json
 data/facebook/
 data/youtube/
 data/pinterest/
+
+# Keep the prototype TypeScript lib (root lib/ rule would otherwise ignore it)
+!crm-prototype/src/lib/
+!crm-prototype/src/lib/**
