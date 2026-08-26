@@ -52,7 +52,7 @@ export const TOUR_STEPS: TourStep[] = [
     role: "marketing",
     path: "/campaigns/new",
     title: "7. Self-serve lifecycle campaigns",
-    body: "Pick a funnel-stage segment and the audience size updates live. What used to take marketing 4 to 8 weeks to pull now takes seconds. Choose Marketo or Customer.io as a swappable connector, then launch.",
+    body: "Pick a funnel-stage segment and the audience size updates live. What used to take 4 to 8 weeks to pull a list now takes seconds. Choose Marketo or Customer.io as a swappable connector, then launch.",
   },
   {
     role: "sales_ops",

@@ -19,7 +19,7 @@ export const CURRENT_REP_ID = "rep_1"; // Angelo Altavilla (senior)
 
 // Signed-in people for the other roles.
 export const OPS_LEAD_NAME = "Manav Mendonca"; // uploads files, pulls lists, assigns leads
-export const GROWTH_LEAD_NAME = "Growth & Marketing"; // growth/marketing seat (name TBD)
+export const GROWTH_LEAD_NAME = "Skye Rockett"; // the growth seat (Campaign Management role)
 
 interface RoleState {
   role: Role;

@@ -57,7 +57,7 @@ export const PERSONA_DETAIL: Record<Persona, PersonaDetail> = {
   },
   "Hospital-affiliated": {
     persona: "Hospital-affiliated",
-    blurb: "Constrained by hospital-led decisions. Change-fatigued. Not driven by marketing bells and whistles.",
+    blurb: "Constrained by hospital-led decisions. Change-fatigued. Not driven by promotional bells and whistles.",
     winningLever: "Standard-practice alignment; smart analytics",
     moment: "Network changes; contract renewals; compliance audits",
     hook: "Designed for healthcare-specific settlement requirements.",

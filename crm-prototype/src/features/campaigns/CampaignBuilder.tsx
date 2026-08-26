@@ -405,7 +405,7 @@ export function CampaignBuilder() {
             </div>
             <div className="row gap-2 wrap" style={{ marginTop: 4 }}>
               <Pill tone="navy" dot>
-                EMR review: marketing + privacy + compliance + legal
+EMR review: privacy, compliance, legal
               </Pill>
             </div>
             <div className="row gap-2" style={{ marginTop: 8 }}>

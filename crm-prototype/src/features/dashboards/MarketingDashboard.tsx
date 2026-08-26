@@ -11,6 +11,7 @@ import {
 } from "../../components/ui";
 import { useData } from "../../data/store";
 import { funnelCounts } from "../../data/selectors";
+import { GROWTH_LEAD_NAME } from "../../context/role";
 import { num, pct } from "../../lib/format";
 import { FunnelChart } from "./FunnelChart";
 
@@ -29,7 +30,7 @@ export function MarketingDashboard() {
 
   return (
     <div className="col gap-4">
-      <PageHeader crumb="Dashboard" title="Campaign Management" sub="Self-serve lifecycle campaigns" />
+      <PageHeader crumb="Dashboard" title="Campaign Management" sub={`Signed in as ${GROWTH_LEAD_NAME} - self-serve lifecycle campaigns`} />
 
       <div className="hero-callout">
         <span className="hc-big">4-8 wks</span>
@@ -40,7 +41,7 @@ export function MarketingDashboard() {
         <div className="hc-body">
           <h3>Self-serve lifecycle campaigns</h3>
           <p>
-            Marketing list pulls used to take 4 to 8 weeks. Trigger campaigns against live funnel
+            List pulls used to take 4 to 8 weeks. Trigger campaigns against live funnel
             segments in seconds.
           </p>
           <Button variant="orange" onClick={() => navigate("/campaigns/new")}>
