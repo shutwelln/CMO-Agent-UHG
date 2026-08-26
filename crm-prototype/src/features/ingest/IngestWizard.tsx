@@ -33,27 +33,27 @@ interface ColMap {
 }
 
 const COLUMN_MAPS: ColMap[] = [
-  { src: "TAX_ID_NUM", field: "TIN", isKey: true },
-  { src: "PROV_LEGAL_NM", field: "Legal Name" },
-  { src: "OFFER_AMT_USD", field: "Offer Amount" },
-  { src: "APR_PCT", field: "Rate" },
-  { src: "PROD_CODE", field: "Product" },
-  { src: "ST", field: "State" },
-  { src: "CITY_NM", field: "City" },
-  { src: "OFFER_MO", field: "Offer Month" },
-  { src: "NBO_RANK", field: "NBO Rank" },
+  { src: "TIN", field: "TIN", isKey: true },
+  { src: "Parent Entity", field: "Parent Entity" },
+  { src: "Provider Name", field: "Provider Name" },
+  { src: "Capital Loan Offer", field: "Capital Loan Offer" },
+  { src: "Capital Loan Fee", field: "Capital Loan Fee" },
+  { src: "Cash Flow Loan Offer", field: "Cash Flow Loan Offer" },
+  { src: "Cash Flow Loan Fee", field: "Cash Flow Loan Fee" },
+  { src: "Max Offer", field: "Max Offer" },
+  { src: "Tier", field: "Bank Tier" },
 ];
 
 const CRM_FIELDS = [
   "TIN",
-  "Legal Name",
-  "Offer Amount",
-  "Rate",
-  "Product",
-  "State",
-  "City",
-  "Offer Month",
-  "NBO Rank",
+  "Parent Entity",
+  "Provider Name",
+  "Capital Loan Offer",
+  "Capital Loan Fee",
+  "Cash Flow Loan Offer",
+  "Cash Flow Loan Fee",
+  "Max Offer",
+  "Bank Tier",
   "Ignore column",
 ];
 

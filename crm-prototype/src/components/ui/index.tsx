@@ -5,6 +5,8 @@ import { X, Check, Inbox, Mail, Phone } from "lucide-react";
 import {
   PRODUCT_SHORT,
   STAGE_LABEL,
+  STATUS_BY_CODE,
+  type BankTier,
   type Confidence,
   type Product,
   type Stage,
@@ -102,16 +104,31 @@ export function Pill({ tone = "gray", children, dot }: { tone?: string; children
 }
 
 const STAGE_TONE: Record<Stage, string> = {
-  new: "gray",
-  working: "blue",
-  contacted: "navy",
-  qualified: "teal",
-  appt_set: "orange",
-  won: "green",
-  lost: "red",
+  ready: "amber",
+  engaged: "blue",
+  kyc: "navy",
+  disbursed: "green",
+  renewal: "teal",
+  closed: "red",
 };
 export function StageBadge({ stage }: { stage: Stage }) {
   return <Pill tone={STAGE_TONE[stage]} dot>{STAGE_LABEL[stage]}</Pill>;
+}
+
+// Granular lead-status badge: shows the "code label" and colors by its board stage.
+export function StatusBadge({ code }: { code: string }) {
+  const def = STATUS_BY_CODE[code];
+  if (!def) return <Pill tone="gray">{code}</Pill>;
+  return (
+    <Pill tone={STAGE_TONE[def.stage]}>
+      {def.code} {def.label}
+    </Pill>
+  );
+}
+
+const BANK_TIER_TONE: Record<BankTier, string> = { A: "green", B: "teal", C: "blue", D: "gray" };
+export function BankTierBadge({ tier }: { tier: BankTier }) {
+  return <Pill tone={BANK_TIER_TONE[tier]}>Tier {tier}</Pill>;
 }
 
 const PRODUCT_TONE: Record<Product, string> = {

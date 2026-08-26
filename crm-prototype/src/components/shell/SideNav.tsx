@@ -37,8 +37,8 @@ interface Group {
 export function SideNav() {
   const role = useRole((s) => s.role);
   const data = useData((s) => s.data);
-  const myLeads = data ? leadsForRep(data, CURRENT_REP_ID).filter((l) => l.stage !== "won" && l.stage !== "lost").length : 0;
-  const leadCount = data ? data.leads.filter((l) => l.stage === "new").length : 0;
+  const myLeads = data ? leadsForRep(data, CURRENT_REP_ID).filter((l) => l.stage !== "disbursed" && l.stage !== "closed").length : 0;
+  const leadCount = data ? data.leads.filter((l) => l.stage === "ready").length : 0;
   const campaignCount = data ? data.campaigns.filter((c) => c.status === "active").length : 0;
 
   const groups: Group[] = [

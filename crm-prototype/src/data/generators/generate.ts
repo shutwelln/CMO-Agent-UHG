@@ -3,8 +3,11 @@ import {
   PRODUCTS,
   PRODUCT_LABEL,
   STAGES,
+  STATUS_BY_CODE,
   TEAMS,
   type Activity,
+  type BankTier,
+  type LeadType,
   type Appointment,
   type Campaign,
   type Connector,
@@ -138,7 +141,7 @@ export function generateDataset(seed = 42): Dataset {
       primaryBankOnFile: chance(0.65),
       hasOptumBankAccount: hasBank,
       productsHeld: held,
-      currentStage: "new",
+      currentStage: "ready",
       createdAt: daysAgo(intBetween(20, 400)),
     };
     providers.push(p);
@@ -204,86 +207,100 @@ export function generateDataset(seed = 42): Dataset {
     });
   }
 
-  // ----- Offer leads (lending-led mix) -----
-  const productWeights: [Product, number][] = [
-    ["pwc", 0.4],
-    ["term_loan", 0.24],
-    ["bank_account", 0.14],
-    ["cash_acceleration", 0.1],
-    ["loc", 0.07],
-    ["equipment", 0.05],
+  // ----- Offer leads (the monthly PWC bank offer file) -----
+  const statusWeights: [string, number][] = [
+    ["0.9", 0.05], ["1", 0.14],
+    ["2.0", 0.1], ["2.1", 0.03], ["2.2", 0.08], ["2.4", 0.06], ["2.6", 0.03], ["2.8", 0.02], ["3", 0.05], ["3.5", 0.03],
+    ["4.0", 0.05], ["4.1", 0.04], ["4.2", 0.04], ["4.25", 0.01], ["4.3", 0.02],
+    ["5", 0.05], ["5.5", 0.01],
+    ["6.0", 0.02], ["6.02", 0.01], ["6.03", 0.01], ["6.1", 0.01], ["6.3", 0.01], ["6.4", 0.01],
+    ["0.1", 0.02], ["0.2", 0.02], ["0.3", 0.02], ["0.4", 0.03],
   ];
-  const weightedProduct = (): Product => {
+  const weightedStatus = (): string => {
     let x = r();
-    for (const [p, w] of productWeights) {
-      if (x < w) return p;
+    for (const [c, w] of statusWeights) {
+      if (x < w) return c;
       x -= w;
     }
-    return "pwc";
+    return "1";
   };
+  const bankTierWeights: [BankTier, number][] = [["A", 0.15], ["B", 0.3], ["C", 0.35], ["D", 0.2]];
+  const weightedBankTier = (): BankTier => {
+    let x = r();
+    for (const [t, w] of bankTierWeights) {
+      if (x < w) return t;
+      x -= w;
+    }
+    return "C";
+  };
+  const leadTypeWeights: [LeadType, number][] = [
+    ["Existing Customer", 0.28], ["Provider Referral", 0.12], ["UHC", 0.1], ["Prospect", 0.1],
+    ["Marketing Email", 0.08], ["Website", 0.08], ["Sales Calls", 0.06], ["Sales Emails", 0.05],
+    ["Growth Office/OI", 0.04], ["In App (Site/Widget)", 0.04], ["Conference", 0.02],
+    ["Marketing Ad Campaign", 0.01], ["MPP", 0.02],
+  ];
+  const weightedLeadType = (): LeadType => {
+    let x = r();
+    for (const [t, w] of leadTypeWeights) {
+      if (x < w) return t;
+      x -= w;
+    }
+    return "Prospect";
+  };
+  const round1k = (n: number) => Math.round(n / 1000) * 1000;
   const logNormalAmount = () => {
-    // few big deals, many small; $10K–$250K
+    // few big offers, many small; $5K–$250K
     const u = r();
     const v = Math.pow(u, 2.2);
-    return Math.max(10_000, Math.round((10_000 + v * 240_000) / 1000) * 1000);
+    return Math.max(5_000, round1k(5_000 + v * 245_000));
   };
   const tierFor = (amt: number): Tier => (amt >= 150_000 ? "senior" : amt >= 50_000 ? "mid" : "junior");
-  const stageWeights: [Stage, number][] = [
-    ["new", 0.34],
-    ["working", 0.2],
-    ["contacted", 0.16],
-    ["qualified", 0.12],
-    ["appt_set", 0.07],
-    ["won", 0.06],
-    ["lost", 0.05],
-  ];
-  const weightedStage = (): Stage => {
-    let x = r();
-    for (const [s, w] of stageWeights) {
-      if (x < w) return s;
-      x -= w;
-    }
-    return "new";
-  };
+  const attemptsFor: Record<string, number> = { "2.0": 1, "2.1": 1, "2.2": 2, "2.4": 3, "2.6": 4, "2.8": 5 };
 
   const leads: OfferLead[] = [];
   const N_LEADS = 6400;
   for (let i = 0; i < N_LEADS; i++) {
     const prov = providers[intBetween(0, providers.length - 1)];
-    const product = weightedProduct();
-    const amount = product === "bank_account" ? 0 : logNormalAmount();
-    const tier = product === "bank_account" ? "junior" : tierFor(amount);
-    const stage = weightedStage();
-    const assigned = stage === "new" && chance(0.35) ? null : pick(repsByTier(tier).length ? repsByTier(tier) : reps).id;
-    const bundleFlags: OfferLead["bundleFlags"] = [];
-    if (product === "term_loan" && chance(0.5)) bundleFlags.push("apr_reduction");
-    if (product === "bank_account" && chance(0.6)) bundleFlags.push("npx_reduction");
-    if (product === "cash_acceleration") bundleFlags.push("cash_accel");
-    const rate =
-      product === "term_loan" ? between(8.99, 24.99) : product === "loc" ? between(9.99, 19.99) : product === "pwc" ? between(12, 26) : product === "cash_acceleration" ? 0.5 : product === "equipment" ? between(7.99, 15.99) : 1.5;
+    const capitalOffer = logNormalAmount();
+    const capitalFee = Math.round((capitalOffer * 0.025) / 5) * 5;
+    const hasCashFlow = chance(0.3);
+    const cashFlowOffer = hasCashFlow ? round1k(logNormalAmount() * 0.7) : 0;
+    const cashFlowFee = cashFlowOffer ? Math.round((cashFlowOffer * 0.03) / 5) * 5 : 0;
+    const maxOffer = Math.max(capitalOffer, cashFlowOffer);
+    const status = weightedStatus();
+    const def = STATUS_BY_CODE[status];
+    const stage = def.stage;
+    const tier = tierFor(maxOffer);
+    const assigned = stage === "ready" && chance(0.35) ? null : pick(repsByTier(tier).length ? repsByTier(tier) : reps).id;
+    const attempts = attemptsFor[status] ?? (stage === "ready" ? 0 : intBetween(1, 3));
+    const worked = stage !== "ready" || attempts > 0;
     leads.push({
       id: `lead_${i + 1}`,
       tin: prov.tin,
+      parentEntity: "",
       providerId: prov.id,
-      product,
-      offerAmount: amount,
-      rate: Math.round(rate * 100) / 100,
-      offerMonth: "2026-07",
-      bundleFlags,
-      tier,
+      capitalOffer,
+      capitalFee,
+      cashFlowOffer,
+      cashFlowFee,
+      offerAmount: maxOffer,
+      bankTier: weightedBankTier(),
+      offerMonth: "2026-08",
+      leadType: weightedLeadType(),
+      status,
       stage,
+      tier,
       assignedRepId: assigned,
-      sourceFileId: product === "pwc" ? "file_jul2026" : null,
-      nboRank: intBetween(1, 4),
-      lastOutreachAt: stage === "new" ? null : daysAgo(intBetween(1, 40)),
-      attempts: stage === "new" ? 0 : stage === "working" ? 1 : intBetween(1, 3),
+      sourceFileId: "file_aug2026",
+      lastOutreachAt: worked ? daysAgo(intBetween(1, 40)) : null,
+      attempts,
       createdAt: daysAgo(intBetween(5, 45)),
     });
   }
   // propagate a representative stage onto the provider record
   for (const l of leads) {
     const prov = providers.find((p) => p.id === l.providerId);
-    if (prov && (prov.currentStage === "new" || STAGES.indexOf(l.stage) > STAGES.indexOf(prov.currentStage))) {
+    if (prov && STAGES.indexOf(l.stage) > STAGES.indexOf(prov.currentStage)) {
       prov.currentStage = l.stage;
     }
   }
@@ -329,16 +346,15 @@ export function generateDataset(seed = 42): Dataset {
   const activities: Activity[] = [];
   let actId = 0;
   const dispoByStage: Record<Stage, Disposition[]> = {
-    new: [],
-    working: ["no_answer", "voicemail"],
-    contacted: ["connected", "callback"],
-    qualified: ["connected", "qualified"],
-    appt_set: ["qualified", "connected"],
-    won: ["qualified", "connected"],
-    lost: ["not_interested", "dnc"],
+    ready: [],
+    engaged: ["no_answer", "voicemail", "connected", "callback"],
+    kyc: ["connected", "qualified"],
+    disbursed: ["qualified", "connected"],
+    renewal: ["connected", "qualified"],
+    closed: ["not_interested", "dnc"],
   };
   for (const l of leads) {
-    if (l.stage === "new") continue;
+    if (l.stage === "ready") continue;
     const prov = providers.find((p) => p.id === l.providerId)!;
     const rep = reps.find((rp) => rp.id === l.assignedRepId);
     for (let a = 1; a <= l.attempts; a++) {
@@ -351,8 +367,8 @@ export function generateDataset(seed = 42): Dataset {
         channel: "phone",
         attemptNumber: a,
         disposition: a === l.attempts ? pick(dispoPool) : pick(["no_answer", "voicemail"] as Disposition[]),
-        productInterest: a === l.attempts && (l.stage === "qualified" || l.stage === "appt_set" || l.stage === "won") ? [l.product] : [],
-        interestLevel: l.stage === "won" ? "hot" : l.stage === "qualified" || l.stage === "appt_set" ? "warm" : "cold",
+        productInterest: a === l.attempts && (l.stage === "kyc" || l.stage === "disbursed") ? (["pwc"] as Product[]) : [],
+        interestLevel: l.stage === "disbursed" ? "hot" : l.stage === "kyc" ? "warm" : "cold",
         actor: rep?.name ?? "Unassigned",
         occurredAt: daysAgo(intBetween(1, 38) + (l.attempts - a) * 3),
         notes: "",
@@ -445,7 +461,7 @@ export function generateDataset(seed = 42): Dataset {
 
   // ----- Appointments -----
   const appointments: Appointment[] = [];
-  const apptLeads = leads.filter((l) => l.stage === "appt_set");
+  const apptLeads = leads.filter((l) => l.status === "3.5" || l.status === "3" || l.stage === "kyc");
   apptLeads.slice(0, 40).forEach((l, i) => {
     const senior = pick(repsByTier("senior"));
     appointments.push({
@@ -484,9 +500,9 @@ export function generateDataset(seed = 42): Dataset {
   const fdmAfter = Math.round(HEADLINE_ROW_COUNT * 0.86);
   const sourceFiles: SourceFile[] = [
     {
-      id: "file_jul2026",
-      filename: "PWC_Qualified_Offers_2026-07.csv",
-      offerMonth: "2026-07",
+      id: "file_aug2026",
+      filename: "Provider_Information_August_Offer_File.csv",
+      offerMonth: "2026-08",
       rowCount: HEADLINE_ROW_COUNT,
       totalOfferedAmount: Math.round(HEADLINE_ROW_COUNT * 78_000),
       matchStats: { matched, newProviders: newProv, unmatched, duplicates: dup },

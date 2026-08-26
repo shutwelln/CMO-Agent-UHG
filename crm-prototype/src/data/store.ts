@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { STATUS_BY_CODE } from "./schema";
 import type {
   Activity,
   Appointment,
@@ -120,26 +121,29 @@ export const useData = create<State>((set, get) => ({
         disposition,
         productInterest,
         interestLevel,
-        actor: rep?.name ?? "Outbound Rep",
+        actor: rep?.name ?? "Outbound Specialist",
         occurredAt: NOW,
         notes,
       };
-      const nextStage: Stage =
+      const nextStatus =
         disposition === "qualified"
-          ? "qualified"
+          ? "4.0" // KYC Submitted
           : disposition === "connected"
-          ? "contacted"
+          ? "3" // Provider Reviewing
           : disposition === "not_interested" || disposition === "dnc"
-          ? "lost"
-          : lead.stage === "new"
-          ? "working"
-          : lead.stage;
+          ? "0.3" // Provider Postponed/Declined
+          : lead.stage === "ready"
+          ? "2.0" // first engagement
+          : lead.status;
+      const nextStage: Stage = STATUS_BY_CODE[nextStatus]?.stage ?? lead.stage;
       return {
         data: {
           ...s.data,
           activities: [act, ...s.data.activities],
           leads: s.data.leads.map((l) =>
-            l.id === leadId ? { ...l, attempts: attempt, stage: nextStage, lastOutreachAt: NOW } : l
+            l.id === leadId
+              ? { ...l, attempts: attempt, status: nextStatus, stage: nextStage, lastOutreachAt: NOW }
+              : l
           ),
         },
       };
@@ -161,10 +165,12 @@ export const useData = create<State>((set, get) => ({
         interestLevel: "warm",
         actor: appt.createdBy,
         occurredAt: NOW,
-        notes: `Appointment booked (${appt.type}) with senior rep`,
+        notes: `Appointment booked (${appt.type}) with senior sales specialist`,
       };
       const leads = appt.leadId
-        ? s.data.leads.map((l) => (l.id === appt.leadId ? { ...l, stage: "appt_set" as Stage } : l))
+        ? s.data.leads.map((l) =>
+            l.id === appt.leadId ? { ...l, status: "3.5", stage: "engaged" as Stage } : l
+          )
         : s.data.leads;
       return {
         data: {

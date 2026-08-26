@@ -41,7 +41,7 @@ export function SalesRepDashboard() {
   const rep = repById(data, CURRENT_REP_ID);
   const myLeads = useMemo(() => leadsForRep(data, CURRENT_REP_ID), [data]);
 
-  const openLeads = myLeads.filter((l) => l.stage !== "won" && l.stage !== "lost");
+  const openLeads = myLeads.filter((l) => l.stage !== "disbursed" && l.stage !== "closed");
   const pipeline = pipelineValue(myLeads);
   const counts = useMemo(() => stageCounts(data, myLeads), [data, myLeads]);
 
@@ -54,7 +54,7 @@ export function SalesRepDashboard() {
 
   const monthStart = +new Date("2026-08-01T00:00:00Z");
   const qualifiedThisMonth = myLeads.filter(
-    (l) => l.stage === "qualified" && l.lastOutreachAt && +new Date(l.lastOutreachAt) >= monthStart
+    (l) => l.stage === "kyc" && l.lastOutreachAt && +new Date(l.lastOutreachAt) >= monthStart
   ).length;
 
   const nboAlerts = useMemo(() => {
@@ -79,7 +79,7 @@ export function SalesRepDashboard() {
   const followUps = useMemo(
     () =>
       [...myLeads]
-        .filter((l) => l.stage !== "won" && l.stage !== "lost")
+        .filter((l) => l.stage !== "disbursed" && l.stage !== "closed")
         .sort((a, b) => {
           const at = a.lastOutreachAt ? +new Date(a.lastOutreachAt) : 0;
           const bt = b.lastOutreachAt ? +new Date(b.lastOutreachAt) : 0;

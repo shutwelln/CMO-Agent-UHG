@@ -72,7 +72,7 @@ export function stageCounts(d: Dataset, leads: OfferLead[] = d.leads): Record<St
 }
 
 export function pipelineValue(leads: OfferLead[]): number {
-  return leads.filter((l) => l.stage !== "lost").reduce((s, l) => s + l.offerAmount, 0);
+  return leads.filter((l) => l.stage !== "closed").reduce((s, l) => s + l.offerAmount, 0);
 }
 
 /* Providers whose latest funnel event is a drop-off (stuck, or funded-no-loan). */

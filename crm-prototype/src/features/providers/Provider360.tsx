@@ -19,7 +19,8 @@ import {
   Button,
   TierBadge,
   StageBadge,
-  ProductBadge,
+  StatusBadge,
+  BankTierBadge,
   ConfidenceBadge,
   EmptyState,
   Modal,
@@ -44,17 +45,11 @@ import {
   type OfferLead,
   type Tier,
 } from "../../data/schema";
-import { money, rate, relTime, num } from "../../lib/format";
+import { money, relTime, num } from "../../lib/format";
 import { nextBestOffers } from "../../lib/nbo";
 import { CURRENT_REP_ID } from "../../context/role";
 
 type Tab = "overview" | "funnel" | "activities";
-
-const BUNDLE_LABEL: Record<string, string> = {
-  apr_reduction: "0.25% APR",
-  npx_reduction: "NPx 1.49% -> 0.49%",
-  cash_accel: "Cash accel",
-};
 
 const TIER_RANK: Record<Tier, number> = { senior: 3, mid: 2, junior: 1 };
 
@@ -306,24 +301,27 @@ function OverviewTab({ provider, leads }: { provider: import("../../data/schema"
       </Panel>
 
       <Panel>
-        <PanelHeader title="Outstanding offers" />
+        <PanelHeader title="Bank offer (PWC)" />
         <div className="panel-body col">
           {leads.length === 0 && <EmptyState title="No outstanding offers" />}
           {leads.map((l) => (
-            <div key={l.id} className="listrow">
-              <div className="row gap-2 center">
-                <ProductBadge product={l.product} />
-                <span className="strong">{money(l.offerAmount)}</span>
-                <span className="small faint">
-                  {rate(l.rate)} {l.product === "term_loan" || l.product === "loc" ? "APR" : "fee"}
-                </span>
+            <div key={l.id} className="listrow" style={{ alignItems: "flex-start" }}>
+              <div className="col gap-1">
+                <div className="row gap-2 center">
+                  <BankTierBadge tier={l.bankTier} />
+                  <span className="strong">{money(l.offerAmount)}</span>
+                  <span className="small faint">max offer</span>
+                </div>
+                <div className="tiny muted">
+                  Capital {money(l.capitalOffer)} (fee {money(l.capitalFee)})
+                  {l.cashFlowOffer > 0
+                    ? ` · Cash Flow ${money(l.cashFlowOffer)} (fee ${money(l.cashFlowFee)})`
+                    : ""}
+                </div>
+                <div className="tiny faint">Lead type: {l.leadType}</div>
               </div>
-              <div className="row gap-2 center wrap">
-                {l.bundleFlags.map((b) => (
-                  <span key={b} className="pill pill-teal">
-                    {BUNDLE_LABEL[b] ?? b}
-                  </span>
-                ))}
+              <div className="col gap-1" style={{ alignItems: "flex-end" }}>
+                <StatusBadge code={l.status} />
                 <StageBadge stage={l.stage} />
               </div>
             </div>

@@ -9,7 +9,8 @@ import {
   Pill,
   Field,
   Modal,
-  ProductBadge,
+  BankTierBadge,
+  StatusBadge,
   EmptyState,
   CallButton,
   EmailButton,
@@ -27,9 +28,9 @@ import { providerById, fdmForProvider, repById } from "../../data/selectors";
 import { useRole, CURRENT_REP_ID } from "../../context/role";
 import { PERSONA_DETAIL } from "../../lib/personas";
 import { nextBestOffers } from "../../lib/nbo";
-import { money, rate } from "../../lib/format";
+import { money } from "../../lib/format";
 
-const WORKABLE = new Set(["new", "working", "contacted"]);
+const WORKABLE = new Set(["ready", "engaged", "kyc"]);
 
 // Availability slots for booking with a senior sales specialist.
 const SLOTS = [
@@ -217,7 +218,7 @@ export function SalesConsole() {
                       </span>
                     </div>
                     <div className="row between center" style={{ marginTop: 6 }}>
-                      <ProductBadge product={l.product} />
+                      <BankTierBadge tier={l.bankTier} />
                       <span className="attempts">
                         {Array.from({ length: 3 }).map((_, i) => (
                           <span
@@ -281,10 +282,19 @@ export function SalesConsole() {
 
                   <div className="col gap-1">
                     <span className="tiny muted upper">Offer</span>
-                    <div className="row gap-2 center">
-                      <ProductBadge product={selectedLead.product} />
+                    <div className="row gap-2 center wrap">
+                      <BankTierBadge tier={selectedLead.bankTier} />
                       <span className="num strong">{money(selectedLead.offerAmount)}</span>
-                      <span className="small muted">{rate(selectedLead.rate)}</span>
+                      <span className="small muted">max offer</span>
+                    </div>
+                    <div className="tiny muted" style={{ marginTop: 2 }}>
+                      Capital {money(selectedLead.capitalOffer)} (fee {money(selectedLead.capitalFee)})
+                      {selectedLead.cashFlowOffer > 0
+                        ? ` · Cash Flow ${money(selectedLead.cashFlowOffer)} (fee ${money(selectedLead.cashFlowFee)})`
+                        : ""}
+                    </div>
+                    <div style={{ marginTop: 4 }}>
+                      <StatusBadge code={selectedLead.status} />
                     </div>
                   </div>
 

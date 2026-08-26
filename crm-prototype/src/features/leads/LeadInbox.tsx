@@ -3,16 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 import { useData } from "../../data/store";
 import { useRole, CURRENT_REP_ID } from "../../context/role";
-import {
-  leadsForRep,
-  repById,
-  fdmForProvider,
-} from "../../data/selectors";
+import { leadsForRep, repById, fdmForProvider } from "../../data/selectors";
 import {
   PageHeader,
-  ProductBadge,
-  StageBadge,
-  TierBadge,
+  StatusBadge,
+  BankTierBadge,
   ConfidenceBadge,
   Button,
   useToast,
@@ -20,17 +15,22 @@ import {
 import { DataTable, type Column } from "../../components/ui/DataTable";
 import { money, relTime } from "../../lib/format";
 import {
-  PRODUCTS,
-  PRODUCT_LABEL,
+  BANK_TIERS,
+  LEAD_TYPES,
   STAGES,
   STAGE_LABEL,
-  TIERS,
+  type BankTier,
+  type LeadType,
   type OfferLead,
   type Provider,
-  type Product,
   type Stage,
-  type Tier,
 } from "../../data/schema";
+
+function loanMix(l: OfferLead): string {
+  if (l.capitalOffer > 0 && l.cashFlowOffer > 0) return "Capital + Cash Flow";
+  if (l.cashFlowOffer > 0) return "Cash Flow";
+  return "Capital";
+}
 
 export function LeadInbox() {
   const data = useData((s) => s.data)!;
@@ -50,18 +50,18 @@ export function LeadInbox() {
   );
 
   const [search, setSearch] = useState("");
-  const [product, setProduct] = useState<Product | "all">("all");
+  const [leadType, setLeadType] = useState<LeadType | "all">("all");
   const [stage, setStage] = useState<Stage | "all">("all");
-  const [tier, setTier] = useState<Tier | "all">("all");
+  const [bankTier, setBankTier] = useState<BankTier | "all">("all");
   const [fdmFilter, setFdmFilter] = useState<"all" | "present" | "missing">("all");
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const rows = useMemo(() => {
     const q = search.trim().toLowerCase();
     return baseLeads.filter((l) => {
-      if (product !== "all" && l.product !== product) return false;
+      if (leadType !== "all" && l.leadType !== leadType) return false;
       if (stage !== "all" && l.stage !== stage) return false;
-      if (tier !== "all" && l.tier !== tier) return false;
+      if (bankTier !== "all" && l.bankTier !== bankTier) return false;
       if (fdmFilter !== "all") {
         const has = !!fdmForProvider(data, l.providerId);
         if (fdmFilter === "present" && !has) return false;
@@ -74,7 +74,7 @@ export function LeadInbox() {
       }
       return true;
     });
-  }, [baseLeads, search, product, stage, tier, fdmFilter, data, providerMap]);
+  }, [baseLeads, search, leadType, stage, bankTier, fdmFilter, data, providerMap]);
 
   const toggle = (id: string) =>
     setSelected((s) => {
@@ -105,32 +105,27 @@ export function LeadInbox() {
         },
         sortValue: (l) => providerMap.get(l.providerId)?.legalName ?? "",
       },
+      { key: "tin", header: "TIN", render: (l) => <span className="mono tiny">{l.tin}</span>, width: 100 },
       {
-        key: "tin",
-        header: "TIN",
-        render: (l) => <span className="mono tiny">{l.tin}</span>,
-        width: 110,
-      },
-      {
-        key: "product",
-        header: "Product",
-        render: (l) => <ProductBadge product={l.product} />,
-        sortValue: (l) => l.product,
-        width: 120,
+        key: "loan",
+        header: "Loan",
+        render: (l) => <span className="small">{loanMix(l)}</span>,
+        sortValue: (l) => loanMix(l),
+        width: 140,
       },
       {
         key: "offer",
-        header: "Offer $",
+        header: "Max Offer",
         render: (l) => <span className="num">{money(l.offerAmount)}</span>,
         sortValue: (l) => l.offerAmount,
         align: "right",
         width: 110,
       },
       {
-        key: "tier",
-        header: "Tier",
-        render: (l) => <TierBadge tier={l.tier} />,
-        sortValue: (l) => l.tier,
+        key: "bankTier",
+        header: "Bank Tier",
+        render: (l) => <BankTierBadge tier={l.bankTier} />,
+        sortValue: (l) => l.bankTier,
         width: 90,
       },
       {
@@ -153,11 +148,18 @@ export function LeadInbox() {
         width: 90,
       },
       {
-        key: "stage",
-        header: "Stage",
-        render: (l) => <StageBadge stage={l.stage} />,
-        sortValue: (l) => l.stage,
-        width: 120,
+        key: "status",
+        header: "Lead Status",
+        render: (l) => <StatusBadge code={l.status} />,
+        sortValue: (l) => Number(l.status),
+        width: 230,
+      },
+      {
+        key: "type",
+        header: "Lead Type",
+        render: (l) => <span className="tiny muted">{l.leadType}</span>,
+        sortValue: (l) => l.leadType,
+        width: 130,
       },
       {
         key: "outreach",
@@ -166,20 +168,7 @@ export function LeadInbox() {
           <span className="small muted">{l.lastOutreachAt ? relTime(l.lastOutreachAt) : "-"}</span>
         ),
         sortValue: (l) => (l.lastOutreachAt ? +new Date(l.lastOutreachAt) : 0),
-        width: 120,
-      },
-      {
-        key: "attempts",
-        header: "Attempts",
-        render: (l) => (
-          <span className="attempts">
-            {[0, 1, 2].map((i) => (
-              <span key={i} className={i < l.attempts ? "attempt-dot on" : "attempt-dot"} />
-            ))}
-          </span>
-        ),
-        sortValue: (l) => l.attempts,
-        width: 90,
+        width: 110,
       },
     ],
     [data, providerMap]
@@ -203,14 +192,6 @@ export function LeadInbox() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <select className="select" value={product} onChange={(e) => setProduct(e.target.value as Product | "all")}>
-          <option value="all">All products</option>
-          {PRODUCTS.map((p) => (
-            <option key={p} value={p}>
-              {PRODUCT_LABEL[p]}
-            </option>
-          ))}
-        </select>
         <select className="select" value={stage} onChange={(e) => setStage(e.target.value as Stage | "all")}>
           <option value="all">All stages</option>
           {STAGES.map((s) => (
@@ -219,11 +200,19 @@ export function LeadInbox() {
             </option>
           ))}
         </select>
-        <select className="select" value={tier} onChange={(e) => setTier(e.target.value as Tier | "all")}>
-          <option value="all">All tiers</option>
-          {TIERS.map((t) => (
+        <select className="select" value={bankTier} onChange={(e) => setBankTier(e.target.value as BankTier | "all")}>
+          <option value="all">All bank tiers</option>
+          {BANK_TIERS.map((t) => (
             <option key={t} value={t}>
-              {t.charAt(0).toUpperCase() + t.slice(1)}
+              Tier {t}
+            </option>
+          ))}
+        </select>
+        <select className="select" value={leadType} onChange={(e) => setLeadType(e.target.value as LeadType | "all")}>
+          <option value="all">All lead types</option>
+          {LEAD_TYPES.map((t) => (
+            <option key={t} value={t}>
+              {t}
             </option>
           ))}
         </select>
@@ -248,8 +237,8 @@ export function LeadInbox() {
           <Button variant="outline" size="sm" onClick={() => navigate("/campaigns/new")}>
             Add to campaign
           </Button>
-          <Button variant="outline" size="sm" onClick={() => toast("Disposition applied to selected leads")}>
-            Set disposition
+          <Button variant="outline" size="sm" onClick={() => toast("Status applied to selected leads")}>
+            Set status
           </Button>
         </div>
       )}

@@ -12,16 +12,17 @@ import {
 import { useData } from "../../data/store";
 import { useRole, CURRENT_REP_ID } from "../../context/role";
 import { leadsForRep, pipelineValue } from "../../data/selectors";
-import { PageHeader, ProductBadge, useToast } from "../../components/ui";
+import { PageHeader, BankTierBadge, useToast } from "../../components/ui";
 import { money } from "../../lib/format";
 import {
   STAGE_LABEL,
+  STATUS_BY_CODE,
   type OfferLead,
   type Provider,
   type Stage,
 } from "../../data/schema";
 
-const COLUMN_STAGES: Stage[] = ["new", "working", "contacted", "qualified", "appt_set", "won", "lost"];
+const COLUMN_STAGES: Stage[] = ["ready", "engaged", "kyc", "disbursed", "renewal", "closed"];
 const CARD_CAP = 40;
 
 export function Pipeline() {
@@ -159,8 +160,11 @@ function KanbanCard({
         {provider?.legalName ?? "Unknown provider"}
       </button>
       <div className="kc-row">
-        <ProductBadge product={lead.product} />
+        <BankTierBadge tier={lead.bankTier} />
         <span className="num strong small">{money(lead.offerAmount)}</span>
+      </div>
+      <div className="tiny muted" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        {lead.status} {STATUS_BY_CODE[lead.status]?.label ?? ""}
       </div>
       <div className="kc-row">
         <span className="attempts">
