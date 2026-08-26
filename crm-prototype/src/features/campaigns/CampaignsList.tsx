@@ -170,6 +170,7 @@ export function CampaignsList() {
           rows={data.campaigns}
           columns={columns}
           rowKey={(c) => c.id}
+          onRowClick={(c) => navigate(`/campaigns/${c.id}`)}
           emptyMessage="No campaigns yet. Launch one from the builder."
         />
       </Panel>

@@ -17,6 +17,9 @@ import {
   type FunnelEventType,
   type FunnelEvent,
   type Goal,
+  type Journey,
+  type JourneyNode,
+  type EmailVariant,
   type OfferLead,
   type Persona,
   type Product,
@@ -412,50 +415,191 @@ export function generateDataset(seed = 42): Dataset {
     { id: "seg_soleprac", name: "Sole Practitioners, PWC eligible", funnelStage: "any", filters: { persona: "Sole Practitioner" }, size: providers.filter((p) => p.persona === "Sole Practitioner" && p.pwcStatus === "eligible").length },
   ];
 
-  // ----- Campaigns -----
+  // ----- Campaigns (rich ~90-day journeys with open/click branches) -----
+  let jnc = 0;
+  const jn = (p: string) => `${p}_${jnc++}`;
+  const OPTUM_FROM = {
+    fromName: "Optum Bank",
+    fromEmail: "no-reply@optumbank.com",
+    replyTo: "provider-support@optumbank.com",
+  };
+  const jEmail = (name: string, subject: string, ab = false): JourneyNode => {
+    const body = `<p>${subject}. See how Optum Bank helps your practice, and take the next step in a couple of minutes.</p>`;
+    const variants: EmailVariant[] = [
+      { id: jn("var"), label: "A", weight: ab ? 50 : 100, subject, preheader: "", bodyHtml: body, ...OPTUM_FROM },
+    ];
+    if (ab)
+      variants.push({ id: jn("var"), label: "B", weight: 50, subject: `${subject} (B)`, preheader: "", bodyHtml: body, ...OPTUM_FROM });
+    return { id: jn("jn"), type: "email", name, abTest: ab, variants };
+  };
+  const jDelay = (days: number): JourneyNode => ({ id: jn("jn"), type: "delay", delayValue: days, delayUnit: "days" });
+  const jCond = (kind: "opened" | "clicked", label: string, yes: JourneyNode[], no: JourneyNode[]): JourneyNode => ({
+    id: jn("jn"),
+    type: "condition",
+    conditionKind: kind,
+    conditionLabel: label,
+    yes,
+    no,
+  });
+  const jExit = (): JourneyNode => ({ id: jn("jn"), type: "exit" });
+  // Longest path spans ~90 days (10 + 20 + 30 + 30), with open/click branches and 11 emails.
+  const richJourney = (s: string[], goal: string): Journey => {
+    const g = (i: number) => s[i % s.length];
+    return {
+      goal,
+      exitOn: goal,
+      nodes: [
+        jEmail("Email 1 - Intro", g(0), true),
+        jDelay(10),
+        jCond(
+          "opened",
+          "If opened Email 1",
+          [
+            jEmail("Email 2 - Value", g(1)),
+            jDelay(20),
+            jCond(
+              "clicked",
+              "If clicked Email 2",
+              [
+                jEmail("Email 3 - Offer CTA", g(2)),
+                jDelay(30),
+                jEmail("Email 4 - Reminder", g(3)),
+                jDelay(30),
+                jEmail("Email 5 - Case study", g(4)),
+                jExit(),
+              ],
+              [
+                jEmail("Email 6 - Benefits nudge", g(5)),
+                jDelay(15),
+                jEmail("Email 7 - Social proof", g(6)),
+                jDelay(30),
+                jEmail("Email 8 - Final CTA", g(7)),
+                jExit(),
+              ]
+            ),
+          ],
+          [
+            jEmail("Email 9 - Re-send (A/B subject)", g(0), true),
+            jDelay(10),
+            jCond(
+              "opened",
+              "If opened the re-send",
+              [jEmail("Email 10 - Welcome back", g(1)), jExit()],
+              [jEmail("Email 11 - Last touch", g(2)), jExit()]
+            ),
+          ]
+        ),
+      ],
+    };
+  };
+
+  const SUBJ_BANK = [
+    "Finish opening your Optum Bank account",
+    "A few minutes to complete your KYC",
+    "Settle Optum Pay payments same-day for FREE",
+    "Your account is almost ready",
+    "How Cedar Valley cut days off their cash flow",
+    "The operating account built for healthcare",
+    "Providers are settling faster with Optum Bank",
+    "Last step to activate same-day settlement",
+  ];
+  const SUBJ_LOAN = [
+    "Save 0.25% APR with the bank and loan bundle",
+    "How the bank plus loan bundle works",
+    "Your working capital offer is ready",
+    "A reminder about your 0.25% APR reduction",
+    "How a growing group funded expansion with Optum",
+    "Term loans built around your claims flow",
+    "Rates from 8.99% for qualified providers",
+    "One application, two products, lower APR",
+  ];
+  const SUBJ_CASH = [
+    "Get paid up to 20 days earlier",
+    "How Cash Acceleration works",
+    "Turn on faster claim payments for 50 bps",
+    "Your cash flow, 20 days sooner",
+    "How a specialty practice smoothed month-close",
+    "Powered by Optum claims visibility",
+    "Providers are accelerating UHC payments",
+    "Faster payments are one step away",
+  ];
+  const SUBJ_APY = [
+    "Earn 3% intro APY on your operating account",
+    "The easiest way to know when claims settle",
+    "No monthly fees, built for solo practices",
+    "Your 3% intro APY is waiting",
+    "How a solo practice simplified banking",
+    "Banking that respects your time",
+    "Stop the payment-timing surprises",
+    "Open in minutes, earn 3% intro APY",
+  ];
+
   const campaigns: Campaign[] = [
     {
       id: "camp_1",
-      name: "Mid-funnel recovery — Savana KYC drop-off",
+      name: "Mid-funnel recovery - Savana KYC drop-off",
       status: "active",
       segmentName: "Stuck mid-funnel > 7 days",
       connector: "Marketo",
       journeySteps: [
-        { day: 0, channel: "email", template: "Recovery: finish opening your account" },
-        { day: 3, channel: "email", template: "Recovery: what you need to complete KYC" },
-        { day: 7, channel: "sms", template: "Reminder: your account is almost ready" },
+        { day: 0, channel: "email", template: SUBJ_BANK[0] },
+        { day: 10, channel: "email", template: SUBJ_BANK[1] },
+        { day: 30, channel: "email", template: SUBJ_BANK[2] },
       ],
       audienceSize: Math.round(stuckCount * 0.7),
-      metrics: { sent: 1840, delivered: 1795, opens: 812, clicks: 214, conversions: 63 },
+      metrics: { sent: 4820, delivered: 4710, opens: 2183, clicks: 641, conversions: 168 },
       createdByRole: "Campaign Management",
-      launchedAt: daysAgo(12),
+      launchedAt: daysAgo(40),
+      trigger: { type: "segment", segmentId: "seg_stuck7" },
+      journey: richJourney(SUBJ_BANK, "completed_signup"),
     },
     {
       id: "camp_2",
-      name: "Funded, no loan — Term Loan bundle offer",
+      name: "Funded, no loan - Term Loan bundle offer",
       status: "active",
       segmentName: "Account funded, no loan originated",
       connector: "Marketo",
       journeySteps: [
-        { day: 0, channel: "email", template: "You could save 0.25% APR on a term loan" },
-        { day: 5, channel: "email", template: "How the bank + loan bundle works" },
+        { day: 0, channel: "email", template: SUBJ_LOAN[0] },
+        { day: 10, channel: "email", template: SUBJ_LOAN[1] },
       ],
       audienceSize: fundedNoLoan,
-      metrics: { sent: 640, delivered: 631, opens: 349, clicks: 118, conversions: 41 },
+      metrics: { sent: 1980, delivered: 1944, opens: 1067, clicks: 372, conversions: 121 },
       createdByRole: "Campaign Management",
-      launchedAt: daysAgo(20),
+      launchedAt: daysAgo(55),
+      trigger: { type: "segment", segmentId: "seg_funded_noloan" },
+      journey: richJourney(SUBJ_LOAN, "loan_originated"),
     },
     {
       id: "camp_3",
-      name: "Sole Practitioner nurture — 3% intro APY",
+      name: "Cash Acceleration nurture - get paid 20 days earlier",
+      status: "active",
+      segmentName: "Signup started, not completed",
+      connector: "Customer.io",
+      journeySteps: [
+        { day: 0, channel: "email", template: SUBJ_CASH[0] },
+        { day: 10, channel: "email", template: SUBJ_CASH[1] },
+      ],
+      audienceSize: startedNotCompleted,
+      metrics: { sent: 3120, delivered: 3049, opens: 1402, clicks: 388, conversions: 96 },
+      createdByRole: "Campaign Management",
+      launchedAt: daysAgo(30),
+      trigger: { type: "segment", segmentId: "seg_started" },
+      journey: richJourney(SUBJ_CASH, "account_funded"),
+    },
+    {
+      id: "camp_4",
+      name: "Sole Practitioner nurture - 3% intro APY",
       status: "paused",
       segmentName: "Sole Practitioners, PWC eligible",
       connector: "Customer.io",
-      journeySteps: [{ day: 0, channel: "email", template: "Settle Optum Pay payments same-day for FREE" }],
+      journeySteps: [{ day: 0, channel: "email", template: SUBJ_APY[0] }],
       audienceSize: segments[3].size,
       metrics: { sent: 0, delivered: 0, opens: 0, clicks: 0, conversions: 0 },
       createdByRole: "Campaign Management",
       launchedAt: null,
+      trigger: { type: "segment", segmentId: "seg_soleprac" },
+      journey: richJourney(SUBJ_APY, "completed_signup"),
     },
   ];
 
