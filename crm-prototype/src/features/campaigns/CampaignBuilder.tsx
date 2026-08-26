@@ -1,6 +1,13 @@
 import { useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ShieldCheck, Mail, MessageSquare, ArrowRight, ArrowLeft } from "lucide-react";
+import {
+  ShieldCheck,
+  ArrowRight,
+  ArrowLeft,
+  Zap,
+  Users,
+  Plus,
+} from "lucide-react";
 import {
   PageHeader,
   Panel,
@@ -9,70 +16,56 @@ import {
   Pill,
   Stepper,
   Field,
+  Banner,
   useToast,
 } from "../../components/ui";
 import { useData } from "../../data/store";
-import type { Campaign, Persona, Product, Provider, Segment } from "../../data/schema";
-import { PERSONAS, PRODUCTS, PRODUCT_LABEL } from "../../data/schema";
-import { fdmForProvider } from "../../data/selectors";
+import type {
+  Campaign,
+  CampaignTrigger,
+  FunnelEventType,
+  Journey,
+  Segment,
+} from "../../data/schema";
+import { FUNNEL_EVENTS, FUNNEL_EVENT_LABEL } from "../../data/schema";
+import { countMatches } from "../../lib/segmentEngine";
 import { useRole, ROLE_LABEL } from "../../context/role";
-import { PERSONA_DETAIL } from "../../lib/personas";
 import { num } from "../../lib/format";
+import { JourneyBuilder, makeNode, flattenJourney, journeySteps } from "./JourneyBuilder";
 
-const STEPS = ["Segment", "Message", "Connector", "Preview", "Launch"];
-const NOW_ISO = "2026-08-22T12:00:00.000Z";
+const STEPS = ["Trigger", "Journey", "Delivery", "Review"];
+const NOW_ISO = "2026-08-26T12:00:00.000Z";
 
-interface Template {
-  id: string;
-  name: string;
-  stage: "onboarding" | "drop-off recovery" | "retention";
-  detail: string;
+/* A short, populated default journey: email -> wait 3d -> if opened -> yes/no emails -> exit. */
+function seedJourney(): Journey {
+  const first = makeNode("email");
+  first.name = "Intro: open your Optum Bank account";
+  if (first.variants?.[0]) first.variants[0].subject = "Open your Optum Bank account";
+
+  const wait = makeNode("delay");
+  wait.delayValue = 3;
+  wait.delayUnit = "days";
+
+  const cond = makeNode("condition");
+  cond.conditionKind = "opened";
+  cond.conditionLabel = "If opened the previous email";
+
+  const yesEmail = makeNode("email");
+  yesEmail.name = "Warm follow-up: same-day settlement";
+  if (yesEmail.variants?.[0])
+    yesEmail.variants[0].subject = "Settle Optum Pay payments same-day, no fee";
+
+  const noEmail = makeNode("email");
+  noEmail.name = "Recovery: your offer is still waiting";
+  if (noEmail.variants?.[0]) noEmail.variants[0].subject = "Your Optum Bank offer is still open";
+
+  cond.yes = [yesEmail];
+  cond.no = [noEmail];
+
+  const exit = makeNode("exit");
+
+  return { nodes: [first, wait, cond, exit], goal: "account_funded" };
 }
-
-const TEMPLATES: Template[] = [
-  {
-    id: "t_intro_apy",
-    name: "3% intro APY",
-    stage: "onboarding",
-    detail: "Open the operating account with a 3% intro APY on balances.",
-  },
-  {
-    id: "t_same_day",
-    name: "Settle Optum Pay payments same-day for FREE",
-    stage: "onboarding",
-    detail: "Redirect Optum Pay flows for same-day settlement, no fee.",
-  },
-  {
-    id: "t_bundle_apr",
-    name: "Save 0.25% APR with the bank + loan bundle",
-    stage: "retention",
-    detail: "0.25% APR reduction when the bank account is opened alongside the loan.",
-  },
-  {
-    id: "t_kyc_recovery",
-    name: "Recovery: finish opening your account",
-    stage: "drop-off recovery",
-    detail: "Nudge stuck signups to complete KYC and fund the account.",
-  },
-  {
-    id: "t_reconciliation",
-    name: "Never miss a settled claim payment",
-    stage: "retention",
-    detail: "Reconciliation and settlement alerts for high-volume payers.",
-  },
-  {
-    id: "t_reengage",
-    name: "Your pre-qualified working capital offer",
-    stage: "drop-off recovery",
-    detail: "Re-engage funded-no-loan providers with a lending-led offer.",
-  },
-];
-
-const STAGE_TONE: Record<Template["stage"], string> = {
-  onboarding: "blue",
-  "drop-off recovery": "amber",
-  retention: "teal",
-};
 
 export function CampaignBuilder() {
   const data = useData((s) => s.data)!;
@@ -87,57 +80,57 @@ export function CampaignBuilder() {
   const [step, setStep] = useState(0);
 
   const querySegId = searchParams.get("segment");
-  const [segmentId, setSegmentId] = useState<string | null>(
+  const preSeg =
     querySegId && data.segments.some((s) => s.id === querySegId)
       ? querySegId
-      : data.segments[0]?.id ?? null
+      : null;
+
+  const [triggerType, setTriggerType] = useState<"segment" | "event">("segment");
+  const [segmentId, setSegmentId] = useState<string | null>(
+    preSeg ?? data.segments[0]?.id ?? null
   );
-  const [persona, setPersona] = useState<Persona | "">("");
-  const [product, setProduct] = useState<Product | "">("");
-  const [minOffer, setMinOffer] = useState(0);
+  const [eventType, setEventType] = useState<FunnelEventType>(FUNNEL_EVENTS[0]);
   const [connector, setConnector] = useState<Campaign["connector"]>(activeConnector);
-  const [templateId, setTemplateId] = useState<string>(TEMPLATES[0].id);
+  const [journey, setJourney] = useState<Journey>(() => seedJourney());
 
   const segment: Segment | undefined = useMemo(
     () => data.segments.find((s) => s.id === segmentId),
     [data.segments, segmentId]
   );
 
-  const baseSize = segment?.size ?? 0;
-  const liveCount = useMemo(() => {
-    let n = baseSize;
-    if (persona) n *= 0.35;
-    if (product) n *= 0.6;
-    if (minOffer > 0) n *= 0.7;
-    return Math.round(n);
-  }, [baseSize, persona, product, minOffer]);
-
-  const template = TEMPLATES.find((t) => t.id === templateId) ?? TEMPLATES[0];
-
-  const hookLine = persona ? PERSONA_DETAIL[persona].hook : "Your Optum banking offer is ready.";
-
-  const journeySteps = useMemo(
-    () => [
-      { day: 0, channel: "email", template: template.name },
-      { day: 3, channel: "email", template: `${template.name} - reminder` },
-      { day: 7, channel: "sms", template: `${template.name} - final nudge` },
-    ],
-    [template]
+  const trigger: CampaignTrigger = useMemo(
+    () =>
+      triggerType === "segment"
+        ? { type: "segment", segmentId: segmentId ?? undefined }
+        : { type: "event", event: eventType },
+    [triggerType, segmentId, eventType]
   );
 
-  const previewProviders: Provider[] = useMemo(() => {
-    const pool = persona
-      ? data.providers.filter((p) => p.persona === persona)
-      : data.providers;
-    return pool.slice(0, 8);
-  }, [data.providers, persona]);
+  const audienceSize = useMemo(() => {
+    if (triggerType === "segment" && segment) {
+      if (segment.rules) return countMatches(data, segment.rules);
+      return segment.size;
+    }
+    if (triggerType === "event") {
+      return data.funnelEvents.filter((e) => e.eventType === eventType).length;
+    }
+    return 0;
+  }, [triggerType, segment, eventType, data]);
+
+  const firstSubject = useMemo(() => {
+    for (const n of journey.nodes) {
+      if (n.type === "email") return n.variants?.[0]?.subject ?? "Email";
+    }
+    return "Lifecycle campaign";
+  }, [journey]);
+
+  const outline = useMemo(() => flattenJourney(journey), [journey]);
 
   const canAdvance =
-    (step === 0 && !!segment) ||
-    (step === 1 && !!templateId) ||
+    (step === 0 && (triggerType === "event" || !!segment)) ||
+    step === 1 ||
     (step === 2 && !!connector) ||
-    step === 3 ||
-    step === 4;
+    step === 3;
 
   const chooseConnector = (name: Campaign["connector"]) => {
     setConnector(name);
@@ -145,21 +138,26 @@ export function CampaignBuilder() {
   };
 
   const launch = () => {
-    if (!segment) return;
+    const triggerName =
+      triggerType === "segment"
+        ? segment?.name ?? "Segment"
+        : FUNNEL_EVENT_LABEL[eventType];
     const c: Campaign = {
       id: `camp_${Date.now()}`,
-      name: `${segment.name} - ${template.name}`,
+      name: `${triggerName} - ${firstSubject}`,
       status: "active",
-      segmentName: segment.name,
+      segmentName: triggerType === "segment" ? segment?.name ?? "Segment" : triggerName,
       connector,
-      journeySteps,
-      audienceSize: liveCount,
+      journeySteps: journeySteps(journey),
+      audienceSize,
       metrics: { sent: 0, delivered: 0, opens: 0, clicks: 0, conversions: 0 },
       createdByRole: ROLE_LABEL[role],
       launchedAt: NOW_ISO,
+      trigger,
+      journey,
     };
     launchCampaign(c);
-    toast(`Campaign launched to ${num(liveCount)} providers via ${connector}`);
+    toast("Campaign launched (mock)");
     navigate("/campaigns");
   };
 
@@ -168,7 +166,7 @@ export function CampaignBuilder() {
       <PageHeader
         crumb="Lifecycle"
         title="New campaign"
-        sub="Define a segment, pick a message, launch a lifecycle journey"
+        sub="Trigger, journey, delivery, launch. Portable to Marketo and Salesforce."
       />
       <Panel>
         <div className="panel-pad">
@@ -177,167 +175,141 @@ export function CampaignBuilder() {
       </Panel>
 
       {step === 0 && (
-        <div className="grid grid-2">
-          <Panel>
-            <PanelHeader title="1. Pick a segment" />
-            <div className="panel-body col">
-              {data.segments.map((s) => (
-                <div
-                  key={s.id}
-                  className={`segpick${segmentId === s.id ? " selected" : ""}`}
-                  onClick={() => setSegmentId(s.id)}
-                >
-                  <div className="row between">
-                    <span className="strong">{s.name}</span>
-                    <span className="num strong" style={{ color: "var(--navy)" }}>
-                      {num(s.size)}
-                    </span>
-                  </div>
-                  <div className="tiny muted upper" style={{ marginTop: 4 }}>
-                    {s.funnelStage}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Panel>
-
-          <div className="col gap-4">
-            <Panel>
-              <PanelHeader title="2. Refine (optional)" />
-              <div className="panel-body col gap-3">
-                <Field label="Persona">
-                  <select
-                    className="select"
-                    value={persona}
-                    onChange={(e) => setPersona(e.target.value as Persona | "")}
-                  >
-                    <option value="">All personas</option>
-                    {PERSONAS.map((p) => (
-                      <option key={p} value={p}>
-                        {p}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-                <Field label="Product interest">
-                  <select
-                    className="select"
-                    value={product}
-                    onChange={(e) => setProduct(e.target.value as Product | "")}
-                  >
-                    <option value="">Any product</option>
-                    {PRODUCTS.map((p) => (
-                      <option key={p} value={p}>
-                        {PRODUCT_LABEL[p]}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-                <Field label="Minimum offer amount">
-                  <input
-                    type="number"
-                    min={0}
-                    step={5000}
-                    value={minOffer}
-                    onChange={(e) => setMinOffer(Math.max(0, Number(e.target.value) || 0))}
-                  />
-                </Field>
+        <div className="col gap-4">
+          <div className="grid grid-2">
+            <div
+              className={`connector-card${triggerType === "segment" ? " selected" : ""}`}
+              onClick={() => setTriggerType("segment")}
+            >
+              <div className="row between">
+                <span className="cc-name row gap-2 center">
+                  <Users size={16} /> Segment-triggered
+                </span>
               </div>
-            </Panel>
-
-            <div className="audience-counter">
-              <div className="ac-num" key={liveCount}>
-                {segment ? num(liveCount) : "-"}
+              <div className="tiny muted" style={{ marginTop: 8 }}>
+                Enroll providers as they enter a segment. Live from the provider master.
               </div>
-              <div className="ac-label">providers match, updated live</div>
             </div>
-            <div className="small muted center">
-              Live from the provider master. The old way was a 4-8 week list pull.
+            <div
+              className={`connector-card${triggerType === "event" ? " selected" : ""}`}
+              onClick={() => setTriggerType("event")}
+            >
+              <div className="row between">
+                <span className="cc-name row gap-2 center">
+                  <Zap size={16} /> Event-triggered
+                </span>
+              </div>
+              <div className="tiny muted" style={{ marginTop: 8 }}>
+                Enroll providers the moment a funnel event is performed.
+              </div>
             </div>
           </div>
+
+          {triggerType === "segment" ? (
+            <Panel>
+              <PanelHeader
+                title="Pick a segment"
+                action={
+                  <Button variant="text" onClick={() => navigate("/segments/new")}>
+                    <Plus size={14} /> Build a new segment
+                  </Button>
+                }
+              />
+              <div className="panel-body col">
+                {data.segments.map((s) => (
+                  <div
+                    key={s.id}
+                    className={`segpick${segmentId === s.id ? " selected" : ""}`}
+                    onClick={() => setSegmentId(s.id)}
+                  >
+                    <div className="row between">
+                      <span className="strong">{s.name}</span>
+                      <span className="num strong" style={{ color: "var(--navy)" }}>
+                        {num(s.size)}
+                      </span>
+                    </div>
+                    <div className="tiny muted upper" style={{ marginTop: 4 }}>
+                      {s.funnelStage}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Panel>
+          ) : (
+            <Panel>
+              <PanelHeader title="Pick a trigger event" />
+              <div className="panel-body">
+                <Field label="Enroll when this event is performed">
+                  <select
+                    className="select"
+                    value={eventType}
+                    onChange={(e) => setEventType(e.target.value as FunnelEventType)}
+                  >
+                    {FUNNEL_EVENTS.map((ev) => (
+                      <option key={ev} value={ev}>
+                        {FUNNEL_EVENT_LABEL[ev]}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                <div className="small muted" style={{ marginTop: 10 }}>
+                  {num(audienceSize)} providers have performed this event historically.
+                </div>
+              </div>
+            </Panel>
+          )}
         </div>
       )}
 
       {step === 1 && (
-        <div className="col gap-4">
-          <Panel>
-            <PanelHeader title="Choose a message template" />
-            <div className="panel-body grid grid-3">
-              {TEMPLATES.map((t) => (
-                <div
-                  key={t.id}
-                  className={`segpick${templateId === t.id ? " selected" : ""}`}
-                  onClick={() => setTemplateId(t.id)}
-                >
-                  <Pill tone={STAGE_TONE[t.stage]}>{t.stage}</Pill>
-                  <div className="strong" style={{ marginTop: 8 }}>
-                    {t.name}
-                  </div>
-                  <div className="tiny muted" style={{ marginTop: 4 }}>
-                    {t.detail}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Panel>
-
-          <Panel>
-            <PanelHeader title="Journey" />
-            <div className="panel-body">
-              <div className="small muted" style={{ marginBottom: 12 }}>
-                Persona-matched hook: {hookLine}
-              </div>
-              {journeySteps.map((j) => (
-                <div key={j.day} className="journey-step">
-                  <span className="js-day">Day {j.day}</span>
-                  {j.channel === "email" ? (
-                    <Mail size={16} style={{ color: "var(--navy)" }} />
-                  ) : (
-                    <MessageSquare size={16} style={{ color: "var(--orange)" }} />
-                  )}
-                  <span className="small strong upper" style={{ width: 46 }}>
-                    {j.channel}
-                  </span>
-                  <span className="small grow">{j.template}</span>
-                </div>
-              ))}
-            </div>
-          </Panel>
-        </div>
+        <Panel>
+          <PanelHeader title="Design the journey" />
+          <div className="panel-body">
+            <JourneyBuilder value={journey} onChange={setJourney} trigger={trigger} />
+          </div>
+        </Panel>
       )}
 
       {step === 2 && (
-        <Panel>
-          <PanelHeader title="Choose a delivery connector" />
-          <div className="panel-body grid grid-2">
-            {data.connectors.map((cn) => (
-              <div
-                key={cn.id}
-                className={`connector-card${connector === cn.name ? " selected" : ""}`}
-                onClick={() => chooseConnector(cn.name)}
-              >
-                <div className="row between">
-                  <span className="cc-name">{cn.name}</span>
-                  {cn.isApprovedVendor ? (
-                    <Pill tone="green" dot>
-                      Approved vendor
-                    </Pill>
-                  ) : (
-                    <Pill tone="amber" dot>
-                      Pending procurement
-                    </Pill>
-                  )}
+        <div className="col gap-4">
+          <Panel>
+            <PanelHeader title="Choose a delivery connector" />
+            <div className="panel-body grid grid-2">
+              {data.connectors.map((cn) => (
+                <div
+                  key={cn.id}
+                  className={`connector-card${connector === cn.name ? " selected" : ""}`}
+                  onClick={() => chooseConnector(cn.name)}
+                >
+                  <div className="row between">
+                    <span className="cc-name">{cn.name}</span>
+                    {cn.isApprovedVendor ? (
+                      <Pill tone="green" dot>
+                        Approved vendor
+                      </Pill>
+                    ) : (
+                      <Pill tone="amber" dot>
+                        Pending procurement
+                      </Pill>
+                    )}
+                  </div>
+                  <div className="tiny muted" style={{ marginTop: 8 }}>
+                    {cn.note}
+                  </div>
                 </div>
-                <div className="tiny muted" style={{ marginTop: 8 }}>
-                  {cn.note}
-                </div>
-                <div className="small teal-text" style={{ marginTop: 10, color: "var(--teal)" }}>
-                  Connection status: connected
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
+          </Panel>
+          <Banner tone="info">
+            The journey model is portable. It exports cleanly to Marketo or Salesforce
+            Marketing Cloud with the same triggers, branches, and A/B splits.
+          </Banner>
+          <div className="row">
+            <Pill tone="navy" dot>
+              EMR review: privacy, compliance, legal
+            </Pill>
           </div>
-        </Panel>
+        </div>
       )}
 
       {step === 3 && (
@@ -345,76 +317,58 @@ export function CampaignBuilder() {
           <Panel>
             <PanelHeader title="Summary" />
             <div className="panel-body col gap-2">
-              <SummaryRow label="Segment" value={segment?.name ?? "-"} />
-              <SummaryRow label="Persona filter" value={persona || "All personas"} />
               <SummaryRow
-                label="Product filter"
-                value={product ? PRODUCT_LABEL[product] : "Any product"}
+                label="Trigger"
+                value={
+                  triggerType === "segment"
+                    ? `Segment entry: ${segment?.name ?? "-"}`
+                    : `Event: ${FUNNEL_EVENT_LABEL[eventType]}`
+                }
               />
-              <SummaryRow label="Min offer" value={minOffer > 0 ? num(minOffer) : "None"} />
-              <SummaryRow label="Audience size" value={num(liveCount)} />
+              <SummaryRow label="Audience size" value={num(audienceSize)} />
               <SummaryRow label="Connector" value={connector} />
-              <div className="col gap-1" style={{ marginTop: 8 }}>
-                <span className="tiny muted upper">Journey</span>
-                {journeySteps.map((j) => (
-                  <span key={j.day} className="small">
-                    Day {j.day}: {j.channel} - {j.template}
-                  </span>
-                ))}
-              </div>
+              <SummaryRow label="Created by" value={ROLE_LABEL[role]} />
             </div>
           </Panel>
 
           <Panel>
-            <PanelHeader title="Sample recipients" />
-            <div className="panel-body col gap-2">
-              {previewProviders.map((p) => {
-                const fdm = fdmForProvider(data, p.id);
-                return (
-                  <div key={p.id} className="row between" style={{ padding: "6px 0" }}>
-                    <div className="col gap-1">
-                      <span className="small strong">{p.legalName}</span>
-                      <span className="tiny muted">
-                        {fdm ? (
-                          <a className="contact-val" href={`mailto:${fdm.email}`} onClick={(e) => e.stopPropagation()}>
-                            {fdm.email}
-                          </a>
-                        ) : (
-                          "No FDM email on file"
-                        )}
-                      </span>
-                    </div>
-                    <Pill tone="gray">{p.persona}</Pill>
-                  </div>
-                );
-              })}
+            <PanelHeader title="Journey steps" />
+            <div className="panel-body col gap-1">
+              {outline.map((o, i) => (
+                <div
+                  key={i}
+                  className="small"
+                  style={{ paddingLeft: o.depth * 16 }}
+                >
+                  {o.depth > 0 ? "- " : ""}
+                  {o.label}
+                </div>
+              ))}
+            </div>
+          </Panel>
+
+          <Panel>
+            <PanelHeader title="Launch" />
+            <div className="panel-body col gap-3">
+              <div className="strong" style={{ fontSize: 16 }}>
+                Ready to launch to {num(audienceSize)} providers via {connector}.
+              </div>
+              <div className="small muted">
+                No real messages are sent from this prototype.
+              </div>
+              <div className="row gap-2 wrap">
+                <Pill tone="navy" dot>
+                  EMR review: privacy, compliance, legal
+                </Pill>
+              </div>
+              <div className="row gap-2" style={{ marginTop: 4 }}>
+                <Button size="lg" onClick={launch}>
+                  Launch campaign
+                </Button>
+              </div>
             </div>
           </Panel>
         </div>
-      )}
-
-      {step === 4 && (
-        <Panel>
-          <PanelHeader title="Launch" />
-          <div className="panel-body col gap-3">
-            <div className="strong" style={{ fontSize: 16 }}>
-              Ready to launch to {num(liveCount)} providers via {connector}.
-            </div>
-            <div className="small muted">
-              This activates the campaign and begins the lifecycle journey.
-            </div>
-            <div className="row gap-2 wrap" style={{ marginTop: 4 }}>
-              <Pill tone="navy" dot>
-EMR review: privacy, compliance, legal
-              </Pill>
-            </div>
-            <div className="row gap-2" style={{ marginTop: 8 }}>
-              <Button size="lg" onClick={launch} disabled={!segment}>
-                Launch campaign
-              </Button>
-            </div>
-          </div>
-        </Panel>
       )}
 
       <div className="row between">

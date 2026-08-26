@@ -7,6 +7,7 @@ import type {
   Dataset,
   Disposition,
   Product,
+  Segment,
   Stage,
 } from "./schema";
 
@@ -24,6 +25,7 @@ interface State {
   // actions (demo mutations)
   commitIngest: () => void;
   launchCampaign: (c: Campaign) => void;
+  saveSegment: (seg: Segment) => void;
   updateCampaignStatus: (id: string, status: Campaign["status"]) => void;
   setLeadStage: (leadId: string, stage: Stage) => void;
   assignLead: (leadId: string, repId: string) => void;
@@ -69,6 +71,16 @@ export const useData = create<State>((set, get) => ({
     set((s) => {
       if (!s.data) return s;
       return { data: { ...s.data, campaigns: [c, ...s.data.campaigns] } };
+    }),
+
+  saveSegment: (seg) =>
+    set((s) => {
+      if (!s.data) return s;
+      const exists = s.data.segments.some((x) => x.id === seg.id);
+      const segments = exists
+        ? s.data.segments.map((x) => (x.id === seg.id ? seg : x))
+        : [seg, ...s.data.segments];
+      return { data: { ...s.data, segments } };
     }),
 
   updateCampaignStatus: (id, status) =>

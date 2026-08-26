@@ -9,6 +9,7 @@ import { Pipeline } from "./features/leads/Pipeline";
 import { CampaignsList } from "./features/campaigns/CampaignsList";
 import { CampaignBuilder } from "./features/campaigns/CampaignBuilder";
 import { SegmentsPage } from "./features/campaigns/SegmentsPage";
+import { SegmentBuilder } from "./features/campaigns/SegmentBuilder";
 import { SalesConsole } from "./features/outbound/SalesConsole";
 import { AppointmentsPage } from "./features/outbound/AppointmentsPage";
 import { GoalsReport } from "./features/reporting/GoalsReport";
@@ -31,6 +32,8 @@ export const router = createBrowserRouter(
         { path: "campaigns", element: <CampaignsList /> },
         { path: "campaigns/new", element: <CampaignBuilder /> },
         { path: "segments", element: <SegmentsPage /> },
+        { path: "segments/new", element: <SegmentBuilder /> },
+        { path: "segments/:id", element: <SegmentBuilder /> },
         { path: "console", element: <SalesConsole /> },
         { path: "appointments", element: <AppointmentsPage /> },
         { path: "reporting/goals", element: <GoalsReport /> },

@@ -299,14 +299,95 @@ export const funnelEventSchema = z.object({
 });
 export type FunnelEvent = z.infer<typeof funnelEventSchema>;
 
+// ----- Segment condition model (mirrors Customer.io data-driven segments) -----
+export type MatchOp = "all" | "any"; // AND / OR
+export interface AttributeCondition {
+  kind: "attribute";
+  field: string; // provider attribute key
+  op: "is" | "is_not" | "gte" | "lte";
+  value: string | number;
+}
+export interface EventCondition {
+  kind: "event";
+  performed: boolean; // performed / did not perform
+  event: FunnelEventType;
+  window: "any" | "7d" | "30d" | "90d";
+}
+export interface ProductCondition {
+  kind: "product";
+  has: boolean; // has / does not have
+  product: Product;
+}
+export interface MessageCondition {
+  kind: "message";
+  activity: "opened" | "clicked" | "not_opened";
+}
+export type SegmentCondition =
+  | AttributeCondition
+  | EventCondition
+  | ProductCondition
+  | MessageCondition;
+export interface SegmentRules {
+  match: MatchOp;
+  conditions: SegmentCondition[];
+}
+
 export const segmentSchema = z.object({
   id: z.string(),
   name: z.string(),
   funnelStage: z.string(),
   filters: z.record(z.string(), z.any()),
   size: z.number(),
+  rules: z.any().optional(), // SegmentRules
 });
-export type Segment = z.infer<typeof segmentSchema>;
+export type Segment = z.infer<typeof segmentSchema> & { rules?: SegmentRules };
+
+// ----- Campaign trigger + visual journey model -----
+export type TriggerType = "segment" | "event" | "date" | "api";
+export interface CampaignTrigger {
+  type: TriggerType;
+  segmentId?: string;
+  event?: FunnelEventType;
+  dateField?: string;
+}
+
+export interface EmailVariant {
+  id: string;
+  label: string; // "A" / "B"
+  weight: number; // split %
+  subject: string;
+  fromName: string;
+  fromEmail: string;
+  replyTo: string;
+  preheader: string;
+  bodyHtml: string;
+}
+export type JourneyNodeType = "email" | "delay" | "condition" | "split" | "exit";
+export interface JourneyNode {
+  id: string;
+  type: JourneyNodeType;
+  // email
+  name?: string;
+  abTest?: boolean;
+  variants?: EmailVariant[];
+  // delay
+  delayValue?: number;
+  delayUnit?: "minutes" | "hours" | "days";
+  // condition (branches on yes/no)
+  conditionKind?: "opened" | "clicked" | "attribute" | "event";
+  conditionLabel?: string;
+  yes?: JourneyNode[];
+  no?: JourneyNode[];
+  // split (random A/B)
+  splitPercent?: number;
+  branchA?: JourneyNode[];
+  branchB?: JourneyNode[];
+}
+export interface Journey {
+  nodes: JourneyNode[];
+  goal?: string; // exit-on-conversion goal
+  exitOn?: string; // exit condition
+}
 
 export const campaignSchema = z.object({
   id: z.string(),
@@ -327,8 +408,13 @@ export const campaignSchema = z.object({
   }),
   createdByRole: z.string(),
   launchedAt: z.string().nullable(),
+  trigger: z.any().optional(), // CampaignTrigger
+  journey: z.any().optional(), // Journey
 });
-export type Campaign = z.infer<typeof campaignSchema>;
+export type Campaign = z.infer<typeof campaignSchema> & {
+  trigger?: CampaignTrigger;
+  journey?: Journey;
+};
 
 export const appointmentSchema = z.object({
   id: z.string(),

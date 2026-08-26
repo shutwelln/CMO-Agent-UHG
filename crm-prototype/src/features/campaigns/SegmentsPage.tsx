@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Layers, ArrowRight } from "lucide-react";
+import { Layers, ArrowRight, Plus, Pencil } from "lucide-react";
 import { PageHeader, Panel, PanelHeader, Button, Pill, Banner } from "../../components/ui";
 import { useData } from "../../data/store";
 import { num } from "../../lib/format";
@@ -16,6 +16,11 @@ export function SegmentsPage() {
         crumb="Lifecycle"
         title="Segments"
         sub="Audiences defined against provider-master funnel stages"
+        action={
+          <Button variant="primary" onClick={() => navigate("/segments/new")}>
+            <Plus size={15} /> New segment
+          </Button>
+        }
       />
 
       <Banner tone="info" icon={<Layers size={16} />}>
@@ -29,7 +34,17 @@ export function SegmentsPage() {
           <Panel key={s.id}>
             <PanelHeader
               title={s.name}
-              action={<Pill tone="gray">{s.funnelStage}</Pill>}
+              action={
+                <button
+                  type="button"
+                  className="row center gap-1 tiny muted"
+                  onClick={() => navigate(`/segments/${s.id}`)}
+                  style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                >
+                  <Pill tone="gray">{s.funnelStage}</Pill>
+                  <Pencil size={13} />
+                </button>
+              }
             />
             <div className="panel-body col gap-3">
               <div className="row between center">
@@ -57,12 +72,18 @@ export function SegmentsPage() {
                   />
                 </div>
               </div>
-              <Button
-                variant="outline"
-                onClick={() => navigate(`/campaigns/new?segment=${s.id}`)}
-              >
-                Build campaign <ArrowRight size={15} />
-              </Button>
+              <div className="row gap-2">
+                <Button variant="outline" onClick={() => navigate(`/segments/${s.id}`)}>
+                  <Pencil size={14} /> Edit
+                </Button>
+                <Button
+                  variant="outline"
+                  className="grow"
+                  onClick={() => navigate(`/campaigns/new?segment=${s.id}`)}
+                >
+                  Build campaign <ArrowRight size={15} />
+                </Button>
+              </div>
             </div>
           </Panel>
         ))}
