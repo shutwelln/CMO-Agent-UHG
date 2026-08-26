@@ -15,6 +15,7 @@ import {
 import { useData } from "../../data/store";
 import { leadsForRep, stageCounts, pipelineValue } from "../../data/selectors";
 import { STAGES, STAGE_LABEL } from "../../data/schema";
+import { OPS_LEAD_NAME } from "../../context/role";
 import { money, num, pct } from "../../lib/format";
 
 export function SalesOpsDashboard() {
@@ -30,7 +31,7 @@ export function SalesOpsDashboard() {
 
   return (
     <div className="col gap-4">
-      <PageHeader crumb="Dashboard" title="Sales Operations" sub="Data ingest, assignment, and pipeline health" />
+      <PageHeader crumb="Dashboard" title="Sales Operations" sub={`Signed in as ${OPS_LEAD_NAME} - data ingest, assignment, and pipeline health`} />
 
       <div className="grid grid-4">
         <StatCard

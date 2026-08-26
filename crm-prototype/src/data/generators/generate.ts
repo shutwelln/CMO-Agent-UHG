@@ -54,29 +54,21 @@ export function generateDataset(seed = 42): Dataset {
   const daysAgo = (d: number) => new Date(DATE_NOW - d * DAY).toISOString();
   const daysAhead = (d: number) => new Date(DATE_NOW + d * DAY).toISOString();
 
-  // ----- Reps (real team names from the GTM log) -----
+  // ----- Sales specialists (the real inside sales team) -----
+  // Seniority drives deal-size tiering (senior takes the largest offers). The
+  // senior/junior split below is a working assumption - adjust as needed.
   const repNames: [string, Tier, Team][] = [
-    ["Marcus Webb", "senior", "OI Provider Sales"],
-    ["Danielle Porter", "senior", "OI Provider Sales"],
-    ["Priya Raman", "senior", "OI Provider Sales"],
-    ["Anthony Cole", "senior", "OI Provider AM"],
-    ["Sofia Martinez", "mid", "OFS Commercial"],
-    ["Derek Nunez", "mid", "OFS Commercial"],
-    ["Hannah Liu", "mid", "OI Provider Sales"],
-    ["Jordan Pruitt", "mid", "OFS Commercial"],
-    ["Kayla Simmons", "junior", "3rd-Party Call Center"],
-    ["Omar Haddad", "junior", "3rd-Party Call Center"],
-    ["Bethany Cross", "junior", "3rd-Party Call Center"],
-    ["Travis Boone", "junior", "3rd-Party Call Center"],
-    ["Renata Silva", "junior", "3rd-Party Call Center"],
-    ["Chad Whitfield", "junior", "OFS Commercial"],
+    ["Angelo Altavilla", "senior", "OI Provider Sales"],
+    ["Trent Lloyd", "senior", "OI Provider Sales"],
+    ["Jack Uecker", "junior", "OI Provider Sales"],
+    ["Jack Hentges", "junior", "OI Provider Sales"],
   ];
   const reps: Rep[] = repNames.map(([name, seniority, team], i) => ({
     id: `rep_${i + 1}`,
     name,
     seniority,
     team,
-    capacity: seniority === "senior" ? 120 : seniority === "mid" ? 220 : 360,
+    capacity: seniority === "senior" ? 1200 : seniority === "mid" ? 1800 : 2400,
     active: true,
     avatarInitials: name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase(),
   }));

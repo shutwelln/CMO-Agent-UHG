@@ -14,8 +14,12 @@ export const ROLE_DESC: Record<Role, string> = {
   sales_ops: "Ingest data, assign leads, configure connectors",
 };
 
-// A representative signed-in rep for the Sales Rep role view.
-export const CURRENT_REP_ID = "rep_1"; // Marcus Webb (senior)
+// The signed-in sales specialist for the Sales Specialist role view.
+export const CURRENT_REP_ID = "rep_1"; // Angelo Altavilla (senior)
+
+// Signed-in people for the other roles.
+export const OPS_LEAD_NAME = "Manav Mendonca"; // uploads files, pulls lists, assigns leads
+export const GROWTH_LEAD_NAME = "Growth & Marketing"; // growth/marketing seat (name TBD)
 
 interface RoleState {
   role: Role;
