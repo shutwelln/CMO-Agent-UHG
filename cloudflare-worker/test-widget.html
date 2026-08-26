@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saverwell Widget Test</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    h1 { font-size: 24px; }
+    h2 { font-size: 18px; margin-top: 40px; }
+    .test-section { margin: 20px 0; padding: 20px; border: 1px dashed #ccc; border-radius: 8px; }
+    .sidebar { width: 300px; }
+    code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h1>Saverwell Embeddable Widget - Test Page</h1>
+  <p>This page tests the widget in different configurations. Update the <code>src</code> URL below to point to your dev or production endpoint.</p>
+
+  <h2>1. Default (light theme, 5 discounts, Phoenix AZ)</h2>
+  <div class="test-section">
+    <script
+      src="https://saverwell.com/widget/v1/embed.js"
+      data-partner="test-partner"
+      data-zip="85281"
+    ></script>
+  </div>
+
+  <h2>2. Dark theme, 3 discounts, no protection alert</h2>
+  <div class="test-section" style="background: #111827; padding: 20px;">
+    <script
+      src="https://saverwell.com/widget/v1/embed.js"
+      data-partner="dark-theme-partner"
+      data-zip="85281"
+      data-theme="dark"
+      data-count="3"
+      data-show-protection="false"
+    ></script>
+  </div>
+
+  <h2>3. Narrow sidebar (300px)</h2>
+  <div class="test-section sidebar">
+    <script
+      src="https://saverwell.com/widget/v1/embed.js"
+      data-partner="sidebar-partner"
+      data-zip="10001"
+      data-count="4"
+    ></script>
+  </div>
+
+  <h2>4. With category filter</h2>
+  <div class="test-section">
+    <script
+      src="https://saverwell.com/widget/v1/embed.js"
+      data-partner="category-test"
+      data-zip="33101"
+      data-categories="1,2"
+      data-count="3"
+    ></script>
+  </div>
+
+  <hr>
+  <h2>Partner Install Snippet</h2>
+  <p>Partners copy this one line into their website:</p>
+  <pre><code>&lt;script src="https://saverwell.com/widget/v1/embed.js" data-partner="YOUR-NAME" data-zip="YOUR-ZIP"&gt;&lt;/script&gt;</code></pre>
+
+  <h2>Verification Checklist</h2>
+  <ul>
+    <li>Widget renders in a Shadow DOM (inspect element to confirm)</li>
+    <li>All outbound links contain <code>utm_source=partner&amp;utm_campaign=...</code></li>
+    <li>Email signup POSTs to <code>/widget/v1/api/subscribe</code></li>
+    <li>Success/error states display correctly after signup</li>
+    <li>Dark theme renders with dark background and light text</li>
+    <li>Widget is responsive in narrow containers</li>
+    <li>Logo fallback shows first letter when image fails to load</li>
+    <li>"Powered by Saverwell" footer links to saverwell.com with UTM params</li>
+  </ul>
+
+  <!--
+    For local testing with wrangler dev, change all src URLs to:
+    http://localhost:8787/widget/v1/embed.js
+  -->
+</body>
+</html>

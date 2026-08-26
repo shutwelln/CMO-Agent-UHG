@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.cmoagent.outreach-cron</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/nickshutwell/Desktop/CMO Agent/.venv/bin/python</string>
+        <string>/Users/nickshutwell/Desktop/CMO Agent/scripts/outreach_cron.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/nickshutwell/Desktop/CMO Agent</string>
+
+    <!-- Run every 4 hours (14400 seconds) -->
+    <key>StartInterval</key>
+    <integer>14400</integer>
+
+    <key>StandardOutPath</key>
+    <string>/Users/nickshutwell/Desktop/CMO Agent/data/logs/outreach_launchd_stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/nickshutwell/Desktop/CMO Agent/data/logs/outreach_launchd_stderr.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/nickshutwell/Desktop/CMO Agent/.venv/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+
+    <!-- Run missed job on wake from sleep -->
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

@@ -1,0 +1,13 @@
+version: "3.8"
+
+# Development overrides - mount source for hot reload
+services:
+  cmo-agent:
+    build: .
+    command: ["cmo", "serve", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    volumes:
+      - .:/app
+      - cmo-data:/app/data
+    environment:
+      - DEBUG=true
+      - LOG_LEVEL=DEBUG

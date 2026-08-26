@@ -1,0 +1,60 @@
+BRAND: Agent Tunnel
+PARENT COMPANY: Agent Tunnel (Nick Shutwell & Justin)
+WEBSITE: agenttunnel.app
+
+PRODUCT: Mac desktop app that lets you remote-control Claude Code from your smartphone via a secure Cloudflare tunnel.
+
+TONE: Confident & approachable
+- Productivity-focused, NOT developer-jargon-heavy
+- Speaks to busy professionals, not just hardcore devs
+- Excited about enabling mobile work without being hype-y
+- Security-conscious without being fear-based
+
+VOICE CHARACTERISTICS:
+- Clear and direct — no enterprise-speak
+- Conversational but credible
+- Emphasizes simplicity and speed ("just works")
+- Speaks to outcomes (work from anywhere) not features (tunnel protocols)
+- Avoids: "revolutionary", "game-changing", excessive superlatives
+
+CORE MESSAGING:
+- Primary: "Claude Code in your pocket — secure, simple, mobile-first"
+- Security: Cloudflare tunnel + Face ID/Touch ID, compliance-friendly
+- Simplicity: No SSH, no VPN, no exposed ports — just works
+- Mobility: Work from the couch, the coffee shop, or the kid's soccer game
+
+VALUE PILLARS:
+1. Security — Cloudflare tunnel encryption, biometric auth, no exposed ports
+2. Simplicity — Install, scan QR, control. Three steps, under 5 minutes
+3. Mobility — Full Claude Code access from your phone, anywhere
+
+TARGET AUDIENCE:
+- Primary: Busy professionals who use Claude Code (28-50 age range)
+- Secondary: Developers who want mobile access to their AI coding assistant
+- Psychographics: Values time, willing to pay for convenience, security-conscious
+
+COMPETITIVE POSITIONING:
+- vs. SSH tunnels: "No terminal config, no key management, no port forwarding"
+- vs. Screen sharing: "Native mobile experience, not a laggy remote desktop"
+- vs. Nothing: "Stop being desk-bound. Your AI assistant goes where you go"
+
+EXAMPLE SNIPPETS:
+"You're at your kid's basketball game. A Slack message pings —
+there's a bug in production. Open Agent Tunnel, ask Claude to
+investigate, push the fix. Back to the game before halftime."
+
+"Cloudflare tunnel means your machine is never directly exposed
+to the internet. Face ID means only you get in. Enterprise-grade
+security, zero configuration."
+
+"Three steps: Install the app, scan the QR code, start coding
+from your phone. Setup takes less time than making coffee."
+
+FORMATTING:
+- Short, punchy paragraphs (2-3 sentences max)
+- Bullet points for feature lists
+- Headers for scannability
+- Minimal emojis — let the product speak
+- Use real-world scenarios to illustrate value
+- No em dashes (—) or en dashes (–). Use commas, periods, or " - " (spaced hyphen) instead.
+- No bolding in the middle of sentences. Bolding is only for headers or standalone labels.

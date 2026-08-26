@@ -1,0 +1,580 @@
+{
+  "1e31aac7-4d80-4556-9dc5-7e2b0ee79495": {
+    "id": "1e31aac7-4d80-4556-9dc5-7e2b0ee79495",
+    "workspace_id": "saverwell",
+    "title": "Phase 1A: Medicare & Medicaid Simplified Guides",
+    "target_audience": "Seniors 65+ navigating Medicare enrollment and coverage decisions",
+    "channels": [
+      "blog",
+      "email",
+      "social"
+    ],
+    "primary_cta": "Read the full guide on Saverwell",
+    "key_messages": [
+      "Medicare doesn't have to be confusing \u2014 we break it down in plain language",
+      "Here's how to save on your Medicare premiums (not just what to buy)",
+      "Don't miss enrollment deadlines that could cost you hundreds",
+      "Know what Medicare covers and what it doesn't before you need it"
+    ],
+    "seo_keywords": [
+      "medicare explained",
+      "what is medicare",
+      "medicare parts explained",
+      "medicare vs medicaid",
+      "medicare enrollment 2026",
+      "save money on medicare",
+      "medicare advantage vs original",
+      "IRMAA surcharge",
+      "medicare extra help"
+    ],
+    "assets_requested": [
+      {
+        "type": "blog_post",
+        "title": "Medicare Explained: A Simple Guide for Seniors"
+      },
+      {
+        "type": "blog_post",
+        "title": "Medicare Parts A, B, C, D: What Each Covers"
+      },
+      {
+        "type": "blog_post",
+        "title": "Medicare vs. Medicaid: What's the Difference?"
+      },
+      {
+        "type": "blog_post",
+        "title": "When to Enroll in Medicare"
+      },
+      {
+        "type": "blog_post",
+        "title": "How to Save Money on Medicare Premiums"
+      },
+      {
+        "type": "blog_post",
+        "title": "Medicare Advantage vs. Original Medicare"
+      },
+      {
+        "type": "blog_post",
+        "title": "Does Medicare Cover Hearing Aids?"
+      },
+      {
+        "type": "blog_post",
+        "title": "Does Medicare Cover Dental?"
+      },
+      {
+        "type": "blog_post",
+        "title": "Does Medicare Cover Vision?"
+      },
+      {
+        "type": "blog_post",
+        "title": "Does Medicare Cover Prescriptions?"
+      },
+      {
+        "type": "blog_post",
+        "title": "IRMAA: How to Avoid Higher Medicare Premiums"
+      },
+      {
+        "type": "blog_post",
+        "title": "Medicare Extra Help: Prescription Drug Savings"
+      }
+    ],
+    "publish_checklist": [
+      "All Medicare terminology spelled out on first use",
+      "Savings angle leads every article (not product push)",
+      "No specific plan recommendations without disclosure",
+      "Internal links between related Medicare articles",
+      "Email variants created for newsletter distribution",
+      "Social media snippets created for each article"
+    ],
+    "copy_variants": {},
+    "utms": {
+      "utm_source": "saverwell",
+      "utm_medium": "blog",
+      "utm_campaign": "phase-1a-medicare"
+    },
+    "status": "draft",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "6772146b-0f8e-46ea-994b-220e1aca20f9": {
+    "id": "6772146b-0f8e-46ea-994b-220e1aca20f9",
+    "workspace_id": "saverwell",
+    "title": "Phase 1B: Insurance Comparison Guides",
+    "target_audience": "Seniors 55+ comparing insurance options to save money",
+    "channels": [
+      "blog",
+      "email",
+      "social"
+    ],
+    "primary_cta": "Compare plans and save on Saverwell",
+    "key_messages": [
+      "Protect your money by choosing the right coverage",
+      "How to save on insurance without sacrificing protection",
+      "Watch out for hidden costs and fine print",
+      "Side-by-side comparisons so you can decide with confidence"
+    ],
+    "seo_keywords": [
+      "best medigap plans",
+      "dental insurance seniors",
+      "vision insurance seniors",
+      "life insurance over 65",
+      "long-term care insurance",
+      "burial insurance",
+      "senior auto insurance discounts",
+      "travel insurance seniors"
+    ],
+    "assets_requested": [
+      {
+        "type": "blog_post",
+        "title": "Best Medigap Plans for Seniors (2026)"
+      },
+      {
+        "type": "blog_post",
+        "title": "Best Dental Insurance for Seniors"
+      },
+      {
+        "type": "blog_post",
+        "title": "Best Vision Insurance for Seniors"
+      },
+      {
+        "type": "blog_post",
+        "title": "Cheapest Life Insurance for Seniors Over 65"
+      },
+      {
+        "type": "blog_post",
+        "title": "Best Long-Term Care Insurance (And Alternatives)"
+      },
+      {
+        "type": "blog_post",
+        "title": "Do You Really Need Burial Insurance?"
+      },
+      {
+        "type": "blog_post",
+        "title": "How to Save on Auto Insurance After 55"
+      },
+      {
+        "type": "blog_post",
+        "title": "Best Travel Insurance for Seniors"
+      }
+    ],
+    "publish_checklist": [
+      "Affiliate disclosure present on every comparison page",
+      "Comparison tables with clear cost breakdowns",
+      "'What to watch out for' section in each guide",
+      "Fraud protection crossover noted where relevant",
+      "No specific plan recommendation without basis"
+    ],
+    "copy_variants": {},
+    "utms": {
+      "utm_source": "saverwell",
+      "utm_medium": "blog",
+      "utm_campaign": "phase-1b-insurance"
+    },
+    "status": "draft",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "dca67fa4-dbbf-4171-a7d1-db9fff4a7177": {
+    "id": "dca67fa4-dbbf-4171-a7d1-db9fff4a7177",
+    "workspace_id": "saverwell",
+    "title": "Phase 2A: Medical Alert System Reviews",
+    "target_audience": "Seniors and adult children researching personal emergency response systems",
+    "channels": [
+      "blog",
+      "email",
+      "social"
+    ],
+    "primary_cta": "Find the right medical alert system on Saverwell",
+    "key_messages": [
+      "Stay protected AND save money on medical alerts",
+      "True total cost of ownership \u2014 setup, monthly, cancellation fees exposed",
+      "Hidden costs that competitors gloss over",
+      "Peace of mind for you and your family"
+    ],
+    "seo_keywords": [
+      "best medical alert systems",
+      "medical alert fall detection",
+      "medical alert watch",
+      "medicare medical alert systems",
+      "medical alert no monthly fee",
+      "medical alert system cost"
+    ],
+    "assets_requested": [
+      {
+        "type": "blog_post",
+        "title": "Best Medical Alert Systems (Tested & Reviewed)"
+      },
+      {
+        "type": "blog_post",
+        "title": "Best Medical Alert Systems with Fall Detection"
+      },
+      {
+        "type": "blog_post",
+        "title": "Best Medical Alert Watches (Wearable)"
+      },
+      {
+        "type": "blog_post",
+        "title": "Does Medicare Cover Medical Alert Systems?"
+      },
+      {
+        "type": "blog_post",
+        "title": "Medical Alert Systems with No Monthly Fee"
+      },
+      {
+        "type": "blog_post",
+        "title": "Medical Guardian vs. Life Alert vs. Bay Alarm"
+      },
+      {
+        "type": "blog_post",
+        "title": "Best GPS Medical Alert for Seniors on the Go"
+      },
+      {
+        "type": "blog_post",
+        "title": "How Much Do Medical Alert Systems Really Cost?"
+      }
+    ],
+    "publish_checklist": [
+      "Total cost of ownership calculated for each system reviewed",
+      "Hidden fees section in every review",
+      "Affiliate disclosure clearly visible",
+      "Comparison table with monthly cost, setup fee, features",
+      "Medicare coverage question addressed with link to Medicare guide"
+    ],
+    "copy_variants": {},
+    "utms": {
+      "utm_source": "saverwell",
+      "utm_medium": "blog",
+      "utm_campaign": "phase-2a-medical-alerts"
+    },
+    "status": "draft",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "b29f6fd6-0732-451e-939e-f52d69d09518": {
+    "id": "b29f6fd6-0732-451e-939e-f52d69d09518",
+    "workspace_id": "saverwell",
+    "title": "Phase 2B: Cell Phone Plans for Seniors",
+    "target_audience": "Seniors 55+ looking to reduce phone bills or find simpler phones",
+    "channels": [
+      "blog",
+      "email",
+      "social"
+    ],
+    "primary_cta": "See how much you could save on Saverwell",
+    "key_messages": [
+      "You're probably overpaying for your phone plan",
+      "Switch and save $XX/month with the right plan",
+      "Side-by-side monthly cost comparisons",
+      "Free phone programs you might not know about"
+    ],
+    "seo_keywords": [
+      "cheapest phone plans seniors",
+      "free phones for seniors",
+      "consumer cellular vs t-mobile",
+      "best flip phones seniors",
+      "lower phone bill senior",
+      "senior cell phone plans"
+    ],
+    "assets_requested": [
+      {
+        "type": "blog_post",
+        "title": "Cheapest Cell Phone Plans for Seniors (2026)"
+      },
+      {
+        "type": "blog_post",
+        "title": "Free Cell Phones for Seniors (Government Programs)"
+      },
+      {
+        "type": "blog_post",
+        "title": "Consumer Cellular vs. T-Mobile vs. Mint"
+      },
+      {
+        "type": "blog_post",
+        "title": "Best Phones for Seniors with Hearing Loss"
+      },
+      {
+        "type": "blog_post",
+        "title": "Best Flip Phones for Seniors Who Want Simple"
+      },
+      {
+        "type": "blog_post",
+        "title": "How to Cut Your Phone Bill in Half After 65"
+      },
+      {
+        "type": "blog_post",
+        "title": "Best Phone Plans for Two Seniors"
+      }
+    ],
+    "publish_checklist": [
+      "Monthly cost comparison tables in every review",
+      "Savings-first framing (not features-first)",
+      "Government program eligibility criteria clearly stated",
+      "Phone scam warnings integrated where natural",
+      "Affiliate disclosure on product pages"
+    ],
+    "copy_variants": {},
+    "utms": {
+      "utm_source": "saverwell",
+      "utm_medium": "blog",
+      "utm_campaign": "phase-2b-phones"
+    },
+    "status": "draft",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "38e90314-95fd-4a5a-9530-f29d426d52fe": {
+    "id": "38e90314-95fd-4a5a-9530-f29d426d52fe",
+    "workspace_id": "saverwell",
+    "title": "Phase 2C: Hearing Aid Savings Guides",
+    "target_audience": "Seniors seeking affordable hearing solutions",
+    "channels": [
+      "blog",
+      "email"
+    ],
+    "primary_cta": "Learn how to save on hearing aids at Saverwell",
+    "key_messages": [
+      "You can save thousands on hearing aids \u2014 here's how",
+      "OTC hearing aids are now available and affordable",
+      "Know what you should actually pay (price transparency)"
+    ],
+    "seo_keywords": [
+      "save money hearing aids",
+      "OTC hearing aids",
+      "medicare hearing aids",
+      "hearing aid prices"
+    ],
+    "assets_requested": [
+      {
+        "type": "blog_post",
+        "title": "How to Save Thousands on Hearing Aids"
+      },
+      {
+        "type": "blog_post",
+        "title": "Best OTC Hearing Aids Under $500"
+      },
+      {
+        "type": "blog_post",
+        "title": "Does Medicare Cover Hearing Aids?"
+      },
+      {
+        "type": "blog_post",
+        "title": "Hearing Aid Price Guide: What You Should Actually Pay"
+      }
+    ],
+    "publish_checklist": [
+      "Savings angle only \u2014 do NOT attempt clinical review depth",
+      "Price transparency tables with realistic cost ranges",
+      "Medicare coverage limitations clearly explained",
+      "Link to Medicare guide for full coverage details"
+    ],
+    "copy_variants": {},
+    "utms": {
+      "utm_source": "saverwell",
+      "utm_medium": "blog",
+      "utm_campaign": "phase-2c-hearing"
+    },
+    "status": "draft",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "88c360c6-cda1-4c59-b763-4fd158bd6991": {
+    "id": "88c360c6-cda1-4c59-b763-4fd158bd6991",
+    "workspace_id": "saverwell",
+    "title": "Phase 3A: Social Security & Retirement Finance Hub",
+    "target_audience": "Seniors and pre-retirees making financial decisions",
+    "channels": [
+      "blog",
+      "email",
+      "social"
+    ],
+    "primary_cta": "Plan smarter retirement finances on Saverwell",
+    "key_messages": [
+      "Make your money last longer in retirement",
+      "Plain-language guide to Social Security timing",
+      "Tax breaks and exemptions seniors often miss",
+      "Practical ways to stretch retirement income"
+    ],
+    "seo_keywords": [
+      "when to claim social security",
+      "maximize social security",
+      "tax deductions seniors",
+      "retirement budgeting",
+      "reverse mortgage pros cons",
+      "stretch retirement income",
+      "senior property tax exemptions"
+    ],
+    "assets_requested": [
+      {
+        "type": "blog_post",
+        "title": "When to Claim Social Security: A Plain-Language Guide"
+      },
+      {
+        "type": "blog_post",
+        "title": "How to Maximize Your Social Security Benefits"
+      },
+      {
+        "type": "blog_post",
+        "title": "Tax Deductions Every Senior Over 65 Should Know"
+      },
+      {
+        "type": "blog_post",
+        "title": "Retirement Budget Template"
+      },
+      {
+        "type": "blog_post",
+        "title": "Reverse Mortgages: What They Are and the Risks"
+      },
+      {
+        "type": "blog_post",
+        "title": "How to Stretch Retirement Income (20 Practical Ways)"
+      },
+      {
+        "type": "blog_post",
+        "title": "Senior Property Tax Exemptions by State"
+      }
+    ],
+    "publish_checklist": [
+      "Financial advisor disclaimer included where appropriate",
+      "No specific investment or product recommendations",
+      "State-specific content flagged and sourced accurately",
+      "All tax information verified for current tax year",
+      "Internal links to savings/protection content"
+    ],
+    "copy_variants": {},
+    "utms": {
+      "utm_source": "saverwell",
+      "utm_medium": "blog",
+      "utm_campaign": "phase-3a-finance"
+    },
+    "status": "draft",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "07ee1bd5-1f3f-40d2-9ffa-30b321017953": {
+    "id": "07ee1bd5-1f3f-40d2-9ffa-30b321017953",
+    "workspace_id": "saverwell",
+    "title": "Phase 3B: Interactive Calculators & Tools",
+    "target_audience": "Seniors seeking personalized savings insights",
+    "channels": [
+      "blog",
+      "tool"
+    ],
+    "primary_cta": "Try our free calculator on Saverwell",
+    "key_messages": [
+      "See exactly when to claim Social Security for maximum benefit",
+      "Find out how long your retirement savings will last",
+      "Discover how much you could save by switching phone plans"
+    ],
+    "seo_keywords": [
+      "social security calculator",
+      "retirement calculator",
+      "phone bill savings",
+      "medicare plan comparison"
+    ],
+    "assets_requested": [
+      {
+        "type": "interactive_tool",
+        "title": "Social Security Optimizer Calculator"
+      },
+      {
+        "type": "interactive_tool",
+        "title": "Retirement Runway Calculator"
+      },
+      {
+        "type": "interactive_tool",
+        "title": "Phone Bill Savings Calculator"
+      },
+      {
+        "type": "interactive_tool",
+        "title": "Medicare Plan Comparison Tool"
+      },
+      {
+        "type": "interactive_tool",
+        "title": "Monthly Savings Finder Quiz"
+      }
+    ],
+    "publish_checklist": [
+      "Tools work on mobile and desktop",
+      "Email capture integrated (optional, not blocking)",
+      "Results are helpful without requiring signup",
+      "Financial disclaimer on all calculator output",
+      "Accessibility tested (large text, high contrast)"
+    ],
+    "copy_variants": {},
+    "utms": {
+      "utm_source": "saverwell",
+      "utm_medium": "blog",
+      "utm_campaign": "phase-3b-tools"
+    },
+    "status": "draft",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "ee0d095d-e5a0-45aa-927e-3d5a2787deb6": {
+    "id": "ee0d095d-e5a0-45aa-927e-3d5a2787deb6",
+    "workspace_id": "saverwell",
+    "title": "Phase 4: Identity Theft & Digital Protection",
+    "target_audience": "Seniors concerned about online safety and identity theft",
+    "channels": [
+      "blog",
+      "email",
+      "social"
+    ],
+    "primary_cta": "Protect yourself with Saverwell",
+    "key_messages": [
+      "Step-by-step digital protection in plain language",
+      "Action checklists you can do today",
+      "Monthly scam alert updates to stay ahead of threats",
+      "Protection extends beyond finances \u2014 home security included"
+    ],
+    "seo_keywords": [
+      "identity theft protection seniors",
+      "freeze credit senior",
+      "identity stolen what to do",
+      "password manager seniors",
+      "senior scams 2026",
+      "home security for seniors"
+    ],
+    "assets_requested": [
+      {
+        "type": "blog_post",
+        "title": "Best Identity Theft Protection for Seniors (2026)"
+      },
+      {
+        "type": "blog_post",
+        "title": "How to Freeze Your Credit (Step-by-Step)"
+      },
+      {
+        "type": "blog_post",
+        "title": "What to Do If Your Identity Is Stolen (Checklist)"
+      },
+      {
+        "type": "blog_post",
+        "title": "Best Password Managers for Seniors"
+      },
+      {
+        "type": "blog_post",
+        "title": "Senior Scam Alert: The Latest Threats"
+      },
+      {
+        "type": "blog_post",
+        "title": "Home Security Systems for Seniors Living Alone"
+      }
+    ],
+    "publish_checklist": [
+      "Plain-language instructions (assume non-tech-savvy reader)",
+      "Checklists formatted as actionable steps",
+      "Affiliate disclosure on product recommendation pages",
+      "Links to existing FraudWatch/protection content",
+      "Monthly update cadence for scam alerts confirmed"
+    ],
+    "copy_variants": {},
+    "utms": {
+      "utm_source": "saverwell",
+      "utm_medium": "blog",
+      "utm_campaign": "phase-4-id-theft"
+    },
+    "status": "draft",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  }
+}

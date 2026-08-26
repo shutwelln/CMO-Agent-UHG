@@ -1,0 +1,64 @@
+# Brand Voice — UnitedHealth Group / Optum
+# =========================================
+# Covers UHG, Optum, Optum Financial, and Optum Bank as a single workspace.
+# Refine the sections below as you gather official brand standards.
+
+BRAND NAME: UnitedHealth Group (parent) — Optum, Optum Financial, Optum Bank (operating units)
+
+MISSION: Help people live healthier lives and help make the health system work better for everyone.
+
+PARENT BRAND CONTEXT:
+- UHG is a Fortune 5 diversified health care company.
+- Optum is the health services arm (analytics, pharmacy, financial services).
+- Optum Financial focuses on HSA, FSA, HRA, and commuter benefits.
+- Optum Bank is the federally chartered bank that holds HSA deposits.
+- All four brands operate under UHG enterprise governance.
+
+TONE:
+- Clinically credible — accuracy first, never overstate
+- Plain-language — write for members and providers, not lawyers or executives
+- Calm, confident, and direct — health and money decisions deserve clarity
+- Empathetic — readers may be facing an illness, a cost surprise, or paperwork stress
+- Forward-looking — emphasize what someone can do next, not what went wrong
+
+AUDIENCE:
+- Primary: Members of UHG / Optum health plans and HSA accountholders
+- Secondary: Employers, brokers, and benefits administrators
+- Tertiary: Providers (hospitals, clinics, pharmacies) interacting with Optum systems
+- Note: Audiences span healthy adults, seniors on Medicare, families with chronic conditions, and caregivers — adjust complexity by surface.
+
+VOICE CHARACTERISTICS:
+- Use active voice
+- Spell out acronyms on first use (e.g., "Health Savings Account (HSA)")
+- Define every benefits term the first time you use it
+- Use "you" and "your" when addressing members directly
+- Lead paragraphs with what the reader gets, not what the company does
+- Numbers in numerals (not spelled out) for dollar amounts, percentages, dates
+
+WORDS WE USE (preferred):
+- "member" (not "customer" or "user" when referring to insured individuals)
+- "accountholder" (for HSA/FSA contexts)
+- "plan" (not "policy")
+- "provider" (not "doctor's office")
+- "claim" (not "bill")
+- "qualified medical expense" (HSA-specific — defined term)
+
+WORDS WE AVOID:
+- "Cheap" → use "affordable" or "lower cost"
+- "Old people" → use "older adults" or "Medicare-eligible adults"
+- "Free" alone → always qualify ("at no cost to you", "covered in full")
+- Marketing superlatives ("best", "#1") without substantiation
+- Em dashes (—) and en dashes (–) — use commas, periods, or " - " instead
+
+COMPLIANCE GUARDRAILS:
+- Health claims must be substantiated; flag with [VERIFY] any clinical assertion
+- HSA/FSA tax statements must include "consult a tax professional" disclaimers
+- HIPAA: never use member-identifying information in marketing copy
+- Medicare communications: follow CMS Medicare Marketing Guidelines (annual update)
+- Banking communications (Optum Bank): comply with Reg E, Reg DD, FDIC disclosure rules
+
+CONTENT FORMATS:
+- Member emails: 150-250 words, one clear call to action
+- Newsletters: 4-6 short blocks, member benefit + how to act
+- Provider communications: heavier on specifics (codes, dates, deadlines)
+- Long-form guides: scannable, H2-driven, FAQ at the end

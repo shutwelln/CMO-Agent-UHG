@@ -1,0 +1,36 @@
+version: "3.8"
+
+# CMO Service Layer — companion to existing OpenClaw container
+# OpenClaw is already running at openclaw-xmzf-openclaw-1
+# This deploys only the FastAPI service layer that skills call
+
+services:
+  cmo-service:
+    build:
+      context: ..
+      dockerfile: openclaw/Dockerfile.service
+    container_name: cmo-service
+    restart: unless-stopped
+    ports:
+      - "8100:8100"
+    environment:
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO
+    volumes:
+      - ../data:/app/data
+      - ../.env:/app/.env:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8100/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - openclaw-network
+
+# Connect to the existing OpenClaw Docker network so skills can reach cmo-service
+# by hostname. The network name matches what Hostinger's OpenClaw stack creates.
+networks:
+  openclaw-network:
+    external: true
+    name: openclaw-xmzf_default

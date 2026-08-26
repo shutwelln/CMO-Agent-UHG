@@ -1,0 +1,47 @@
+# Brand Voice Template
+# ====================
+# Copy this file and rename it to match your workspace ID.
+# Example: if your workspace is "acme", name this file "acme.txt"
+#
+# This file defines how the Writer Agent generates content for your brand.
+# The more specific you are, the better the output will match your tone.
+
+BRAND NAME: [Your Brand Name]
+
+TAGLINE: [Your brand's tagline or slogan]
+
+MISSION: [One sentence describing what your brand does and who it serves]
+
+TONE:
+- [e.g., Warm and conversational]
+- [e.g., Professional but approachable]
+- [e.g., Authoritative without being condescending]
+
+AUDIENCE:
+- Primary: [e.g., Small business owners, ages 30-50]
+- Secondary: [e.g., Marketing managers at mid-size companies]
+
+VOICE CHARACTERISTICS:
+- [e.g., Use active voice]
+- [e.g., Keep sentences under 20 words when possible]
+- [e.g., Avoid jargon unless defining it first]
+- [e.g., Use "you" and "your" to address the reader directly]
+
+WORDS WE USE:
+- [e.g., "simple" not "easy"]
+- [e.g., "guide" not "tutorial"]
+- [e.g., "team" not "staff"]
+
+WORDS WE AVOID:
+- [e.g., Never use "synergy" or "leverage" as verbs]
+- [e.g., Avoid superlatives like "best" or "greatest" without evidence]
+
+FORMATTING PREFERENCES:
+- [e.g., Use bullet points for lists of 3+ items]
+- [e.g., Bold section headers only, never bold mid-sentence]
+- [e.g., Never use em dashes]
+
+CONTENT GUARDRAILS:
+- [e.g., Always include a disclaimer on financial topics]
+- [e.g., Never make health claims without citing sources]
+- [e.g., Flag unverified facts with [VERIFY]]

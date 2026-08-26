@@ -1,0 +1,572 @@
+{
+  "7c2a6043-d9ca-4a8d-bea4-4129a1a80ecd": {
+    "id": "7c2a6043-d9ca-4a8d-bea4-4129a1a80ecd",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1A / Medicare/Medicaid] Medicare Explained: A Simple Guide for Seniors | Keywords: medicare explained, what is medicare",
+    "priority": "urgent",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "becb267c-77de-476c-9a3e-129a8ce5e09a": {
+    "id": "becb267c-77de-476c-9a3e-129a8ce5e09a",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1A / Medicare/Medicaid] Medicare Parts A, B, C, D: What Each Covers | Keywords: medicare parts explained",
+    "priority": "urgent",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "0fea163c-6bbc-4587-9d39-ec77df10bd8c": {
+    "id": "0fea163c-6bbc-4587-9d39-ec77df10bd8c",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1A / Medicare/Medicaid] Medicare vs. Medicaid: What's the Difference? | Keywords: medicare vs medicaid",
+    "priority": "urgent",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "d4710cda-9295-46f8-aec5-95668c4c0aed": {
+    "id": "d4710cda-9295-46f8-aec5-95668c4c0aed",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1A / Medicare/Medicaid] When to Enroll in Medicare (Don't Miss These Deadlines) | Keywords: medicare enrollment 2026",
+    "priority": "urgent",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "e2130525-ed3f-4e9c-a462-c5489191af47": {
+    "id": "e2130525-ed3f-4e9c-a462-c5489191af47",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1A / Medicare/Medicaid] How to Save Money on Medicare Premiums | Keywords: save money on medicare, reduce medicare costs",
+    "priority": "urgent",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "bceb01db-23e0-4840-b392-4e53d547c3ab": {
+    "id": "bceb01db-23e0-4840-b392-4e53d547c3ab",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1A / Medicare/Medicaid] Medicare Advantage vs. Original Medicare: Cost Comparison | Keywords: medicare advantage vs original",
+    "priority": "urgent",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "bbdf7853-6edc-4790-964f-089c123ea754": {
+    "id": "bbdf7853-6edc-4790-964f-089c123ea754",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1A / Medicare/Medicaid] Does Medicare Cover Hearing Aids? | Keywords: does medicare cover hearing aids",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "237b7523-bbdd-47bd-ba6b-f365a9c3563d": {
+    "id": "237b7523-bbdd-47bd-ba6b-f365a9c3563d",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1A / Medicare/Medicaid] Does Medicare Cover Dental? | Keywords: does medicare cover dental",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "e6731090-d6d5-446c-baa5-5aff07008ffc": {
+    "id": "e6731090-d6d5-446c-baa5-5aff07008ffc",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1A / Medicare/Medicaid] Does Medicare Cover Vision? | Keywords: does medicare cover vision",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "8cd6705c-9b39-42f1-ad71-20efd4f33f35": {
+    "id": "8cd6705c-9b39-42f1-ad71-20efd4f33f35",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1A / Medicare/Medicaid] Does Medicare Cover Prescriptions? (Part D Explained) | Keywords: does medicare cover prescriptions",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "5517cb19-cd80-4c12-90b3-86053708d5f7": {
+    "id": "5517cb19-cd80-4c12-90b3-86053708d5f7",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1A / Medicare/Medicaid] IRMAA: How to Avoid Higher Medicare Premiums | Keywords: IRMAA surcharge, medicare income limits",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "e003e75a-ae7c-4fe9-8160-f1623ba735d1": {
+    "id": "e003e75a-ae7c-4fe9-8160-f1623ba735d1",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1A / Medicare/Medicaid] Medicare Extra Help: Prescription Drug Savings You May Be Missing | Keywords: medicare extra help, low income medicare",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "39bcd001-3cd5-4d96-8ad9-1b624845184f": {
+    "id": "39bcd001-3cd5-4d96-8ad9-1b624845184f",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1B / Insurance] Best Medigap Plans for Seniors (2026) | Keywords: best medigap plans, medicare supplement plans | Monetization: Insurance lead gen",
+    "priority": "urgent",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "91c6c980-750c-4193-8179-50b846ec13d6": {
+    "id": "91c6c980-750c-4193-8179-50b846ec13d6",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1B / Insurance] Best Dental Insurance for Seniors | Keywords: dental insurance seniors, best dental plans over 65 | Monetization: Affiliate",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "d7e8b1be-9c32-4d15-9cb2-1ba42dedab7f": {
+    "id": "d7e8b1be-9c32-4d15-9cb2-1ba42dedab7f",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1B / Insurance] Best Vision Insurance for Seniors | Keywords: vision insurance seniors | Monetization: Affiliate",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "d7d2c278-eb59-4439-aff2-95534fcec616": {
+    "id": "d7d2c278-eb59-4439-aff2-95534fcec616",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1B / Insurance] Cheapest Life Insurance for Seniors Over 65 | Keywords: cheap life insurance seniors, life insurance over 65 | Monetization: Lead gen",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "6d5cdea0-5415-4743-9494-f425b2d56848": {
+    "id": "6d5cdea0-5415-4743-9494-f425b2d56848",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1B / Insurance] Best Long-Term Care Insurance (And Alternatives) | Keywords: long-term care insurance, ltc alternatives | Monetization: Lead gen",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "6987ad7a-49b0-4b5e-8335-d64bf36f135f": {
+    "id": "6987ad7a-49b0-4b5e-8335-d64bf36f135f",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1B / Insurance] Do You Really Need Burial Insurance? | Keywords: burial insurance, final expense insurance | Monetization: Affiliate",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "5072ba95-b402-4e5b-8aea-d03d6c576c5d": {
+    "id": "5072ba95-b402-4e5b-8aea-d03d6c576c5d",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1B / Insurance] How to Save on Auto Insurance After 55 | Keywords: senior auto insurance discounts | Monetization: Affiliate",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "c68027f2-8f10-42b2-ad5d-8b59fe8e15b5": {
+    "id": "c68027f2-8f10-42b2-ad5d-8b59fe8e15b5",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 1B / Insurance] Best Travel Insurance for Seniors | Keywords: travel insurance seniors, travel insurance over 70 | Monetization: Affiliate",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "129b91e9-8409-46ff-9119-879e3f3b954e": {
+    "id": "129b91e9-8409-46ff-9119-879e3f3b954e",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2A / Medical Alerts] Best Medical Alert Systems (Tested & Reviewed) | Keywords: best medical alert systems | Monetization: Affiliate (recurring)",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "07035301-d414-4afd-b6fa-d1d761b69b21": {
+    "id": "07035301-d414-4afd-b6fa-d1d761b69b21",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2A / Medical Alerts] Best Medical Alert Systems with Fall Detection | Keywords: medical alert fall detection | Monetization: Affiliate",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "d2c21fca-b766-4d04-a8c6-53cec18d3dd1": {
+    "id": "d2c21fca-b766-4d04-a8c6-53cec18d3dd1",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2A / Medical Alerts] Best Medical Alert Watches (Wearable) | Keywords: medical alert watch | Monetization: Affiliate",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "3a83cf63-00d6-4111-a930-36b9dc40196d": {
+    "id": "3a83cf63-00d6-4111-a930-36b9dc40196d",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2A / Medical Alerts] Medical Alert Systems: Does Medicare Cover Them? | Keywords: medicare medical alert systems | Monetization: Informational + affiliate",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "6347df9b-86fc-461a-8fbb-1c69fba1f33a": {
+    "id": "6347df9b-86fc-461a-8fbb-1c69fba1f33a",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2A / Medical Alerts] Medical Alert Systems with No Monthly Fee | Keywords: medical alert no monthly fee | Monetization: Affiliate",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "5f22fd63-8395-4afe-99bf-08d845163518": {
+    "id": "5f22fd63-8395-4afe-99bf-08d845163518",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2A / Medical Alerts] Medical Guardian vs. Life Alert vs. Bay Alarm: Compared | Keywords: medical guardian vs life alert | Monetization: Affiliate",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "34d346c9-6ae0-45a7-9434-6236b46d866c": {
+    "id": "34d346c9-6ae0-45a7-9434-6236b46d866c",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2A / Medical Alerts] Best GPS Medical Alert for Seniors on the Go | Keywords: GPS medical alert | Monetization: Affiliate",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "31efa576-ed4d-46ea-8454-2d3bf254aef9": {
+    "id": "31efa576-ed4d-46ea-8454-2d3bf254aef9",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2A / Medical Alerts] How Much Do Medical Alert Systems Really Cost? | Keywords: medical alert system cost | Monetization: Informational + affiliate",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "1a1e5e74-ad42-4882-8633-0d6c025acd83": {
+    "id": "1a1e5e74-ad42-4882-8633-0d6c025acd83",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2B / Cell Phones] Cheapest Cell Phone Plans for Seniors (2026) | Keywords: cheapest phone plans seniors, senior cell phone plans | Monetization: Affiliate",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "43b83c0b-4ce2-4ea2-b695-0dd2b27d86fc": {
+    "id": "43b83c0b-4ce2-4ea2-b695-0dd2b27d86fc",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2B / Cell Phones] Free Cell Phones for Seniors (Government Programs) | Keywords: free phones for seniors, lifeline phone | Monetization: Informational (traffic magnet)",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "cdaa7da7-3542-4c54-8927-234f25747b6b": {
+    "id": "cdaa7da7-3542-4c54-8927-234f25747b6b",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2B / Cell Phones] Consumer Cellular vs. T-Mobile vs. Mint: Which Saves You the Most? | Keywords: consumer cellular vs t-mobile vs mint | Monetization: Affiliate",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "0eec4e03-56f4-4769-94dd-627beb92cf86": {
+    "id": "0eec4e03-56f4-4769-94dd-627beb92cf86",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2B / Cell Phones] Best Phones for Seniors with Hearing Loss | Keywords: phones for hearing impaired | Monetization: Affiliate + protection",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "dea70257-8cb5-405c-9eed-69b6b756093f": {
+    "id": "dea70257-8cb5-405c-9eed-69b6b756093f",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2B / Cell Phones] Best Flip Phones for Seniors Who Want Simple | Keywords: best flip phones seniors | Monetization: Affiliate",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "ae9ba3ba-eb66-48a5-b9ca-7f925144692a": {
+    "id": "ae9ba3ba-eb66-48a5-b9ca-7f925144692a",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2B / Cell Phones] How to Cut Your Phone Bill in Half After 65 | Keywords: lower phone bill senior | Monetization: Savings-first (unique)",
+    "priority": "high",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "f95703c0-78ec-4481-93bf-f54a2f479227": {
+    "id": "f95703c0-78ec-4481-93bf-f54a2f479227",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2B / Cell Phones] Best Phone Plans for Two Seniors | Keywords: two-line senior phone plans | Monetization: Affiliate",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "2b2ee1cd-231b-4159-a633-c5ee575fc62e": {
+    "id": "2b2ee1cd-231b-4159-a633-c5ee575fc62e",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2C / Hearing Aids] How to Save Thousands on Hearing Aids | Keywords: save money hearing aids, cheap hearing aids | Monetization: Affiliate",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "ddded036-ff38-4a49-acd8-482d95528c70": {
+    "id": "ddded036-ff38-4a49-acd8-482d95528c70",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2C / Hearing Aids] Best OTC Hearing Aids Under $500 | Keywords: OTC hearing aids, cheap hearing aids | Monetization: Affiliate",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "d9684580-ba7a-4e75-af63-643f3129182e": {
+    "id": "d9684580-ba7a-4e75-af63-643f3129182e",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2C / Hearing Aids] Does Medicare Cover Hearing Aids? (And What Actually Helps) | Keywords: medicare hearing aids | Monetization: Informational",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "ecad031f-5da1-42bd-a808-6781b34d484b": {
+    "id": "ecad031f-5da1-42bd-a808-6781b34d484b",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 2C / Hearing Aids] Hearing Aid Price Guide: What You Should Actually Pay | Keywords: hearing aid costs, hearing aid prices | Monetization: Informational + affiliate",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "5292fb06-780e-40ba-a94d-829e875a66aa": {
+    "id": "5292fb06-780e-40ba-a94d-829e875a66aa",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 3A / Finance/Retirement] When to Claim Social Security: A Plain-Language Guide | Keywords: when to claim social security",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "8ee653c6-f45f-496e-9dba-3d7ee612dfea": {
+    "id": "8ee653c6-f45f-496e-9dba-3d7ee612dfea",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 3A / Finance/Retirement] How to Maximize Your Social Security Benefits | Keywords: maximize social security",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "9f91f9c9-29a9-4b5d-9956-8c350c4052ab": {
+    "id": "9f91f9c9-29a9-4b5d-9956-8c350c4052ab",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 3A / Finance/Retirement] Tax Deductions Every Senior Over 65 Should Know | Keywords: tax deductions seniors, senior tax breaks",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "24300a31-6ac5-4322-b2ca-64eebf63acf8": {
+    "id": "24300a31-6ac5-4322-b2ca-64eebf63acf8",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 3A / Finance/Retirement] Retirement Budget Template: How to Make Your Money Last | Keywords: retirement budgeting",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "cd8a80d7-c009-406b-a4f0-0899c8aabd50": {
+    "id": "cd8a80d7-c009-406b-a4f0-0899c8aabd50",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 3A / Finance/Retirement] Reverse Mortgages: What They Are, Who They're For, and the Risks | Keywords: reverse mortgage pros cons",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "d4683dee-c15f-4fe0-ac74-703109a143d5": {
+    "id": "d4683dee-c15f-4fe0-ac74-703109a143d5",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 3A / Finance/Retirement] How to Stretch Retirement Income (20 Practical Ways) | Keywords: stretch retirement income",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "9546d8c7-cf20-4e0e-b8a1-be325ec3fe5d": {
+    "id": "9546d8c7-cf20-4e0e-b8a1-be325ec3fe5d",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 3A / Finance/Retirement] Senior Property Tax Exemptions by State | Keywords: senior property tax exemptions",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "8723c4ff-1bf3-4962-880c-0128c94b3d56": {
+    "id": "8723c4ff-1bf3-4962-880c-0128c94b3d56",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 3B / Interactive Tools] Social Security Optimizer \u2014 interactive calculator (enter income, see when to claim)",
+    "priority": "medium",
+    "channel": "tool",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "c20ab6a2-a51f-4db5-8d4b-528de22f686c": {
+    "id": "c20ab6a2-a51f-4db5-8d4b-528de22f686c",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 3B / Interactive Tools] Retirement Runway Calculator \u2014 interactive tool (how long will your savings last?)",
+    "priority": "medium",
+    "channel": "tool",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "a87191e1-ddae-4f8b-8c36-526be6546f1f": {
+    "id": "a87191e1-ddae-4f8b-8c36-526be6546f1f",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 3B / Interactive Tools] Phone Bill Savings Calculator \u2014 interactive tool (enter your plan, see what you could save)",
+    "priority": "low",
+    "channel": "tool",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "6cf5c484-35d3-4ba2-aa41-79b77b05a616": {
+    "id": "6cf5c484-35d3-4ba2-aa41-79b77b05a616",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 3B / Interactive Tools] Medicare Plan Comparison Tool \u2014 interactive (compare plans side-by-side by cost)",
+    "priority": "low",
+    "channel": "tool",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "8d69085c-81a5-47e1-8116-5654fbc52bca": {
+    "id": "8d69085c-81a5-47e1-8116-5654fbc52bca",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 3B / Interactive Tools] Monthly Savings Finder \u2014 interactive quiz (answer 5 questions, get personalized savings tips)",
+    "priority": "low",
+    "channel": "tool",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "2a9ff27d-7f3a-47b4-9017-4d2202ee6bbd": {
+    "id": "2a9ff27d-7f3a-47b4-9017-4d2202ee6bbd",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 4 / ID Theft/Protection] Best Identity Theft Protection for Seniors (2026) | Keywords: identity theft protection seniors | Monetization: Affiliate",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "d22953b1-0812-4c37-b2ff-fcfe80c908ee": {
+    "id": "d22953b1-0812-4c37-b2ff-fcfe80c908ee",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 4 / ID Theft/Protection] How to Freeze Your Credit (Step-by-Step for Seniors) | Keywords: freeze credit senior",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "7778698e-affd-4ac2-acab-a7271b762be8": {
+    "id": "7778698e-affd-4ac2-acab-a7271b762be8",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 4 / ID Theft/Protection] What to Do If Your Identity Is Stolen (Checklist) | Keywords: identity stolen what to do",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "d10e8ff7-e024-483e-9ca4-8b051b0036f1": {
+    "id": "d10e8ff7-e024-483e-9ca4-8b051b0036f1",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 4 / ID Theft/Protection] Best Password Managers for Seniors | Keywords: password manager seniors | Monetization: Affiliate",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "919a6ba9-36cf-413d-a3ea-9d07641ba096": {
+    "id": "919a6ba9-36cf-413d-a3ea-9d07641ba096",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 4 / ID Theft/Protection] Senior Scam Alert: The Latest Threats (Updated Monthly) | Keywords: senior scams 2026, latest scams targeting seniors",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  },
+  "6f29b9ab-5ecd-4a2a-8ae7-fef185af6334": {
+    "id": "6f29b9ab-5ecd-4a2a-8ae7-fef185af6334",
+    "workspace_id": "saverwell",
+    "idea": "[Phase 4 / ID Theft/Protection] Home Security Systems for Seniors Living Alone | Keywords: home security for seniors | Monetization: Affiliate",
+    "priority": "medium",
+    "channel": "blog",
+    "status": "open",
+    "created_at": "2026-02-26T20:15:44.304943+00:00",
+    "updated_at": "2026-02-26T20:15:44.304943+00:00"
+  }
+}

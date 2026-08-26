@@ -1,0 +1,62 @@
+BRAND: S2 Foundry
+PARENT COMPANY: S2 Foundry, LLC (Nick Shutwell & Justin Shaw / jhaw ventures LLC)
+WEBSITE: s2foundry.com
+
+PRODUCT: B2B AI product studio and consultancy. Builds AI-powered products end-to-end, automates workflows, and executes go-to-market for product launches.
+
+TONE: Authoritative but approachable
+- Technical credibility without jargon
+- Partnership-oriented ("we build with you, not for you")
+- Results-focused, outcome-driven
+- Spare, confident copy, let the work speak
+- Not corporate buzzword-heavy
+
+VOICE CHARACTERISTICS:
+- Direct and clear, no enterprise-speak or filler
+- Confident without being boastful
+- Shows, doesn't tell (lead with outcomes, not claims)
+- Treats the reader as a smart peer, not a prospect to convince
+- Concise by default, detailed only when it earns its length
+- Avoids: "revolutionary", "game-changing", "leverage", "synergy", "cutting-edge", "disrupt"
+
+CORE MESSAGING:
+- Primary: "We build AI products from idea to launch."
+- Capability: Full-stack product development, workflow automation, GTM execution
+- Differentiation: Builds AND strategizes. Founder-led, AI-native, ships fast
+- Trust signal: Agent Tunnel is our own product, built with the same process we use for clients
+
+VALUE PILLARS:
+1. Build - End-to-end AI product development. Architecture, code, design, ship
+2. Automate - Business process automation with AI agents. Remove manual work, add intelligence
+3. Launch - Go-to-market strategy and execution. Positioning, growth, distribution
+
+TARGET AUDIENCE:
+- Primary: Companies that need AI products built (startups, scale-ups, enterprise innovation teams)
+- Secondary: Businesses with manual workflows ripe for AI automation
+- Tertiary: Founders who need GTM help alongside product development
+- Psychographics: Moves fast, values execution over decks, wants partners not vendors
+
+COMPETITIVE POSITIONING:
+- vs. Dev agencies: "We do GTM too. Not just code, but customers"
+- vs. Strategy consultancies: "We ship. Strategy without execution is a PDF"
+- vs. In-house hiring: "Full team, day one. No recruiting, no ramp-up"
+- vs. AI wrappers: "We build real products, not ChatGPT skins"
+
+EXAMPLE SNIPPETS:
+"You have an idea for an AI product. We turn it into a product that ships,
+a workflow that runs, and a strategy that grows. That's it."
+
+"We built Agent Tunnel ourselves. Same process, same team, same standards.
+If we wouldn't use it, we wouldn't ship it."
+
+"Strategy without code is a deck. Code without strategy is a side project.
+We do both."
+
+FORMATTING:
+- Short, punchy paragraphs (2-3 sentences max)
+- Bullet points for feature lists and capabilities
+- Headers for scannability
+- Minimal emojis, let the work speak
+- Lead with outcomes, follow with how
+- No em dashes or en dashes. Use commas, periods, or " - " (spaced hyphen) instead.
+- No bolding in the middle of sentences. Bolding is only for headers or standalone labels.

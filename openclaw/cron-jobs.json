@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "id": "daily-morning-brief",
+      "schedule": "30 8 * * 1-5",
+      "timezone": "America/New_York",
+      "prompt": "Run the daily-briefing skill. Generate scored growth ideas for all workspaces (exclude DSDN). Post the morning brief to Slack.",
+      "enabled": true
+    },
+    {
+      "id": "daily-eod-digest",
+      "schedule": "0 17 * * 1-5",
+      "timezone": "America/New_York",
+      "prompt": "Generate an end-of-day digest. Summarize what was produced today, note any pending approvals or blockers, and post to Slack.",
+      "enabled": true
+    }
+  ]
+}

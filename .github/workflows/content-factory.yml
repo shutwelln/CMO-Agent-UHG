@@ -1,0 +1,36 @@
+name: Weekly Content Factory
+
+on:
+  schedule:
+    - cron: '0 1 * * 1'  # Every Monday 1am UTC (Sunday 8pm ET)
+  workflow_dispatch: {}   # Manual trigger from GitHub UI or API
+
+jobs:
+  content-factory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -e .
+
+      - name: Decode Google credentials
+        run: echo "$GOOGLE_CREDENTIALS_B64" | base64 -d > /tmp/google-credentials.json
+        env:
+          GOOGLE_CREDENTIALS_B64: ${{ secrets.GOOGLE_CREDENTIALS_B64 }}
+
+      - name: Run content factory
+        run: python scripts/weekly_content_factory.py
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          GOOGLE_CREDENTIALS_PATH: /tmp/google-credentials.json
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}

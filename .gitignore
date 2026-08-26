@@ -1,0 +1,90 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data (SQLite databases and WAL files)
+data/*.db
+data/*.db-shm
+data/*.db-wal
+
+# Generated output files
+data/decks/
+data/videos/
+
+# Google service account credentials
+*service-account*.json
+*credentials*.json
+*drive*.json
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Node modules and build caches
+node_modules/
+.wrangler/
+*.pack
+*.pack.old
+.remotion/
+
+# OAuth tokens
+data/google-token.json
+
+# Generated media output
+data/facebook/
+data/youtube/
+data/pinterest/

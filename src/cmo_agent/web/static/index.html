@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMO Agent</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CMO Agent</h1>
+            <p class="subtitle">AI-Powered Marketing Automation</p>
+        </header>
+
+        <div class="chat-container">
+            <div id="messages" class="messages"></div>
+
+            <form id="chat-form" class="chat-form">
+                <input
+                    type="text"
+                    id="message-input"
+                    placeholder="Ask me about marketing, workflows, or content..."
+                    autocomplete="off"
+                    required
+                >
+                <button type="submit" id="send-btn">Send</button>
+            </form>
+        </div>
+
+        <footer>
+            <button id="clear-btn" class="secondary-btn">Clear Chat</button>
+            <span class="session-info">Session: <code id="session-id">-</code></span>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

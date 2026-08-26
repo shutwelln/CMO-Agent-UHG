@@ -1,0 +1,184 @@
+{
+  "saverwell:page_view": {
+    "event_name": "page_view",
+    "workspace_id": "saverwell",
+    "properties": {
+      "page_type": "string - homepage|merchant|dma|protection|guide|other",
+      "merchant_id": "string - merchant ID (merchant pages only)",
+      "dma_id": "string - DMA ID (DMA pages only)",
+      "content_category": "string - content category",
+      "first_touch_source": "string - first-touch UTM source",
+      "first_touch_medium": "string - first-touch UTM medium",
+      "first_touch_campaign": "string - first-touch UTM campaign",
+      "first_touch_content": "string - first-touch UTM content",
+      "last_touch_source": "string - last-touch UTM source",
+      "last_touch_medium": "string - last-touch UTM medium"
+    },
+    "owner": "GA4 Setup Script",
+    "where_fired": "Every page load",
+    "notes": "Client-side via GTM dataLayer",
+    "created_at": "2026-03-03T17:20:31.139248+00:00"
+  },
+  "saverwell:discount_click": {
+    "event_name": "discount_click",
+    "workspace_id": "saverwell",
+    "properties": {
+      "merchant_id": "string - merchant ID",
+      "discount_type": "string - discount type",
+      "location": "string - store location"
+    },
+    "owner": "GA4 Setup Script",
+    "where_fired": "Click on discount detail",
+    "notes": "Client-side via GTM dataLayer",
+    "created_at": "2026-03-03T17:20:31.146240+00:00"
+  },
+  "saverwell:affiliate_click": {
+    "event_name": "affiliate_click",
+    "workspace_id": "saverwell",
+    "properties": {
+      "merchant_id": "string - merchant ID",
+      "commission_type": "string - commission type",
+      "page_type": "string - page type where click occurred"
+    },
+    "owner": "GA4 Setup Script",
+    "where_fired": "Click on affiliate link",
+    "notes": "Client-side via GTM dataLayer",
+    "created_at": "2026-03-03T17:20:31.148977+00:00"
+  },
+  "saverwell:protection_read": {
+    "event_name": "protection_read",
+    "workspace_id": "saverwell",
+    "properties": {
+      "article_slug": "string - article URL slug",
+      "category_slug": "string - category slug",
+      "reading_minutes": "number - estimated reading time"
+    },
+    "owner": "GA4 Setup Script",
+    "where_fired": "Protection article scroll >75%",
+    "notes": "Client-side via GTM dataLayer",
+    "created_at": "2026-03-03T17:20:31.150345+00:00"
+  },
+  "saverwell:protection_share": {
+    "event_name": "protection_share",
+    "workspace_id": "saverwell",
+    "properties": {
+      "article_slug": "string - article URL slug",
+      "share_method": "string - share method (email, facebook, twitter, copy)"
+    },
+    "owner": "GA4 Setup Script",
+    "where_fired": "Share a protection article",
+    "notes": "Client-side via GTM dataLayer",
+    "created_at": "2026-03-03T17:20:31.155915+00:00"
+  },
+  "saverwell:guide_read": {
+    "event_name": "guide_read",
+    "workspace_id": "saverwell",
+    "properties": {
+      "article_slug": "string - article URL slug",
+      "category_slug": "string - category slug",
+      "reading_minutes": "number - estimated reading time",
+      "guide_vertical": "string - guide vertical (medicare, insurance, etc.)"
+    },
+    "owner": "GA4 Setup Script",
+    "where_fired": "Guide article scroll >75%",
+    "notes": "Client-side via GTM dataLayer",
+    "created_at": "2026-03-03T17:20:31.160087+00:00"
+  },
+  "saverwell:guide_share": {
+    "event_name": "guide_share",
+    "workspace_id": "saverwell",
+    "properties": {
+      "article_slug": "string - article URL slug",
+      "share_method": "string - share method"
+    },
+    "owner": "GA4 Setup Script",
+    "where_fired": "Share a guide article",
+    "notes": "Client-side via GTM dataLayer",
+    "created_at": "2026-03-03T17:20:31.162139+00:00"
+  },
+  "saverwell:share_content": {
+    "event_name": "share_content",
+    "workspace_id": "saverwell",
+    "properties": {
+      "share_method": "string - share method",
+      "content_type": "string - content type being shared"
+    },
+    "owner": "GA4 Setup Script",
+    "where_fired": "Any share button click",
+    "notes": "Client-side via GTM dataLayer",
+    "created_at": "2026-03-03T17:20:31.167427+00:00"
+  },
+  "saverwell:search_query": {
+    "event_name": "search_query",
+    "workspace_id": "saverwell",
+    "properties": {
+      "search_term": "string - search query text",
+      "results_count": "number - number of results returned"
+    },
+    "owner": "GA4 Setup Script",
+    "where_fired": "Site search",
+    "notes": "Client-side via GTM dataLayer",
+    "created_at": "2026-03-03T17:20:31.169439+00:00"
+  },
+  "saverwell:zip_lookup": {
+    "event_name": "zip_lookup",
+    "workspace_id": "saverwell",
+    "properties": {
+      "zip_code": "string - ZIP code entered",
+      "dma_id": "string - resolved DMA ID"
+    },
+    "owner": "GA4 Setup Script",
+    "where_fired": "ZIP code entry",
+    "notes": "Client-side via GTM dataLayer",
+    "created_at": "2026-03-03T17:20:31.171883+00:00"
+  },
+  "saverwell:scroll_depth": {
+    "event_name": "scroll_depth",
+    "workspace_id": "saverwell",
+    "properties": {
+      "page_type": "string - page type",
+      "depth_percent": "number - scroll depth percentage (25, 50, 75, 100)"
+    },
+    "owner": "GA4 Setup Script",
+    "where_fired": "25/50/75/100% scroll thresholds",
+    "notes": "Client-side via GTM dataLayer",
+    "created_at": "2026-03-03T17:20:31.174875+00:00"
+  },
+  "saverwell:store_directions": {
+    "event_name": "store_directions",
+    "workspace_id": "saverwell",
+    "properties": {
+      "merchant_id": "string - merchant ID",
+      "store_id": "string - store location ID"
+    },
+    "owner": "GA4 Setup Script",
+    "where_fired": "Click for directions",
+    "notes": "Client-side via GTM dataLayer",
+    "created_at": "2026-03-03T17:20:31.178592+00:00"
+  },
+  "saverwell:scam_alert_view": {
+    "event_name": "scam_alert_view",
+    "workspace_id": "saverwell",
+    "properties": {
+      "alert_type": "string - scam alert type",
+      "merchant": "string - merchant name"
+    },
+    "owner": "GA4 Setup Script",
+    "where_fired": "Scam alert displayed",
+    "notes": "Client-side via GTM dataLayer",
+    "created_at": "2026-03-03T17:20:31.180481+00:00"
+  },
+  "saverwell:email_signup": {
+    "event_name": "email_signup",
+    "workspace_id": "saverwell",
+    "properties": {
+      "signup_source": "string - where the signup occurred",
+      "zip_code": "string - user's ZIP code",
+      "content_interest": "string - content that drove signup"
+    },
+    "owner": "GA4 Setup Script",
+    "where_fired": "Form submission via n8n webhook (server-side Measurement Protocol)",
+    "notes": "Server-side via n8n Measurement Protocol",
+    "created_at": "2026-03-03T17:20:31.183099+00:00"
+  }
+}

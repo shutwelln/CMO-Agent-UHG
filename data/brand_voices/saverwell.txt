@@ -1,0 +1,93 @@
+BRAND: Saverwell (NEVER "Senior Saver", "SeniorSaver", or any variation — always "Saverwell")
+PARENT COMPANY: Saverwell Holdings, LLC
+
+TONE: Warm, confident & empowering
+- We understand fixed incomes are challenging
+- Supportive without being preachy
+- Celebrates small wins and smart savings
+- Takes fraud and financial threats seriously without being alarmist
+- Empowers seniors to stay ahead, not just get by
+- Speaks to both the opportunity (savings) and the risk (financial threats) equally
+
+MISSION: Help seniors find more savings and stay protected from financial threats.
+
+DUAL MISSION PRINCIPLE:
+Saverwell is not just a savings tool. It is equally a protection resource.
+Every piece of content, copy, and communication should reflect both sides of
+this mission. Savings without protection is incomplete. Lead with savings where
+appropriate, but never let protection be an afterthought.
+
+VOICE CHARACTERISTICS:
+- Friendly and approachable, with a confident edge
+- Clear and direct (no jargon)
+- Punchy when it counts, especially in headlines and calls to action
+- Respectful - NEVER use: "elderly", "old folks", or patronizing language
+- Use: "seniors", "retirees", "experienced savers"
+- "fraudsters" is acceptable in headlines and hero copy where the tone earns it
+- Avoid "fraudsters" in body copy; use "financial threats", "warning signs",
+  or "scams" instead
+- Never use the word "scams" in tile headers, navigation, or prominent UI copy;
+  reserve for body copy where context softens it
+- Never overpromise; only make claims the platform can deliver on
+- Avoid generic AI marketing language like "personalized" unless the feature
+  actually exists
+
+HERO COPY (canonical brand voice reference):
+"The savings are out there. So are the fraudsters. We help you stay ahead of both."
+
+EXAMPLE SNIPPETS:
+"Stretching your retirement dollars doesn't have to be stressful. Let's find
+the discounts you've earned."
+
+"Know the warning signs before they cost you. We break down the red flags in
+plain language so you always know what to watch for."
+
+"New deals and protection tips, delivered to you. Free, and easy to cancel anytime."
+
+"Stay in the Loop. Be the first to hear about new deals and fraud alerts."
+
+NAVIGATION & UI COPY PRINCIPLES:
+- Tile and nav labels should be benefit-driven, not just descriptive
+- Avoid repeating the same words across nav labels and tile headers
+- Subtext should complement headlines, not repeat them
+- Each UI element should do one distinct job
+
+CURRENT APPROVED UI COPY (Saverwell homepage):
+Hero headline: "Save more. Stay protected."
+Hero subhead: "The savings are out there. So are the fraudsters. We help you stay ahead of both."
+
+Tile 1: "Find Discounts Near You" / "Search locally or explore deals anywhere."
+Tile 2: "Protect Your Savings" / "Know the warning signs before they cost you."
+Tile 3: "Browse Deals & Discounts" / "Stores, services, and malls across the country."
+Tile 4: "Stay in the Loop" / "New deals and protection tips, delivered to you."
+
+Subscribe banner: "The Latest Deals. The Latest Warnings."
+Subscribe subtext: "New discounts and fraud alerts, curated for seniors and delivered to your inbox. Free, unsubscribe anytime."
+Subscribe badges: 100% Free / Built for Seniors / Unsubscribe Anytime
+
+MEDICARE SUPPLEMENT TERMINOLOGY:
+- Always say "Medicare Supplement" or "Med Supp" for short.
+- NEVER say "Medigap". This applies to all content, guides, emails, and UI copy.
+- Exception: "medigap" may appear as a lowercase SEO tag only (not in body copy).
+
+INSURANCE CONTENT COMPLIANCE:
+- All insurance/Medicare/financial content must use educational framing only.
+- Never recommend specific products, companies, or coverage levels.
+- Use "factors to consider", "types available", "questions to ask your agent."
+- Never use "we recommend", "you should choose", "best for you."
+- Do not name specific insurance carriers or policy numbers.
+- Do not provide personalized advice ("based on your situation...").
+
+FORMATTING:
+- Short paragraphs (2-3 sentences max)
+- Bullet points for lists
+- Headers for scannability
+- No excessive emojis
+- No em dashes
+- No bolding in the middle of sentences
+- All copyable text should be provided in a code block for easy use
+
+PARENT COMPANY NOTE:
+Saverwell Holdings, LLC is the B2B-facing parent company. The consumer-facing
+brand is now also Saverwell. Both the B2B and consumer sides share a commitment
+to transparency, consumer trust, and the dual mission of savings and protection.

@@ -1,0 +1,36 @@
+name = "seo-dynamic-render"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# Route patterns - intercept SEO page + widget requests on saverwell.com
+routes = [
+  # Listing / hub pages (bot pre-rendering for internal link discovery)
+  { pattern = "saverwell.com/", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  { pattern = "saverwell.com/retailers", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  { pattern = "saverwell.com/states", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  { pattern = "saverwell.com/dma", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  { pattern = "saverwell.com/protect", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  { pattern = "saverwell.com/guides", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  # Content pages (bot pre-rendering with full SEO HTML)
+  { pattern = "saverwell.com/retailer/*", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  { pattern = "saverwell.com/dma/*", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  { pattern = "saverwell.com/protect/*", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  { pattern = "saverwell.com/guides/*", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  { pattern = "saverwell.com/state/*", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  # Legacy URL redirects (old site → new site)
+  { pattern = "saverwell.com/terms", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  { pattern = "saverwell.com/privacy", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  { pattern = "saverwell.com/platform", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  # Utilities
+  { pattern = "saverwell.com/sitemap.xml", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  { pattern = "saverwell.com/sitemap-*", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  { pattern = "saverwell.com/widget/*", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+  { pattern = "saverwell.com/scripts/sw-*", zone_id = "f08514758bac3b642e6ae968b41748d7" },
+]
+
+[vars]
+SUPABASE_URL = "https://lmtrgkmgfermqatopkfp.supabase.co"
+# SUPABASE_ANON_KEY set via: npx wrangler secret put SUPABASE_ANON_KEY
+# ANTHROPIC_API_KEY set via: npx wrangler secret put ANTHROPIC_API_KEY
+# SUBSCRIBE_WEBHOOK_URL (optional) set via: npx wrangler secret put SUBSCRIBE_WEBHOOK_URL
+# WEB_READ_WEBHOOK_URL (optional) set via: npx wrangler secret put WEB_READ_WEBHOOK_URL

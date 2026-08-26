@@ -1,0 +1,42 @@
+# Brand Voice — Optum (Optum Financial + Optum Bank)
+# =====================================================
+# Single brand voice file covering Optum Financial and Optum Bank.
+# Add UHG-specific overrides inline where they meaningfully differ.
+# Fill in each section as you gather brand standards.
+
+BRAND NAME: Optum
+
+TAGLINE: [Fill in]
+
+MISSION: [One sentence describing what Optum Financial / Optum Bank does and who it serves]
+
+PARENT BRAND CONTEXT:
+- Optum is part of UnitedHealth Group (UHG).
+- Optum Financial and Optum Bank are the products in focus for this workspace.
+- [Note any UHG-level brand rules that flow down]
+
+TONE:
+- [e.g., Trustworthy and clear — financial products require precision]
+- [e.g., Approachable without being casual]
+- [Fill in from brand standards]
+
+AUDIENCE:
+- Primary: [e.g., HSA/FSA/HRA account holders, employers offering benefits]
+- Secondary: [e.g., Brokers, benefits administrators]
+
+VOICE CHARACTERISTICS:
+- [Fill in from brand standards]
+
+WORDS WE USE:
+- [Fill in from brand standards]
+
+WORDS WE AVOID:
+- [Fill in from brand standards]
+
+FORMATTING PREFERENCES:
+- [Fill in from brand standards]
+
+CONTENT GUARDRAILS:
+- [Required disclaimers for financial / banking content]
+- [HSA/FSA/HRA terminology rules]
+- [Regulatory references — FDIC, IRS, etc.]
