@@ -95,7 +95,8 @@ export function AppointmentsPage() {
                 <div className="col gap-1 grow">
                   <span className="strong">{p?.legalName ?? "Unknown provider"}</span>
                   <span className="tiny muted">
-                    {rep?.name ?? "Unassigned"} · {dayMonth(a.scheduledFor)}
+                    Closes with {rep?.name ?? "Unassigned"} · Set by {a.createdBy} ·{" "}
+                    {dayMonth(a.scheduledFor)}
                   </span>
                 </div>
                 <Pill tone={TYPE_TONE[a.type]}>{TYPE_LABEL[a.type]}</Pill>

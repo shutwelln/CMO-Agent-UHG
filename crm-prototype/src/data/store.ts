@@ -41,6 +41,12 @@ interface State {
     interestLevel: Activity["interestLevel"]
   ) => void;
   bookAppointment: (appt: Omit<Appointment, "id">) => void;
+  logEmail: (
+    providerId: string,
+    leadId: string | null,
+    fromLabel: string,
+    subject: string
+  ) => void;
   setActiveConnector: (name: "Marketo") => void;
   activeConnector: "Marketo";
 }
@@ -219,6 +225,35 @@ export const useData = create<State>((set, get) => ({
           leads,
         },
       };
+    }),
+
+  logEmail: (providerId, leadId, fromLabel, subject) =>
+    set((s) => {
+      if (!s.data) return s;
+      const act: Activity = {
+        id: nid("act"),
+        providerId,
+        leadId,
+        type: "email",
+        channel: "email",
+        attemptNumber: null,
+        disposition: null,
+        productInterest: [],
+        interestLevel: "warm",
+        actor: fromLabel,
+        occurredAt: NOW,
+        notes: `Sent "${subject}"`,
+      };
+      const leads = leadId
+        ? s.data.leads.map((l) =>
+            l.id === leadId && l.stage === "ready"
+              ? { ...l, status: "2.0", stage: "engaged" as Stage, lastOutreachAt: NOW }
+              : l.id === leadId
+              ? { ...l, lastOutreachAt: NOW }
+              : l
+          )
+        : s.data.leads;
+      return { data: { ...s.data, activities: [act, ...s.data.activities], leads } };
     }),
 
   setActiveConnector: (name) => set({ activeConnector: name }),

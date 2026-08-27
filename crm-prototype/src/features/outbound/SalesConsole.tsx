@@ -1,6 +1,16 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Phone, ExternalLink, CalendarPlus } from "lucide-react";
+import {
+  Phone,
+  PhoneCall,
+  PhoneOff,
+  Mail,
+  ExternalLink,
+  CalendarPlus,
+  Sparkles,
+  RefreshCw,
+  Send,
+} from "lucide-react";
 import {
   PageHeader,
   Panel,
@@ -12,8 +22,6 @@ import {
   BankTierBadge,
   StatusBadge,
   EmptyState,
-  CallButton,
-  EmailButton,
   useToast,
 } from "../../components/ui";
 import { useData } from "../../data/store";
@@ -29,6 +37,17 @@ import { useRole, CURRENT_REP_ID } from "../../context/role";
 import { PERSONA_DETAIL } from "../../lib/personas";
 import { nextBestOffers } from "../../lib/nbo";
 import { money } from "../../lib/format";
+import { draftProviderEmail, VARIANT_LABELS } from "../../lib/emailDraft";
+
+/* Synthesized work email for a sales rep (reps carry no email in the data). */
+const repEmail = (name: string) =>
+  `${name.toLowerCase().replace(/[^a-z\s]/g, "").trim().replace(/\s+/g, ".")}@optumbank.com`;
+
+/* Shared mailboxes a broadcast-style or unbranded send can originate from. */
+const SHARED_MAILBOXES = [
+  { id: "mbx_providers", name: "Optum Banking Solutions", email: "providers@optumbank.com" },
+  { id: "mbx_team", name: "Optum Provider Team", email: "provider-team@optumbank.com" },
+];
 
 const WORKABLE = new Set(["ready", "engaged", "kyc"]);
 
@@ -59,6 +78,7 @@ export function SalesConsole() {
   const role = useRole((s) => s.role);
   const logDisposition = useData((s) => s.logDisposition);
   const bookAppointment = useData((s) => s.bookAppointment);
+  const logEmail = useData((s) => s.logEmail);
   const toast = useToast((s) => s.push);
 
   const provMap = useMemo(() => {
@@ -114,6 +134,25 @@ export function SalesConsole() {
   const [slotIdx, setSlotIdx] = useState<number | null>(null);
   const [meetingType, setMeetingType] = useState<Appointment["type"]>("discovery");
 
+  // Dialer state: assumes an integrated dialer that auto-dials out (no tel: hand-off).
+  const [calling, setCalling] = useState<{ name: string; phone: string } | null>(null);
+
+  // In-platform email composer state (drafted, sent, and logged without leaving the app).
+  const [composing, setComposing] = useState(false);
+  const [emailFromId, setEmailFromId] = useState<string>("");
+  const [emailTo, setEmailTo] = useState("");
+  const [emailSubject, setEmailSubject] = useState("");
+  const [emailBody, setEmailBody] = useState("");
+  const [emailVariant, setEmailVariant] = useState(0);
+
+  // Sender options: any active rep, or a shared mailbox.
+  const fromOptions = useMemo(() => {
+    const reps = data.reps
+      .filter((r) => r.active)
+      .map((r) => ({ id: r.id, name: r.name, email: repEmail(r.name), team: r.team }));
+    return { reps, mailboxes: SHARED_MAILBOXES };
+  }, [data.reps]);
+
   const resetForm = () => {
     setDisposition(null);
     setNotes("");
@@ -126,6 +165,7 @@ export function SalesConsole() {
     const idx = queue.findIndex((l) => l.id === selectedLead.id);
     const next = queue[idx + 1] ?? queue[0];
     setSelectedLeadId(next?.id ?? null);
+    setCalling(null);
   };
 
   const logAndNext = () => {
@@ -160,6 +200,75 @@ export function SalesConsole() {
     setBookRepId("");
     setSlotIdx(null);
     setMeetingType("discovery");
+  };
+
+  const selectLead = (id: string | null) => {
+    setSelectedLeadId(id);
+    setCalling(null);
+  };
+
+  // Dialer: assume an integrated softphone that dials out automatically.
+  const startCall = () => {
+    if (!fdm) return;
+    setCalling({ name: fdm.name, phone: fdm.phone });
+    toast(`Dialing ${fdm.phone} through the connected dialer`);
+  };
+  const endCall = () => {
+    setCalling(null);
+    toast("Call ended. Log the outcome below.");
+  };
+
+  // Email compose (in-platform, AI-drafted, sender-selectable).
+  const senderName = (id: string) =>
+    fromOptions.reps.find((x) => x.id === id)?.name ??
+    fromOptions.mailboxes.find((x) => x.id === id)?.name ??
+    "Optum Banking Solutions";
+  const senderLabel = (id: string) => {
+    const r = fromOptions.reps.find((x) => x.id === id);
+    if (r) return `${r.name} <${r.email}>`;
+    const m = fromOptions.mailboxes.find((x) => x.id === id);
+    return m ? `${m.name} <${m.email}>` : id;
+  };
+  const buildDraft = (fromId: string, variant: number) =>
+    provider && selectedLead
+      ? draftProviderEmail(
+          { provider, lead: selectedLead, fdmName: fdm?.name, nbo, fromName: senderName(fromId) },
+          variant
+        )
+      : { subject: "", body: "" };
+
+  const openCompose = () => {
+    if (!provider || !selectedLead) return;
+    const id =
+      role === "sales_rep"
+        ? CURRENT_REP_ID
+        : selectedLead.assignedRepId ?? fromOptions.reps[0]?.id ?? fromOptions.mailboxes[0].id;
+    const d = buildDraft(id, 0);
+    setEmailFromId(id);
+    setEmailTo(fdm?.email ?? "");
+    setEmailVariant(0);
+    setEmailSubject(d.subject);
+    setEmailBody(d.body);
+    setComposing(true);
+  };
+  const changeFrom = (id: string) => {
+    setEmailFromId(id);
+    const d = buildDraft(id, emailVariant);
+    setEmailSubject(d.subject);
+    setEmailBody(d.body);
+  };
+  const regenerate = () => {
+    const v = emailVariant + 1;
+    setEmailVariant(v);
+    const d = buildDraft(emailFromId, v);
+    setEmailSubject(d.subject);
+    setEmailBody(d.body);
+  };
+  const sendEmail = () => {
+    if (!provider) return;
+    logEmail(provider.id, selectedLead?.id ?? null, senderLabel(emailFromId), emailSubject);
+    toast(`Email sent to ${fdm?.name ?? emailTo} from ${senderName(emailFromId)}`);
+    setComposing(false);
   };
 
   return (
@@ -209,7 +318,7 @@ export function SalesConsole() {
                   <div
                     key={l.id}
                     className={`queue-item${active ? " active" : ""}`}
-                    onClick={() => setSelectedLeadId(l.id)}
+                    onClick={() => selectLead(l.id)}
                   >
                     <div className="row between">
                       <span className="qi-name">{p?.legalName ?? "Unknown"}</span>
@@ -268,12 +377,27 @@ export function SalesConsole() {
                           {fdm.phone} · {fdm.email}
                         </div>
                         <div className="row gap-2" style={{ marginTop: 8 }}>
-                          <CallButton phone={fdm.phone} />
-                          <EmailButton
-                            email={fdm.email}
-                            subject={`Optum Banking Solutions - ${provider.legalName}`}
-                          />
+                          <Button size="sm" variant="teal" onClick={startCall} disabled={!!calling}>
+                            <PhoneCall size={13} /> Call
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={openCompose}>
+                            <Mail size={13} /> Email
+                          </Button>
                         </div>
+                        {calling && (
+                          <div className="callbar">
+                            <span className="callbar-dot" />
+                            <div className="grow">
+                              <div className="strong small">On call · {calling.name}</div>
+                              <div className="tiny muted mono">
+                                {calling.phone} · connected dialer
+                              </div>
+                            </div>
+                            <Button size="sm" variant="danger" onClick={endCall}>
+                              <PhoneOff size={13} /> End call
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <span className="small muted">No FDM on file</span>
@@ -417,13 +541,17 @@ export function SalesConsole() {
           }
         >
           <div className="col gap-3">
-            <Field label="Senior sales specialist">
+            <div className="dispo-hint">
+              Appointment-setter handoff: you qualified interest, now book a closing sales agent
+              to follow up. You stay recorded as the setter on this appointment.
+            </div>
+            <Field label="Closing sales agent (follows up)">
               <select
                 className="select"
                 value={bookRepId}
                 onChange={(e) => setBookRepId(e.target.value)}
               >
-                <option value="">Select a senior sales specialist</option>
+                <option value="">Select a closing sales agent</option>
                 {seniorReps.map((r) => (
                   <option key={r.id} value={r.id}>
                     {r.name} - {r.team}
@@ -458,6 +586,91 @@ export function SalesConsole() {
                 <option value="closing">Closing</option>
               </select>
             </Field>
+          </div>
+        </Modal>
+      )}
+
+      {composing && provider && (
+        <Modal
+          title={`Compose email - ${provider.legalName}`}
+          onClose={() => setComposing(false)}
+          width={660}
+          footer={
+            <>
+              <Button variant="outline" onClick={() => setComposing(false)}>
+                Cancel
+              </Button>
+              <Button onClick={sendEmail} disabled={!emailTo.trim() || !emailSubject.trim()}>
+                <Send size={14} /> Send email
+              </Button>
+            </>
+          }
+        >
+          <div className="col gap-3">
+            <div className="row gap-2 center wrap">
+              <Pill tone="navy" dot>
+                <Sparkles size={12} /> Drafted by AI
+              </Pill>
+              <span className="tiny muted">
+                Personalized to {provider.legalName} and their live offer.
+              </span>
+              <div className="grow" />
+              <Button variant="text" onClick={regenerate}>
+                <RefreshCw size={13} /> Regenerate
+              </Button>
+            </div>
+
+            <Field label="From">
+              <select
+                className="select"
+                value={emailFromId}
+                onChange={(e) => changeFrom(e.target.value)}
+              >
+                <optgroup label="Send from a sales rep">
+                  {fromOptions.reps.map((r) => (
+                    <option key={r.id} value={r.id}>
+                      {r.name} · {r.email}
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="Send from a shared mailbox">
+                  {fromOptions.mailboxes.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.name} · {m.email}
+                    </option>
+                  ))}
+                </optgroup>
+              </select>
+            </Field>
+
+            <Field label="To">
+              <input
+                className="select"
+                value={emailTo}
+                onChange={(e) => setEmailTo(e.target.value)}
+              />
+            </Field>
+
+            <Field label="Subject">
+              <input
+                className="select"
+                value={emailSubject}
+                onChange={(e) => setEmailSubject(e.target.value)}
+              />
+            </Field>
+
+            <Field label={`Message (tone: ${VARIANT_LABELS[emailVariant % VARIANT_LABELS.length]})`}>
+              <textarea
+                rows={12}
+                value={emailBody}
+                onChange={(e) => setEmailBody(e.target.value)}
+              />
+            </Field>
+
+            <span className="tiny muted">
+              Sends and logs on the provider timeline in-platform. Nothing routes through a
+              personal mailbox.
+            </span>
           </div>
         </Modal>
       )}
