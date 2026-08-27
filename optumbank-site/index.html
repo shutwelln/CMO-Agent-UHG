@@ -1,4 +1,21 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}
+  /* lending comparison table */
+  .ltable-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-sm);background:#fff}
+  .ltable{width:100%;border-collapse:collapse;min-width:720px}
+  .ltable th,.ltable td{padding:15px 18px;text-align:center;border-bottom:1px solid var(--line);font-size:.95rem;color:var(--ink);vertical-align:middle}
+  .ltable tbody tr:last-child td{border-bottom:0}
+  .ltable thead th{padding:22px 18px 16px;font-size:1.08rem;font-weight:750;color:var(--blue);vertical-align:bottom}
+  .ltable th:first-child,.ltable td:first-child{text-align:left;font-weight:700;color:var(--ink);width:27%}
+  .ltable tbody td:first-child{font-weight:650}
+  .ltable tbody tr:nth-child(even){background:var(--ground-2)}
+  .lt-ic{display:block;margin:0 auto 10px;color:var(--orange)}
+  .lt-chk{color:var(--blue-2)}
+  .lt-dash{color:var(--muted)}
+  .lt-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:26px}
+  .lt-note{text-align:center;color:var(--muted);font-size:.82rem;margin-top:16px}
+  .fdic-mark{display:flex;align-items:center;justify-content:center;height:62px}
+  .fdic-mark svg{height:62px;width:62px;display:block}
+</style></head><body>
 <title>Optum Bank — Banking built for healthcare</title>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAFKklEQVRogdWaW2xUVRSGv7XPlHIrISGYIsUiKfQyDUhAwDfxFSwSJARrm2HQiiSKIsQ3HY2JRrybeAFbmrZBSU1oTdD4xKMQERUZOhUQ2lA1mHrrlFiYc5YPM9UWOp3ZZ6aN/sk8zD77X+tfM3uvs/Y6R8gDNBQsBu5BdDUqFQiLEOagzARAiKP0o/yAaAzkOMoxaY7+nKtv8S26vmIOTqAWtA5Y6dPMl6i24nmHpCXW78eAdQD60NISXHcP8DAw3Y/TMTCIcgAv8Iq0fNtnQ8w6AG1YUcC1oZ2IvgCppZF/XEVkHzP+elHePj+UDSGrADS8tBx1DwPLcpKXPb7BdbdIS+z7TBNNpgkaDm5C3ZNMnniAO3Cckxqu3php4rgBaDgYQvmIiVsy46EI1XYNV+8Yb1LaAHRb1SMoB4FA3qVlDwfVdzVU9Vi6CWPugeSy4TDgTJg0O7iod780d3XceOGmAHR7sAyPr4BZkyIte8RRc6c0fxcbOThqCenm4BQ8Pua/Jx5gJuId0oYVBSMHR++BInYzudnGFsu5PrRr5MA/S0jrl83HSXQDM3Jw0ItIJ6pHEecS17kMQAElqLsQWA9sABbk4CNOgbdE9nf9BCMzjJPYi3/xfQjPM1DVKO3t7hjXu1OfzzXCLi5VbULkZWChD18zSZg9wFOQ+geShZnTi5/aRqSDqVon70TjNjQNlxehgTagxtonDOK6pdIS60/uAWMewF9h9ia3ndlkKx5AmroHKI1uBH3Lh98ZOM5WGN7EIvXWJkQ6KI3ulgieDwFJExE8Ss8+CXxiTVbqAEQbKudx3fRhV1pfZhqVfn75MbUkl1MMuNWGRsIpNlwza7E+F+gz+RIPqeUEz9rSCHhrDaKrLYm9xIMtlpzMiFcdhFTazRaqawwqFXaetCNNqswJ0t7uonTakSg3CGVWJJXPrOZbwfvUkrDYALOtKA7nLZ1kD1NwwZIx22B7WCkk51ZIWkx1rQ70QFHGI+Wk4o8haz0GsEuHcdcmV9uhYJqt7QED/GZFMc4iSycWSNja/t2g2G0cYZ2lEwvbZr0l45xJ9iqtsEE3b877WVkjdweAe+1IdBuQ45a+FlDUFbLkZEbPle1AiRXH6BeioWAxwo/Y1UN9SKIyVcPkDK0tm0VBYQxhng2NhFNsUi3uk5Y+56OBNo1k7uxlVBHBMKWwzVI8ICek9fSVpADVVh++a+ipej2XIDSCobf6DWzXPoBoGwwfaDzvEDBoL0Eepyd4RMPlRbZMrS2bRU+wE9W0XbdxMEjC/QhSAUhLrB/lgA9DADVo4IKGqnelMsm40AhGw8F6CgpjJLsUPiDvDT8QyXdb5TJKJ0aP4jkXme4l6/urpgQSizBmHUoNttlmNAZQlgw/nhqVeTQUfBrhpRyMTzxE90jT2VeHv47egFOmvgZ8PdmasoecIjBtVBfj/9XcFWelNJ3uHjl4UwqUxuh5REJA3o+NOcBFqL1RPKR5wCFNZ44g7Jx4XVlBgR3SFB2zd5T2JiRN0f0I24DERCnLAi7oo3Iw+kG6CRnrHw1V3oeYFsD6ZpUj/kSoS/fLDyO7x6yhysWIOQwsz4u0jJBTGN0ijdGMDYSs6hhp7jpH6dxVqDwB5KUCTYOriDxHXO/KRjz4edUg2UvdCzSQ2117JAYR3sdjn+0LIDm+7OFsBR4EVvmwpSAnEG1D+FAao7/60eE7gFFK6pbeQsBbi+oaDBUotwNz+bfnFAd+QbiIRwyR4yTMMWk9fSVX338DSJu3towd0coAAAAASUVORK5CYII=">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -417,7 +434,7 @@
       <div class="stat"><b>$550B+</b><span>moved across provider payments each year</span></div>
       <div class="stat"><b>2.8M</b><span>providers in the Optum network</span></div>
       <div class="stat"><b>1 in 5</b><span>U.S. medical claims touched by Optum</span></div>
-      <div class="stat"><b>FDIC</b><span>insured, member FDIC</span></div>
+      <div class="stat"><span class="fdic-mark"><svg viewBox="0 0 48 48" role="img" aria-label="Member FDIC"><rect width="48" height="48" fill="#fff"/><g fill="#003256"><polygon points="6.82 18.89 6.82 21.34 11.01 21.34 11.01 24.58 6.82 24.58 6.82 30.35 3 30.35 3 15.65 11.44 15.65 11.44 18.89 6.82 18.89"/><rect x="28.06" y="15.65" width="3.82" height="14.7"/><path d="m45,20.58c-.78-1.05-2.05-1.62-3.35-1.62-2.34,0-3.92,1.79-3.92,4.07s1.6,4,3.98,4c1.25,0,2.5-.6,3.3-1.56v4.58c-1.27.39-2.18.68-3.37.68-2.05,0-4-.78-5.52-2.16-1.62-1.46-2.36-3.37-2.36-5.56,0-2.01.76-3.94,2.16-5.38,1.44-1.48,3.53-2.38,5.6-2.38,1.23,0,2.36.27,3.49.74v4.58Z"/><path d="m18.73,15.65h-5.42v14.7h5.42c4.07,0,7.47-3.22,7.47-7.35s-3.37-7.35-7.47-7.35Zm-.74,11.46h-.86v-8.23h.9c2.46,0,4.19,1.48,4.19,4.11,0,2.87-1.95,4.11-4.23,4.11Z"/></g></svg></span><span>insured, member FDIC</span></div>
     </div>
   </div>
 
@@ -608,6 +625,43 @@
           <p>A Mastercard accepted anywhere, plus the Optum S3 card for discounted purchases, tied to your line of credit with cash back into your account.</p>
           <div class="foot"><span class="roadmap-tag">Optum S3 card coming with your line of credit</span></div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="lending">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow blue">Lending</span>
+        <h2>Choose the loan that's right for you</h2>
+        <p class="lead">Term, Capital, and Cash Flow loans, built for how healthcare practices actually get paid.</p>
+      </div>
+      <div class="ltable-wrap">
+        <table class="ltable">
+          <thead>
+            <tr>
+              <th></th>
+              <th><svg class="lt-ic" width="30" height="30" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6" rx="7" ry="3" stroke="currentColor" stroke-width="1.6"/><path d="M5 6v12c0 1.66 3.13 3 7 3s7-1.34 7-3V6" stroke="currentColor" stroke-width="1.6"/><path d="M5 12c0 1.66 3.13 3 7 3s7-1.34 7-3" stroke="currentColor" stroke-width="1.6"/></svg>Term Loan</th>
+              <th><svg class="lt-ic" width="30" height="30" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="6" width="19" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 9.5v5M18.5 9.5v5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Capital Loan</th>
+              <th><svg class="lt-ic" width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M20 12a8 8 0 01-8 8 8 8 0 01-6.7-3.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M4 12a8 8 0 018-8 8 8 0 016.7 3.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M18 3.5V8h-4.5M6 20.5V16h4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Cash Flow Loan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Easy digital enrollment</td><td><svg class="lt-chk" width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><svg class="lt-chk" width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><svg class="lt-chk" width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></td></tr>
+            <tr><td>No early repayment penalty</td><td><svg class="lt-chk" width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><svg class="lt-chk" width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><svg class="lt-chk" width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></td></tr>
+            <tr><td>No personal guarantees</td><td>Optional</td><td><svg class="lt-chk" width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><svg class="lt-chk" width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></td></tr>
+            <tr><td>Rates and fees</td><td>Fixed interest rates</td><td>One competitive set fee, no interest</td><td>Low recurring set fee, no interest</td></tr>
+            <tr><td>Fund availability, upon acceptance</td><td>Within a few business days</td><td>Same day</td><td>Monthly</td></tr>
+            <tr><td>Repayment</td><td>Fixed monthly repayments</td><td colspan="2">Automated via future claims payment activity</td></tr>
+            <tr><td>Repayment term</td><td>Up to 84 months</td><td>Up to 12 months</td><td>Recurring monthly</td></tr>
+            <tr><td>Loan amount</td><td>Up to $250,000</td><td colspan="2">Customized and informed by claim payment volume</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="lt-note">Term loans are available with or without a personal guarantee. Your rate depends on which you choose.</p>
+      <div class="lt-cta">
+        <button class="btn btn-primary" onclick="scrollToId('calc')">Apply for Term Loan</button>
+        <button class="btn btn-ghost" onclick="scrollToId('calc')">Access Working Capital</button>
       </div>
     </div>
   </section>
