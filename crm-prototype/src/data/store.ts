@@ -41,8 +41,8 @@ interface State {
     interestLevel: Activity["interestLevel"]
   ) => void;
   bookAppointment: (appt: Omit<Appointment, "id">) => void;
-  setActiveConnector: (name: "Marketo" | "Customer.io") => void;
-  activeConnector: "Marketo" | "Customer.io";
+  setActiveConnector: (name: "Marketo") => void;
+  activeConnector: "Marketo";
 }
 
 let idc = 100000;

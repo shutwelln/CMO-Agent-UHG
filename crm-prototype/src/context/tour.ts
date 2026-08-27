@@ -58,7 +58,7 @@ export const TOUR_STEPS: TourStep[] = [
     role: "marketing",
     path: "/segments/new",
     title: "8. Build precise segments from the warehouse",
-    body: "Switched to the Campaign Management role. Build data-driven segments on warehouse attributes, behavioral events (for example started the bank-account signup but has not completed it), and cross-product logic (has a bank account but not a term loan). The match count updates live against the real data. This mirrors Customer.io.",
+    body: "Switched to the Campaign Management role. Build data-driven segments on warehouse attributes, behavioral events (for example started the bank-account signup but has not completed it), and cross-product logic (has a bank account but not a term loan). The match count updates live against the real data.",
   },
   {
     role: "marketing",
@@ -76,7 +76,7 @@ export const TOUR_STEPS: TourStep[] = [
     role: "sales_ops",
     path: "/admin/connectors",
     title: "11. Swappable delivery connectors",
-    body: "The CRM is ESP-agnostic. Marketo is the approved-vendor connector; Customer.io is available pending procurement. Journeys and segments defined here map onto either, so nothing is locked to one platform.",
+    body: "The CRM is ESP-agnostic. Marketo is the approved-vendor connector. Journeys and segments defined here map onto any approved connector, so nothing is locked to one platform.",
   },
   {
     role: "sales_ops",

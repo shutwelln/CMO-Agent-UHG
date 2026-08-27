@@ -299,7 +299,7 @@ export const funnelEventSchema = z.object({
 });
 export type FunnelEvent = z.infer<typeof funnelEventSchema>;
 
-// ----- Segment condition model (mirrors Customer.io data-driven segments) -----
+// ----- Segment condition model (data-driven, auto-updating segments) -----
 export type MatchOp = "all" | "any"; // AND / OR
 export interface AttributeCondition {
   kind: "attribute";
@@ -394,7 +394,7 @@ export const campaignSchema = z.object({
   name: z.string(),
   status: z.enum(["draft", "active", "paused", "complete"]),
   segmentName: z.string(),
-  connector: z.enum(["Marketo", "Customer.io"]),
+  connector: z.enum(["Marketo"]),
   journeySteps: z.array(
     z.object({ day: z.number(), channel: z.string(), template: z.string() })
   ),
@@ -471,7 +471,7 @@ export const broadcastSchema = z.object({
   replyTo: z.string(),
   blocks: z.any(), // EmailBlock[]
   audience: z.any(), // BroadcastAudience
-  connector: z.enum(["Marketo", "Customer.io"]),
+  connector: z.enum(["Marketo"]),
   audienceSize: z.number(),
   schedule: z.any(), // BroadcastSchedule
   metrics: z.object({
@@ -505,7 +505,7 @@ export type Appointment = z.infer<typeof appointmentSchema>;
 
 export const connectorSchema = z.object({
   id: z.string(),
-  name: z.enum(["Marketo", "Customer.io"]),
+  name: z.enum(["Marketo"]),
   kind: z.literal("esp"),
   status: z.enum(["connected_mock", "not_approved"]),
   isApprovedVendor: z.boolean(),

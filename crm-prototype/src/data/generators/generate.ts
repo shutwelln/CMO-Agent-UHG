@@ -575,7 +575,7 @@ export function generateDataset(seed = 42): Dataset {
       name: "Cash Acceleration nurture - get paid 20 days earlier",
       status: "active",
       segmentName: "Signup started, not completed",
-      connector: "Customer.io",
+      connector: "Marketo",
       journeySteps: [
         { day: 0, channel: "email", template: SUBJ_CASH[0] },
         { day: 10, channel: "email", template: SUBJ_CASH[1] },
@@ -592,7 +592,7 @@ export function generateDataset(seed = 42): Dataset {
       name: "Sole Practitioner nurture - 3% intro APY",
       status: "paused",
       segmentName: "Sole Practitioners, PWC eligible",
-      connector: "Customer.io",
+      connector: "Marketo",
       journeySteps: [{ day: 0, channel: "email", template: SUBJ_APY[0] }],
       audienceSize: segments[3].size,
       metrics: { sent: 0, delivered: 0, opens: 0, clicks: 0, conversions: 0 },
@@ -623,7 +623,6 @@ export function generateDataset(seed = 42): Dataset {
   // ----- Connectors -----
   const connectors: Connector[] = [
     { id: "conn_marketo", name: "Marketo", kind: "esp", status: "connected_mock", isApprovedVendor: true, note: "Approved vendor. Existing contract; a second instance can be provisioned for CRM-triggered journeys." },
-    { id: "conn_cio", name: "Customer.io", kind: "esp", status: "not_approved", isApprovedVendor: false, note: "Known platform, strong fit. Pending procurement approval (4-6 month cycle)." },
   ];
 
   // ----- Data sources -----

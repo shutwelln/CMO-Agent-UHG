@@ -34,7 +34,6 @@ export function ConnectorsAdmin() {
       <Banner tone="info" icon={<Plug size={16} />}>
         The CRM is ESP-agnostic. Journeys are defined once and delivered through a swappable
         connector. Marketo is the preferred connector today because it is already contracted.
-        Customer.io is an alternate that is pending procurement.
       </Banner>
 
       <div className="grid grid-2">
@@ -90,8 +89,8 @@ export function ConnectorsAdmin() {
         <PanelHeader title="Swappable connector abstraction" />
         <div className="panel-body small muted">
           Segments and journeys live in the CRM. The connector layer only handles delivery, so
-          swapping Marketo for Customer.io, or running both, requires no changes to a campaign
-          definition. This keeps the CRM independent of any single ESP contract.
+          swapping in another approved connector, or running more than one, requires no changes
+          to a campaign definition. This keeps the CRM independent of any single ESP contract.
         </div>
       </Panel>
     </div>

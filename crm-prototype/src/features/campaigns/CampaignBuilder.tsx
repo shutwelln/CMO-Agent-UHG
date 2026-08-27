@@ -283,13 +283,9 @@ export function CampaignBuilder() {
                 >
                   <div className="row between">
                     <span className="cc-name">{cn.name}</span>
-                    {cn.isApprovedVendor ? (
+                    {cn.isApprovedVendor && (
                       <Pill tone="green" dot>
                         Approved vendor
-                      </Pill>
-                    ) : (
-                      <Pill tone="amber" dot>
-                        Pending procurement
                       </Pill>
                     )}
                   </div>

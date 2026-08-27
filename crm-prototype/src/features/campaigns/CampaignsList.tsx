@@ -67,14 +67,7 @@ export function CampaignsList() {
       key: "connector",
       header: "Connector",
       sortValue: (c) => c.connector,
-      render: (c) => (
-        <div className="col gap-1">
-          <Pill tone={c.connector === "Marketo" ? "navy" : "orange"}>{c.connector}</Pill>
-          {c.connector === "Customer.io" && (
-            <span className="tiny muted">pending procurement</span>
-          )}
-        </div>
-      ),
+      render: (c) => <Pill tone="navy">{c.connector}</Pill>,
     },
     {
       key: "audience",
