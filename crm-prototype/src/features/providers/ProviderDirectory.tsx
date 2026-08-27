@@ -27,6 +27,13 @@ export function ProviderDirectory() {
   const [persona, setPersona] = useState<Persona | "">("");
   const [stage, setStage] = useState<Stage | "">("");
   const [product, setProduct] = useState<Product | "">("");
+  const [stateFilter, setStateFilter] = useState<string>("");
+  const [fdmFilter, setFdmFilter] = useState<"all" | "present" | "missing">("all");
+
+  const states = useMemo(
+    () => Array.from(new Set(data.providers.map((p) => p.state))).sort(),
+    [data.providers]
+  );
 
   const rows = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -34,13 +41,19 @@ export function ProviderDirectory() {
       if (persona && p.persona !== persona) return false;
       if (stage && p.currentStage !== stage) return false;
       if (product && !p.productsHeld.includes(product)) return false;
+      if (stateFilter && p.state !== stateFilter) return false;
+      if (fdmFilter !== "all") {
+        const has = !!fdmForProvider(data, p.id);
+        if (fdmFilter === "present" && !has) return false;
+        if (fdmFilter === "missing" && has) return false;
+      }
       if (needle) {
         const hay = `${p.legalName} ${p.dba} ${p.tin} ${p.city}`.toLowerCase();
         if (!hay.includes(needle)) return false;
       }
       return true;
     });
-  }, [data.providers, q, persona, stage, product]);
+  }, [data.providers, q, persona, stage, product, stateFilter, fdmFilter, data]);
 
   const columns: Column<Provider>[] = [
     {
@@ -174,6 +187,27 @@ export function ProviderDirectory() {
               {PRODUCT_SHORT[pr]}
             </option>
           ))}
+        </select>
+        <select
+          className="select"
+          value={stateFilter}
+          onChange={(e) => setStateFilter(e.target.value)}
+        >
+          <option value="">All states</option>
+          {states.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+        <select
+          className="select"
+          value={fdmFilter}
+          onChange={(e) => setFdmFilter(e.target.value as "all" | "present" | "missing")}
+        >
+          <option value="all">FDM: any</option>
+          <option value="present">FDM present</option>
+          <option value="missing">FDM missing</option>
         </select>
         <span className="small faint nowrap">{rows.length.toLocaleString("en-US")} providers</span>
       </div>
