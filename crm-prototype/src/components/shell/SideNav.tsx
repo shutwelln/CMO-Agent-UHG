@@ -6,6 +6,7 @@ import {
   GitBranch,
   UploadCloud,
   Megaphone,
+  Send,
   Layers,
   PhoneCall,
   CalendarCheck,
@@ -40,6 +41,7 @@ export function SideNav() {
   const myLeads = data ? leadsForRep(data, CURRENT_REP_ID).filter((l) => l.stage !== "disbursed" && l.stage !== "closed").length : 0;
   const leadCount = data ? data.leads.filter((l) => l.stage === "ready").length : 0;
   const campaignCount = data ? data.campaigns.filter((c) => c.status === "active").length : 0;
+  const broadcastCount = data ? data.broadcasts.filter((b) => b.status === "scheduled").length : 0;
 
   const groups: Group[] = [
     {
@@ -62,6 +64,7 @@ export function SideNav() {
       label: "Campaigns",
       items: [
         { to: "/campaigns", label: "Lifecycle Campaigns", icon: <Megaphone size={18} />, roles: ["marketing", "sales_ops"], count: campaignCount },
+        { to: "/broadcasts", label: "Broadcasts", icon: <Send size={18} />, roles: ["marketing", "sales_ops"], count: broadcastCount },
         { to: "/segments", label: "Segments", icon: <Layers size={18} />, roles: ["marketing", "sales_ops"] },
       ],
     },

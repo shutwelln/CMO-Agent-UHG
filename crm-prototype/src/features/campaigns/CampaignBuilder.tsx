@@ -166,7 +166,7 @@ export function CampaignBuilder() {
       <PageHeader
         crumb="Lifecycle"
         title="New campaign"
-        sub="Trigger, journey, delivery, launch. Portable to Marketo and Salesforce."
+        sub="Trigger, journey, delivery, launch."
       />
       <Panel>
         <div className="panel-pad">
@@ -301,8 +301,8 @@ export function CampaignBuilder() {
             </div>
           </Panel>
           <Banner tone="info">
-            The journey model is portable. It exports cleanly to Marketo or Salesforce
-            Marketing Cloud with the same triggers, branches, and A/B splits.
+            The journey model is delivery-agnostic. The same triggers, branches, and A/B
+            splits run on whichever approved delivery connector you choose.
           </Banner>
           <div className="row">
             <Pill tone="navy" dot>

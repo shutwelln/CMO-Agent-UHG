@@ -64,7 +64,7 @@ export const TOUR_STEPS: TourStep[] = [
     role: "marketing",
     path: "/campaigns/camp_1",
     title: "9. Design multi-step lifecycle journeys",
-    body: "Campaigns trigger on segment entry or on an event, then run a visual journey: emails, delays, branches on open or click, random A/B splits, and exit goals, over 90 days. Each email has From, Reply-to, Subject, a rich-text or HTML editor, and A/B variants. Portable to Marketo or Salesforce.",
+    body: "Campaigns trigger on segment entry or on an event, then run a visual journey: emails, delays, branches on open or click, random A/B splits, and exit goals, over 90 days. Each email has From, Reply-to, Subject, a rich-text or HTML editor, and A/B variants.",
   },
   {
     role: "marketing",

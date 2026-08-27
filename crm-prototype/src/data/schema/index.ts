@@ -416,6 +416,81 @@ export type Campaign = z.infer<typeof campaignSchema> & {
   journey?: Journey;
 };
 
+// ----- Broadcast model (one-off / scheduled single-message sends) -----
+// A broadcast delivers a single email or newsletter to an explicit audience
+// resolved at send time: either a saved segment or a list uploaded for this
+// send. Unlike a lifecycle journey there is no ongoing trigger and each
+// recipient receives the message once.
+export type EmailBlockType =
+  | "heading"
+  | "text"
+  | "image"
+  | "button"
+  | "divider"
+  | "spacer";
+
+export interface EmailBlock {
+  id: string;
+  type: EmailBlockType;
+  text?: string; // heading text or button label
+  html?: string; // rich-text body for text blocks
+  href?: string; // button / image link target
+  src?: string; // image url
+  alt?: string; // image alt text
+  align?: "left" | "center" | "right";
+  height?: number; // spacer height in px
+}
+
+export type BroadcastAudienceKind = "segment" | "upload";
+export interface BroadcastAudience {
+  kind: BroadcastAudienceKind;
+  // saved-segment audience
+  segmentId?: string;
+  segmentName?: string;
+  // uploaded-list audience
+  listName?: string;
+  uploadedCount?: number; // rows in the uploaded file
+  matchedCount?: number; // rows matched to a provider on TIN/email
+}
+
+export type BroadcastStatus = "draft" | "scheduled" | "sending" | "sent";
+
+export interface BroadcastSchedule {
+  mode: "now" | "scheduled";
+  sendAt?: string; // ISO, when mode === "scheduled"
+}
+
+export const broadcastSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  status: z.enum(["draft", "scheduled", "sending", "sent"]),
+  subject: z.string(),
+  preheader: z.string(),
+  fromName: z.string(),
+  fromEmail: z.string(),
+  replyTo: z.string(),
+  blocks: z.any(), // EmailBlock[]
+  audience: z.any(), // BroadcastAudience
+  connector: z.enum(["Marketo", "Customer.io"]),
+  audienceSize: z.number(),
+  schedule: z.any(), // BroadcastSchedule
+  metrics: z.object({
+    sent: z.number(),
+    delivered: z.number(),
+    opens: z.number(),
+    clicks: z.number(),
+    unsubscribes: z.number(),
+  }),
+  createdByRole: z.string(),
+  sentAt: z.string().nullable(),
+  scheduledFor: z.string().nullable(),
+});
+export type Broadcast = z.infer<typeof broadcastSchema> & {
+  blocks: EmailBlock[];
+  audience: BroadcastAudience;
+  schedule: BroadcastSchedule;
+};
+
 export const appointmentSchema = z.object({
   id: z.string(),
   providerId: z.string(),
@@ -494,6 +569,7 @@ export interface Dataset {
   funnelEvents: FunnelEvent[];
   segments: Segment[];
   campaigns: Campaign[];
+  broadcasts: Broadcast[];
   appointments: Appointment[];
   connectors: Connector[];
   dataSources: DataSource[];

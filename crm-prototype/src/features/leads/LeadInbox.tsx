@@ -54,14 +54,36 @@ export function LeadInbox() {
   const [stage, setStage] = useState<Stage | "all">("all");
   const [bankTier, setBankTier] = useState<BankTier | "all">("all");
   const [fdmFilter, setFdmFilter] = useState<"all" | "present" | "missing">("all");
+  const [repFilter, setRepFilter] = useState<string>("all"); // rep id, "unassigned", or "all"
+  const [offerOp, setOfferOp] = useState<"any" | "gt" | "lt">("any");
+  const [offerAmount, setOfferAmount] = useState<string>("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
+
+  // Sales specialists are only selectable when viewing the whole book; a sales
+  // rep's inbox is already scoped to their own leads.
+  const showRepFilter = role !== "sales_rep";
+  const repOptions = useMemo(
+    () => [...data.reps].sort((a, b) => a.name.localeCompare(b.name)),
+    [data.reps]
+  );
 
   const rows = useMemo(() => {
     const q = search.trim().toLowerCase();
+    const amt = Number(offerAmount.replace(/[^0-9.]/g, ""));
+    const amtActive = offerOp !== "any" && offerAmount.trim() !== "" && !Number.isNaN(amt);
     return baseLeads.filter((l) => {
       if (leadType !== "all" && l.leadType !== leadType) return false;
       if (stage !== "all" && l.stage !== stage) return false;
       if (bankTier !== "all" && l.bankTier !== bankTier) return false;
+      if (showRepFilter && repFilter !== "all") {
+        if (repFilter === "unassigned") {
+          if (l.assignedRepId) return false;
+        } else if (l.assignedRepId !== repFilter) return false;
+      }
+      if (amtActive) {
+        if (offerOp === "gt" && !(l.offerAmount > amt)) return false;
+        if (offerOp === "lt" && !(l.offerAmount < amt)) return false;
+      }
       if (fdmFilter !== "all") {
         const has = !!fdmForProvider(data, l.providerId);
         if (fdmFilter === "present" && !has) return false;
@@ -74,7 +96,20 @@ export function LeadInbox() {
       }
       return true;
     });
-  }, [baseLeads, search, leadType, stage, bankTier, fdmFilter, data, providerMap]);
+  }, [
+    baseLeads,
+    search,
+    leadType,
+    stage,
+    bankTier,
+    fdmFilter,
+    repFilter,
+    showRepFilter,
+    offerOp,
+    offerAmount,
+    data,
+    providerMap,
+  ]);
 
   const toggle = (id: string) =>
     setSelected((s) => {
@@ -216,6 +251,45 @@ export function LeadInbox() {
             </option>
           ))}
         </select>
+        {showRepFilter && (
+          <select className="select" value={repFilter} onChange={(e) => setRepFilter(e.target.value)}>
+            <option value="all">All specialists</option>
+            <option value="unassigned">Unassigned</option>
+            {repOptions.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.name}
+              </option>
+            ))}
+          </select>
+        )}
+        <div className="row gap-1 center">
+          <select
+            className="select"
+            value={offerOp}
+            onChange={(e) => setOfferOp(e.target.value as "any" | "gt" | "lt")}
+          >
+            <option value="any">Max offer: any</option>
+            <option value="gt">Max offer greater than</option>
+            <option value="lt">Max offer less than</option>
+          </select>
+          {offerOp !== "any" && (
+            <div className="row center" style={{ position: "relative" }}>
+              <span
+                style={{ position: "absolute", left: 10, color: "var(--text-faint)", pointerEvents: "none" }}
+              >
+                $
+              </span>
+              <input
+                className="select"
+                style={{ paddingLeft: 20, width: 130 }}
+                inputMode="numeric"
+                placeholder="Amount"
+                value={offerAmount}
+                onChange={(e) => setOfferAmount(e.target.value)}
+              />
+            </div>
+          )}
+        </div>
         <select
           className="select"
           value={fdmFilter}

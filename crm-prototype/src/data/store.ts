@@ -3,6 +3,7 @@ import { STATUS_BY_CODE } from "./schema";
 import type {
   Activity,
   Appointment,
+  Broadcast,
   Campaign,
   Dataset,
   Disposition,
@@ -10,6 +11,7 @@ import type {
   Segment,
   Stage,
 } from "./schema";
+import { seedBroadcasts } from "./generators/broadcastSeed";
 
 /*
  * In-memory data store. Loads the synthetic dataset once, then serves as the
@@ -27,6 +29,8 @@ interface State {
   launchCampaign: (c: Campaign) => void;
   saveSegment: (seg: Segment) => void;
   updateCampaignStatus: (id: string, status: Campaign["status"]) => void;
+  sendBroadcast: (b: Broadcast) => void;
+  updateBroadcastStatus: (id: string, status: Broadcast["status"]) => void;
   setLeadStage: (leadId: string, stage: Stage) => void;
   assignLead: (leadId: string, repId: string) => void;
   logDisposition: (
@@ -55,6 +59,10 @@ export const useData = create<State>((set, get) => ({
     if (get().loaded) return;
     const res = await fetch(`${import.meta.env.BASE_URL}data/dataset.json`);
     const data = (await res.json()) as Dataset;
+    // Broadcasts are seeded in-app so the shipped dataset stays back-compatible.
+    if (!data.broadcasts || data.broadcasts.length === 0) {
+      data.broadcasts = seedBroadcasts(data);
+    }
     set({ data, loaded: true });
   },
 
@@ -90,6 +98,25 @@ export const useData = create<State>((set, get) => ({
         data: {
           ...s.data,
           campaigns: s.data.campaigns.map((c) => (c.id === id ? { ...c, status } : c)),
+        },
+      };
+    }),
+
+  sendBroadcast: (b) =>
+    set((s) => {
+      if (!s.data) return s;
+      return { data: { ...s.data, broadcasts: [b, ...s.data.broadcasts] } };
+    }),
+
+  updateBroadcastStatus: (id, status) =>
+    set((s) => {
+      if (!s.data) return s;
+      return {
+        data: {
+          ...s.data,
+          broadcasts: s.data.broadcasts.map((b) =>
+            b.id === id ? { ...b, status } : b
+          ),
         },
       };
     }),

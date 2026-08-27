@@ -98,7 +98,7 @@ export function CampaignDetail() {
       <Panel>
         <PanelHeader
           title="Journey"
-          action={<span className="small muted">Delivered via {campaign.connector}. Portable to Marketo and Salesforce.</span>}
+          action={<span className="small muted">Delivered via {campaign.connector}.</span>}
         />
         <div className="panel-body">
           {journey ? (

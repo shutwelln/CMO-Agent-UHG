@@ -11,6 +11,9 @@ import { CampaignBuilder } from "./features/campaigns/CampaignBuilder";
 import { CampaignDetail } from "./features/campaigns/CampaignDetail";
 import { SegmentsPage } from "./features/campaigns/SegmentsPage";
 import { SegmentBuilder } from "./features/campaigns/SegmentBuilder";
+import { BroadcastsList } from "./features/broadcasts/BroadcastsList";
+import { BroadcastBuilder } from "./features/broadcasts/BroadcastBuilder";
+import { BroadcastDetail } from "./features/broadcasts/BroadcastDetail";
 import { SalesConsole } from "./features/outbound/SalesConsole";
 import { AppointmentsPage } from "./features/outbound/AppointmentsPage";
 import { GoalsReport } from "./features/reporting/GoalsReport";
@@ -36,6 +39,9 @@ export const router = createBrowserRouter(
         { path: "segments", element: <SegmentsPage /> },
         { path: "segments/new", element: <SegmentBuilder /> },
         { path: "segments/:id", element: <SegmentBuilder /> },
+        { path: "broadcasts", element: <BroadcastsList /> },
+        { path: "broadcasts/new", element: <BroadcastBuilder /> },
+        { path: "broadcasts/:id", element: <BroadcastDetail /> },
         { path: "console", element: <SalesConsole /> },
         { path: "appointments", element: <AppointmentsPage /> },
         { path: "reporting/goals", element: <GoalsReport /> },
