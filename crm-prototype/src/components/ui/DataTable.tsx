@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import clsx from "clsx";
@@ -69,6 +69,15 @@ export function DataTable<T>({
   };
 
   const parentRef = useRef<HTMLDivElement>(null);
+
+  // When the underlying rows change (a filter was applied), snap the scroll
+  // back to the top. Otherwise a stale scroll position can land past the end
+  // of a now-shorter, virtualized list and render an empty window - which
+  // reads as "the filter did nothing / broke the table".
+  useEffect(() => {
+    if (parentRef.current) parentRef.current.scrollTop = 0;
+  }, [rows]);
+
   const rowH = dense ? 38 : 46;
   const virt = useVirtualizer({
     count: sorted.length,
@@ -172,7 +181,7 @@ export function DataTable<T>({
   }
 
   return (
-    <div className="tbl-wrap" style={{ maxHeight, overflow: "auto" }}>
+    <div className="tbl-wrap" ref={parentRef} style={{ maxHeight, overflow: "auto" }}>
       <table className={clsx("tbl", dense && "dense")}>
         <thead>{headerRow}</thead>
         <tbody>
