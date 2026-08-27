@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAM Design · Preview Deck</title>
+<style>
+  :root{
+    --bg:#080808; --text:#e6e6e6; --dim:#5a5a5a; --accent:#ffffff;
+    --brand:#0075C9; --navy:#002677;
+    --card-w:660px; --card-h:430px;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased; }
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    height:100vh; width:100vw; overflow:hidden;
+    display:flex; justify-content:center; align-items:center; perspective:1500px;
+  }
+  .ambient{ position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+    background:radial-gradient(circle at 50% 45%, rgba(0,60,140,0.22), transparent 60%); pointer-events:none; }
+  .grain{ position:fixed; inset:0; pointer-events:none; z-index:100;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"); }
+
+  .layout{ display:grid; grid-template-columns:1fr 320px; width:92vw; max-width:1240px; height:86vh; z-index:10; gap:56px; align-items:center; }
+
+  .stage{ position:relative; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; perspective:2000px; }
+  .card-3d{ width:var(--card-w); height:var(--card-h); position:relative; transform-style:preserve-3d;
+    transform:rotateX(11deg) rotateY(-12deg) rotateZ(1.2deg);
+    transition:transform .4s cubic-bezier(0.2,0.8,0.2,1), box-shadow .4s ease;
+    box-shadow:-22px 32px 64px rgba(0,0,0,0.8), -1px 1px 0 rgba(255,255,255,0.08) inset;
+    background:#161616; border-radius:10px; overflow:hidden; display:flex; flex-direction:column; }
+  .card-3d:hover{ transform:rotateX(4deg) rotateY(-4deg) scale(1.02); box-shadow:-10px 16px 44px rgba(0,0,0,0.6); }
+  .browser-bar{ height:30px; background:#202020; display:flex; align-items:center; gap:6px; padding:0 13px; border-bottom:1px solid #2c2c2c; flex-shrink:0; }
+  .dot{ width:7px; height:7px; border-radius:50%; background:#3d3d3d; }
+  .url-pill{ margin-left:12px; font-size:10px; color:#777; background:#2a2a2a; padding:2px 10px; border-radius:6px; letter-spacing:.3px; }
+  .card-surface{ flex:1; position:relative; overflow:hidden; background:#0d0d0d; }
+  .frame-wrap{ position:absolute; inset:0; opacity:0; transition:opacity .5s cubic-bezier(0.4,0,0.2,1); }
+  .frame-wrap.on{ opacity:1; }
+  .frame-wrap iframe{ position:absolute; top:0; left:0; width:200%; height:200%; transform:scale(.5); transform-origin:top left; border:0; pointer-events:none; background:#fff; }
+  .card-surface::after{ content:''; position:absolute; inset:0; z-index:4; background:linear-gradient(135deg, rgba(255,255,255,0.04), rgba(0,0,0,0.12)); pointer-events:none; }
+
+  .info{ margin-top:34px; text-align:center; width:100%; max-width:var(--card-w);
+    opacity:0; transform:translateY(20px); animation:fadeUp .8s ease .35s forwards; }
+  @keyframes fadeUp{ to{ opacity:1; transform:translateY(0); } }
+  .info h1{ font-size:19px; font-weight:700; color:var(--accent); letter-spacing:.2px; margin-bottom:9px; transition:opacity .3s ease, transform .3s ease; }
+  .info .desc{ font-size:12.5px; color:#8a8a8a; letter-spacing:.2px; margin:0 auto 20px; max-width:380px; line-height:1.6; transition:opacity .3s ease, transform .3s ease; }
+  .link-row{ display:flex; flex-direction:column; align-items:center; gap:14px; }
+  .link-row a.primary{ display:inline-flex; align-items:center; gap:8px; background:#fff; color:#000; padding:11px 24px; border-radius:11px; font-weight:600; font-size:13px; letter-spacing:.2px; text-decoration:none; transition:background .25s, transform .25s, box-shadow .25s; box-shadow:0 2px 14px rgba(255,255,255,0.08); }
+  .link-row a.primary:hover{ background:#eaeaea; transform:scale(1.05); box-shadow:0 4px 22px rgba(255,255,255,0.16); }
+  .link-row a.primary::after{ content:'→'; font-size:14px; transition:transform .2s; }
+  .link-row a.primary:hover::after{ transform:translateX(3px); }
+  .link-row .url-note{ font-size:11px; color:#5a5a5a; letter-spacing:.3px; }
+
+  .stack{ height:100%; display:flex; flex-direction:column; justify-content:center; z-index:20; }
+  .stack-label{ font-size:10px; color:var(--dim); text-transform:uppercase; letter-spacing:1.6px; margin-bottom:18px; padding-left:10px; }
+  .spine{ height:60px; width:100%; display:flex; align-items:center; padding:0 20px; margin-bottom:10px;
+    background:linear-gradient(90deg,#121212,#0b0b0b); border:1px solid #1c1c1c; border-left:2px solid #242424;
+    border-radius:14px; cursor:pointer; transition:all .3s cubic-bezier(0.25,0.46,0.45,0.94);
+    transform-origin:center left; box-shadow:5px 5px 15px rgba(0,0,0,0.5); position:relative; }
+  .spine:hover{ transform:translateX(-8px) scale(1.03); background:#181818; z-index:10; box-shadow:0 6px 20px rgba(0,0,0,0.6); border-left:2px solid #fff; }
+  .spine.active{ border-left:2px solid #fff; background:#141414; transform:translateX(-4px); }
+  .spine-ico{ width:30px; height:30px; border-radius:8px; background:#242424; color:#9a9a9a; display:flex; align-items:center; justify-content:center; margin-right:13px; flex-shrink:0; transition:all .3s; }
+  .spine.active .spine-ico, .spine:hover .spine-ico{ background:#3a3a3a; color:#fff; }
+  .spine-txt{ display:flex; flex-direction:column; gap:2px; pointer-events:none; min-width:0; }
+  .spine-name{ font-size:13px; font-weight:600; color:#9a9a9a; letter-spacing:.2px; }
+  .spine:hover .spine-name, .spine.active .spine-name{ color:#fff; }
+  .spine-type{ font-size:10px; font-weight:500; color:#5a5a5a; letter-spacing:.3px; }
+  .spine.active .spine-type{ color:#9a9a9a; }
+
+  /* the two older previews are still here, one click away, without spending a
+     spine each on the first thing anybody sees */
+  .stack-more{ margin-top:2px; }
+  .stack-more > summary{ list-style:none; cursor:pointer; display:flex; align-items:center; gap:7px;
+    padding:6px 10px 14px; font-size:10px; font-weight:500; letter-spacing:1.4px;
+    text-transform:uppercase; color:#454545; transition:color .25s; }
+  .stack-more > summary::-webkit-details-marker{ display:none; }
+  .stack-more > summary:hover{ color:#9a9a9a; }
+  .stack-more > summary svg{ transition:transform .25s ease; flex-shrink:0; }
+  .stack-more[open] > summary svg{ transform:rotate(90deg); }
+
+  .logo{ position:fixed; top:24px; left:30px; z-index:50; font-size:15px; font-weight:700; color:#cfcfcf; letter-spacing:.2px; }
+  .logo .acme{ color:#E4780C; }
+  .logo .mute{ color:#5a5a5a; font-weight:500; }
+  .footer-text{ position:fixed; bottom:20px; left:0; right:0; text-align:center; font-size:10px; color:#3a3a3a; letter-spacing:.5px; z-index:10; }
+
+  @media (max-width:900px){
+    body{ overflow:auto; height:auto; }
+    .layout{ grid-template-columns:1fr; height:auto; padding:80px 0 40px; gap:36px; }
+    .stage{ height:auto; min-height:480px; }
+    :root{ --card-w:92vw; --card-h:280px; }
+  }
+</style>
+</head>
+<body>
+  <div class="grain"></div>
+  <div class="ambient"></div>
+
+  <main class="layout">
+    <section class="stage">
+      <div class="card-3d" id="mainCard">
+        <div class="browser-bar">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          <span class="url-pill" id="urlPill">tam-design-payments.vercel.app/provider-preferencing</span>
+        </div>
+        <div class="card-surface" id="surface"></div>
+      </div>
+
+      <div class="info">
+        <h1 id="infoTitle">Provider Preferencing</h1>
+        <p class="desc" id="infoDesc">Provider routing preferences — hierarchy table, network priority, virtual-card consent, enrollments and routing calculator.</p>
+        <div class="link-row">
+          <a id="primaryLink" href="/provider-preferencing" class="primary">Open preview</a>
+        </div>
+      </div>
+    </section>
+
+    <aside class="stack">
+      <div class="stack-label">Prototypes</div>
+      <div class="spine active" data-idx="0">
+        <div class="spine-ico">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
+        </div>
+        <div class="spine-txt"><span class="spine-name">CCS Portal</span><span class="spine-type">Groups, rules &amp; templates</span></div>
+      </div>
+      <div class="spine" data-idx="1">
+        <div class="spine-ico">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="spine-txt"><span class="spine-name">Payer Portal</span><span class="spine-type">Funding, files &amp; reporting</span></div>
+      </div>
+      <div class="spine" data-idx="2">
+        <div class="spine-ico">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+        </div>
+        <div class="spine-txt"><span class="spine-name">Provider Portal</span><span class="spine-type">Portal &amp; guest balance</span></div>
+      </div>
+      <div class="spine" data-idx="3">
+        <div class="spine-ico">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-6 9 6"/><path d="M5 10v9"/><path d="M12 10v9"/><path d="M19 10v9"/><path d="M3 19h18"/></svg>
+        </div>
+        <div class="spine-txt"><span class="spine-name">Banking Solutions</span><span class="spine-type">Deposits, credit &amp; AutoPay</span></div>
+      </div>
+      <div class="spine" data-idx="4">
+        <div class="spine-ico">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.5 9.5 0 0 1-2.8-.4L3 21l1.6-4.6A8.2 8.2 0 0 1 3.6 11.5 8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/><line x1="9.1" y1="10" x2="9.1" y2="10"/><line x1="14.9" y1="10" x2="14.9" y2="10"/><path d="M9.1 13.2a3.5 3.5 0 0 0 5.8 0"/></svg>
+        </div>
+        <div class="spine-txt"><span class="spine-name">Payments Chatbot</span><span class="spine-type">Summarization challenge</span></div>
+      </div>
+      <details class="stack-more">
+        <summary><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Earlier previews</summary>
+        <div class="spine" data-idx="5">
+          <div class="spine-ico">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+          </div>
+          <div class="spine-txt"><span class="spine-name">Provider Preferencing</span><span class="spine-type">Routing &amp; preferences</span></div>
+        </div>
+        <div class="spine" data-idx="6">
+          <div class="spine-ico">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+          </div>
+          <div class="spine-txt"><span class="spine-name">Summarization</span><span class="spine-type">Payments search</span></div>
+        </div>
+      </details>
+    </aside>
+  </main>
+
+  <div class="footer-text">Internal design previews — work in progress, may vary across iterations</div>
+
+
+  <script>
+    const items = [
+      { title:'CCS Portal',
+        desc:'The CCS product on its own platform — groups and their hierarchy, rule types, templates, test runs and the onboarding wizard.',
+        path:'/payer-portal/?portal=ccs' },
+      { title:'Payer Portal',
+        desc:'The payments product — dashboard, funding, files, document layout and reporting for the payer side.',
+        path:'/payer-portal/?portal=payments' },
+      { title:'Provider Portal',
+        desc:'Full provider portal — guest payment-balance lookup, dashboard, payments, posting, ERA standardization, users and configuration.',
+        path:'/provider-portal' },
+      { title:'Banking Solutions',
+        desc:'What an enrolled provider sees on the bank side — deposit accounts, payer payments reconciled to deposits, credit, AutoPay and documents.',
+        path:'/banking-solutions' },
+      { title:'Payments Chatbot',
+        desc:'The summarization challenge with its chatbot on top \u2014 ask about a payment, a payer or a period and it answers from the same rows the table shows.',
+        path:'/summarization?ask=1' },
+      { title:'Provider Preferencing',
+        desc:'Provider routing preferences — hierarchy table, network priority, virtual-card consent, enrollments and routing calculator.',
+        path:'/provider-preferencing' },
+      { title:'Summarization',
+        desc:'Global payment search with consolidated and individual views — search by TIN, provider, network ID, payment ID or claim.',
+        path:'/summarization' }
+    ];
+    const surface  = document.getElementById('surface');
+    const card     = document.getElementById('mainCard');
+    const infoTitle= document.getElementById('infoTitle');
+    const infoDesc = document.getElementById('infoDesc');
+    const primary  = document.getElementById('primaryLink');
+    const urlPill  = document.getElementById('urlPill');
+    const spines   = document.querySelectorAll('.spine[data-idx]');
+
+    // one lazy-built iframe layer per item, cached so switching is instant
+    const layers = items.map(() => null);
+    function frameFor(idx){
+      if (layers[idx]) return layers[idx];
+      const wrap = document.createElement('div');
+      wrap.className = 'frame-wrap';
+      const f = document.createElement('iframe');
+      f.loading = 'lazy'; f.src = items[idx].path; f.tabIndex = -1; f.setAttribute('scrolling','no');
+      wrap.appendChild(f); surface.appendChild(wrap); layers[idx] = wrap;
+      return wrap;
+    }
+    let current = -1;
+    function show(idx){
+      if (idx === current) return;
+      current = idx;
+      const it = items[idx];
+      frameFor(idx); // ensure built
+      layers.forEach((l,i)=>{ if(l) l.classList.toggle('on', i===idx); });
+      spines.forEach(s=>s.classList.toggle('active', +s.dataset.idx===idx));
+      infoTitle.style.opacity='0'; infoDesc.style.opacity='0';
+      setTimeout(()=>{
+        infoTitle.textContent = it.title;
+        infoDesc.textContent  = it.desc;
+        primary.href = it.path;
+        urlPill.textContent = 'tam-design-payments.vercel.app'+it.path;
+        infoTitle.style.opacity='1'; infoDesc.style.opacity='1';
+      }, 180);
+    }
+    spines.forEach(s=> s.addEventListener('click', ()=> show(+s.dataset.idx)) );
+    show(0);
+
+    document.addEventListener('mousemove', (e)=>{
+      const x = (window.innerWidth/2 - e.pageX)/80;
+      const y = (window.innerHeight/2 - e.pageY)/80;
+      card.style.transform = `rotateX(${11+y}deg) rotateY(${-12+x}deg) rotateZ(1.2deg)`;
+    });
+  </script>
+</body>
+</html>

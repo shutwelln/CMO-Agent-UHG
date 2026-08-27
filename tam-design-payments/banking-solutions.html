@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Optum Banking Solutions (Prototype)</title>
+<link rel="icon" href="data:,">
+<!--
+  Banking Solutions has its own address, the way the provider and payer portals
+  do. The screens themselves still live in the provider prototype — one file,
+  one source of truth — so this page mounts them here instead of copying them:
+  a second copy would drift from the first the same afternoon.
+-->
+<style>
+  html, body { margin:0; padding:0; height:100%; background:#fff; }
+  iframe { display:block; width:100%; height:100%; border:0; }
+</style>
+</head>
+<body>
+<iframe id="bank-frame" title="Optum Banking Solutions"></iframe>
+<script>
+  var tab = (location.search.match(/[?&]go=([a-z]+)/) || [])[1] || 'overview';
+  document.getElementById('bank-frame').src =
+    '/provider-portal/index.html?bank=' + encodeURIComponent(tab);
+</script>
+</body>
+</html>

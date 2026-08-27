@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Consolidated Payments · Prototype options</title>
+<script src="/summarization/vendor/react.production.min.js"></script>
+<script src="/summarization/vendor/react-dom.production.min.js"></script>
+<script src="/summarization/vendor/babel.min.js"></script>
+<style>
+  /* ─────────────────────────────────────────────────────────────────
+     Brand design tokens (shared with the provider prototype).
+     ───────────────────────────────────────────────────────────────── */
+  :root{
+    --navy:#002677; --navy-d:#003891; --navy-soft:#E6F0FF;
+    --orange:#FF612B; --orange-d:#D74120; --orange-soft:#FFD1AB;
+    --info:#0075C9; --info-soft:#E6F0FF;
+    --link:#2C5FBF; --link-border:#C9D5EF;
+    --ink:#3D3C38; --ink-2:#504F4A; --ink-3:#989790; --ink-4:#CECDCA;
+    --line:#E7E6E4; --line-2:#CECDCA; --line-soft:#F0EEE9;
+    --bg:#FFFFFF; --bg-hover:#F6F2E9; --paper:#FFFFFF; --paper-warm:#FAF8F2;
+    --ash:#F3F3F3; --horizon:#EDE8E0;
+    --ach:#0075C9; --vc:#FF612B; --check:#00A878;
+    --warn:#B8861A; --warn-bg:#FFF8E6;
+    --error:#E31C3D; --error-bg:#FCEAEA; --check-bg:#E0F4ED;
+    --elev-menu:0 2px 6px rgba(61,60,56,.16);
+    --elev-popover:0 4px 16px rgba(61,60,56,.16);
+    --shadow-sm:0 1px 2px rgba(61,60,56,.08);
+    --focus-ring:0 0 0 .2rem rgba(0,38,119,.18);
+    --h-md:28px; --h-sm:23px;
+    --t:.18s ease;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; background:var(--bg); color:var(--ink); }
+  body{ font-family:"Enterprise Sans VF","Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial; -webkit-font-smoothing:antialiased; font-size:14px; line-height:1.4; }
+  .ink-2{color:var(--ink-2)} .ink-3{color:var(--ink-3)}
+  a{ color:var(--navy); text-decoration:none; }
+
+  .app{ display:flex; flex-direction:column; min-height:100vh; }
+  /* BEIGE RULE: the warm tone lives ONLY on the page navbar (topbar).
+     Everything else — sidenav, table header, rows — stays white. */
+  .topbar{ display:flex; align-items:center; justify-content:space-between; padding:12px 20px; border-bottom:1px solid var(--line); background:var(--paper-warm); position:sticky; top:0; z-index:40; }
+  .brand{ font-size:16px; font-weight:600; letter-spacing:-.01em; }
+  /* Floating menu toggle — transparent, near the page title (not the navbar). */
+  .nav-fab{ position:fixed; top:96px; left:6px; z-index:50; display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border:0; background:transparent; color:var(--ink-3); border-radius:8px; cursor:pointer; transition:all var(--t); }
+  .nav-fab:hover{ background:rgba(0,0,0,.06); color:var(--ink); }
+  .nav-fab.open{ left:236px; }
+  .brand b{ color:var(--orange); font-weight:700; }
+  .topbar-user{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink-2); }
+  .avatar{ width:28px; height:28px; border-radius:999px; background:var(--navy); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; }
+  .body{ display:flex; flex:1; min-height:0; }
+  .sidenav{ width:230px; flex-shrink:0; border-right:1px solid var(--line); background:var(--paper); padding:16px 10px; font-size:13px; }
+  .sidenav-sect{ font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-3); padding:14px 10px 6px; }
+  .sidenav-item{ display:flex; align-items:center; gap:9px; padding:8px 12px; border-radius:8px; color:var(--ink-2); cursor:pointer; }
+  .sidenav-item:hover{ background:var(--bg-hover); color:var(--ink); }
+  /* Active item — navy left rail + rounded soft-blue highlight (Abyss nav). */
+  .sidenav-item.is-on{ background:var(--navy-soft); color:var(--navy); font-weight:600; box-shadow:inset 3px 0 0 var(--navy); }
+  .sidenav-item.is-child{ padding-left:30px; font-size:12.5px; }
+  .content{ flex:1; min-width:0; padding:22px 30px 70px; }
+
+  .breadcrumb{ font-size:12.5px; color:var(--ink-3); margin-bottom:10px; display:flex; gap:7px; align-items:center; }
+  .breadcrumb .crumb-link{ cursor:pointer; }
+  .breadcrumb .crumb-link:hover{ text-decoration:underline; }
+  .breadcrumb .sep{ color:var(--ink-4); }
+  .title-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+  h1.page{ font-size:var(--h-md); font-weight:700; letter-spacing:-.01em; margin:0 0 4px; color:var(--navy); }
+  .page-sub{ font-size:13.5px; color:var(--ink-2); margin-bottom:18px; }
+
+  .searchbar{ display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+  .search-input{ flex:1; display:flex; align-items:center; gap:9px; background:#fff; border:1px solid var(--line-2); border-radius:8px; padding:11px 14px; }
+  .search-input:focus-within{ border-color:var(--navy); box-shadow:var(--focus-ring); }
+  .search-input input{ border:0; outline:0; flex:1; font-size:14px; color:var(--ink); background:transparent; }
+  /* Date range = an APPLIED filter chip embedded INSIDE the search field:
+     cyan fill, blue text, leading check + trailing calendar, no border. */
+  .range-chip{ display:inline-flex; align-items:center; gap:7px; border:0; border-radius:999px; padding:6px 12px; font-size:12.5px; color:var(--link); font-weight:600; background:#DAF4FB; white-space:nowrap; cursor:pointer; flex-shrink:0; margin-left:4px; }
+  .range-chip:hover{ background:#CBEEF7; }
+  .range-chip svg{ color:var(--link); }
+  /* Buttons are pill-shaped per the Abyss button matrix (Filled/Outline/Text
+     × Brand/Neutral/Destructive/Inverse). */
+  .btn{ display:inline-flex; align-items:center; gap:7px; border:1px solid transparent; border-radius:999px; padding:10px 20px; font-size:13.5px; font-weight:700; cursor:pointer; white-space:nowrap; transition:all var(--t); }
+  .btn-primary{ background:var(--navy); color:#fff; border-color:var(--navy); }       /* Filled Brand */
+  .btn-primary:hover{ background:var(--navy-d); border-color:var(--navy-d); }
+  .btn-quiet{ background:#fff; color:var(--navy); border:1px solid var(--navy); }       /* Outline Brand */
+  .btn-quiet:hover{ background:var(--navy-soft); }
+
+  .section-title{ font-size:16px; font-weight:700; color:var(--ink); margin:0 0 8px; }
+  .filter-label{ font-size:12px; color:var(--ink-3); margin-bottom:8px; }
+  .filters{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+  .filters + .filters{ margin-top:8px; }
+  /* Filter chips are blue (text + chevron + light-blue border) as in the original. */
+  .filter-chip{ display:inline-flex; align-items:center; gap:6px; border:1px solid var(--link-border); border-radius:999px; padding:6px 12px; font-size:12.5px; color:var(--link); font-weight:600; background:#fff; cursor:pointer; }
+  .filter-chip:hover{ background:var(--navy-soft); }
+  .all-filters{ margin-left:auto; display:inline-flex; align-items:center; gap:6px; border:1px solid var(--link-border); border-radius:999px; padding:6px 12px; background:#fff; font-size:12.5px; color:var(--link); font-weight:600; cursor:pointer; }
+  .all-filters:hover{ text-decoration:underline; }
+  .filter-wrap{ position:relative; display:inline-block; }
+  /* Applied filter — light-blue fill + GRAY border + blue text + leading check. */
+  .filter-chip.is-active{ border-color:var(--line-2); color:var(--link); background:var(--navy-soft); font-weight:600; }
+  .filter-chip .chip-check{ display:inline-flex; color:var(--link); }
+  .filter-chip .chip-count{ background:var(--link); color:#fff; border-radius:999px; font-size:10px; font-weight:700; min-width:16px; height:16px; padding:0 4px; display:inline-flex; align-items:center; justify-content:center; }
+  .fdrop{ position:absolute; z-index:30; top:calc(100% + 6px); left:0; min-width:210px; max-height:280px; overflow-y:auto; background:#fff; border:1px solid var(--line-2); border-radius:9px; box-shadow:var(--elev-menu); padding:5px; }
+  .fopt{ display:flex; align-items:center; gap:9px; padding:7px 9px; border-radius:6px; font-size:13px; color:var(--ink); cursor:pointer; white-space:nowrap; }
+  .fopt:hover{ background:var(--bg-hover); }
+  .fcheck{ width:16px; height:16px; border:1.5px solid var(--line-2); border-radius:4px; display:inline-flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0; }
+  .fcheck.on{ background:var(--navy); border-color:var(--navy); }
+  /* Search hit: brand 'highlighter' on the matching text in place (no chip, no
+     row tint) — navy-soft background + navy text, the familiar Cmd+F pattern. */
+  .hl{ background:var(--navy-soft); color:var(--navy); font-weight:600; border-radius:3px; padding:0 3px; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
+
+  .results-meta{ display:flex; align-items:center; justify-content:space-between; margin:20px 0 10px; }
+  .results-count{ font-size:13px; color:var(--ink-3); font-weight:600; }
+  /* Abyss DataTable pagination bar */
+  .pager{ display:flex; align-items:center; justify-content:space-between; padding:16px 4px 2px; font-size:13px; color:var(--ink-3); }
+  .pager-pages{ display:flex; align-items:center; gap:2px; }
+  .pager-pages button{ min-width:34px; height:34px; padding:0; border:0; background:transparent; border-radius:999px; font-size:13px; font-variant-numeric:tabular-nums; color:var(--ink-2); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; }
+  .pager-pages button:hover{ background:var(--bg-hover); }
+  .pager-pages button.on{ background:var(--navy); color:#fff; font-weight:700; }
+  .pager-nav{ display:inline-flex; align-items:center; gap:5px; padding:0 12px; height:34px; color:var(--link); font-weight:600; cursor:pointer; }
+  .pager-nav.is-off{ color:var(--ink-4); cursor:default; }
+  /* Brand footer */
+  .app-footer{ margin-top:auto; background:var(--navy); color:#fff; font-size:12px; padding:16px 30px; }
+
+  .seg{ display:inline-flex; background:var(--ash); border-radius:999px; padding:3px; gap:2px; }
+  .seg button{ border:0; background:transparent; padding:7px 14px; border-radius:999px; font-size:12.5px; font-weight:600; color:var(--ink-2); cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all var(--t); }
+  .seg button.on{ background:var(--navy); color:#fff; box-shadow:var(--shadow-sm); }
+
+  .surface{ background:var(--paper); border:1px solid var(--line); border-radius:10px; overflow-x:auto; }
+  table.tbl{ width:100%; border-collapse:collapse; font-size:13px; min-width:920px; }
+  /* Abyss DataTable header — bold dark sentence-case titles (not uppercase
+     grey), on a faint header fill, divided from the body. */
+  .tbl thead th{ text-align:left; font-size:12px; font-weight:700; letter-spacing:0; color:var(--ink); padding:12px 12px; border-bottom:1px solid var(--line-2); white-space:nowrap; background:var(--paper); }
+  .tbl thead th.num{ text-align:right; }
+  .tbl tbody td{ padding:13px 12px; border-bottom:1px solid var(--line-soft); color:var(--ink); vertical-align:middle; white-space:nowrap; }
+  .tbl tbody tr:last-child td{ border-bottom:0; }
+  /* Row hover — subtle cool gray (not the warm beige). */
+  .tbl tbody tr.row-hover:hover{ background:#F4F5F7; }
+  .tbl.zebra tbody tr.row-hover:hover td{ background:#F4F5F7; }
+  /* row you were just viewing (returned from the detail) — keeps your place */
+  .tbl tbody tr td{ transition:background-color .5s ease, box-shadow .5s ease; }
+  .tbl tbody tr.is-recent td{ background:var(--navy-soft) !important; }
+  .tbl tbody tr.is-recent td:first-child{ box-shadow:inset 3px 0 0 var(--navy); }
+  /* Header sort + filter icons — thick line icons in the secondary blue,
+     as in the original DataTable. Sort = up/down arrows; filter = funnel. */
+  .th-cell{ display:inline-flex; align-items:center; gap:8px; }
+  th.num .th-cell{ justify-content:flex-end; }
+  .th-sortlabel{ cursor:pointer; user-select:none; }
+  .th-sortlabel:hover{ color:var(--navy); }
+  .th-icons{ display:inline-flex; align-items:center; gap:5px; }
+  /* Both icons always at full strength (sort never looks disabled). */
+  .th-ic{ display:inline-flex; color:var(--link); cursor:pointer; }
+  .th-ic:hover{ color:var(--navy); }
+  /* Net settlement fee: rate (%) over amount ($), like the source table. */
+  .fee-cell{ line-height:1.25; }
+  .fee-cell .fee-pct{ display:block; font-size:11px; color:var(--ink-3); }
+  .fee-cell .fee-amt{ display:block; color:var(--ink-2); }
+  .infotip{ position:relative; display:inline-flex; align-items:center; color:var(--navy); cursor:help; }
+  .infotip > svg{ opacity:.7; }
+  .infotip:hover > svg{ opacity:1; }
+  /* Brand tooltip (Gray variant) — portaled to <body> so it never clips
+     inside the scrolling table; elevation 20-style shadow, downward pointer. */
+  .tip-fixed{ position:fixed; z-index:9999; transform:translate(-50%, calc(-100% - 11px)); background:#232220; color:#fff; padding:9px 11px; border-radius:8px; font-size:11.5px; font-weight:500; line-height:1.45; letter-spacing:normal; text-transform:none; width:230px; box-shadow:0 6px 20px rgba(35,34,32,.28); white-space:normal; pointer-events:none; }
+  .tip-fixed b{ font-weight:700; }
+  .tip-fixed::after{ content:""; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:6px solid transparent; border-top-color:#232220; }
+  .tip-fixed.tip-wide{ width:268px; }
+  .hovertip{ display:inline-flex; align-items:center; }
+  .tip-bd{ display:block; }
+  .tip-bd-head{ display:block; margin-bottom:6px; padding-bottom:5px; border-bottom:1px solid rgba(255,255,255,.18); }
+  .tip-bd-row{ display:flex; justify-content:space-between; gap:16px; padding:2px 0; }
+  .tip-bd-claim{ opacity:.82; font-variant-numeric:tabular-nums; }
+  .tip-bd-amt{ font-variant-numeric:tabular-nums; }
+  .tip-bd-total{ display:flex; justify-content:space-between; gap:16px; margin-top:5px; padding-top:5px; border-top:1px solid rgba(255,255,255,.18); font-weight:700; }
+  .tbl td.num{ text-align:right; font-variant-numeric:tabular-nums; }
+  .tbl .strong{ font-weight:700; }
+  .mono{ font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11.5px; color:var(--ink-2); }
+  .prov-2line{ display:flex; flex-direction:column; gap:1px; }
+  .prov-2line small{ color:var(--ink-3); font-size:11px; }
+
+  /* Abyss Badge — small rounded-rect, semantic tint + matching text. */
+  .pill{ display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:5px; font-size:11px; font-weight:700; }
+  .pill .dot{ width:6px; height:6px; border-radius:999px; }
+  .pill.is-issued{ background:var(--navy-soft); color:var(--navy); } .pill.is-issued .dot{ background:var(--navy); }
+  .pill.is-cleared{ background:var(--check-bg); color:#066605; } .pill.is-cleared .dot{ background:var(--check); }
+  .pill.is-created{ background:var(--ash); color:var(--ink-2); } .pill.is-created .dot{ background:var(--ink-3); }
+  .pill.is-pending{ background:var(--warn-bg); color:#7A5500; } .pill.is-pending .dot{ background:var(--warn); }
+
+  .netchip{ display:inline-flex; align-items:center; gap:6px; font-weight:600; font-size:12.5px; }
+  .netchip .dot{ width:7px; height:7px; border-radius:999px; }
+  .dot-ach{ background:var(--ach); } .dot-vcc{ background:var(--vc); } .dot-check{ background:var(--check); }
+
+  .exp-btn{ width:22px; height:22px; border:0; background:transparent; cursor:pointer; color:var(--ink-3); display:inline-flex; align-items:center; justify-content:center; border-radius:5px; transition:transform var(--t); }
+  .exp-btn:hover{ background:var(--bg-hover); color:var(--ink); }
+  .exp-btn.open{ transform:rotate(90deg); }
+  .exp-placeholder{ display:inline-block; width:22px; }
+  /* Consolidated rows are clickable anywhere to expand. */
+  .tbl tbody tr.row-clickable{ cursor:pointer; }
+  /* Child rows in beige so they read distinct from the cool-gray hover. */
+  tr.child-row td{ background:var(--paper-warm); font-size:12.5px; }
+  /* Hierarchy guide on child rows: a warm tan accent from the beige family
+     (not the navy/cyan line), so it reads as part of the same grouping. */
+  tr.child-row td:first-child{ box-shadow:inset 3px 0 0 #E0D6BE; }
+  /* Sub-header for the expanded children: labels their own columns (the child
+     fields differ from the parent's), so the data no longer looks misaligned. */
+  tr.child-subhead-row td{ background:var(--paper-warm); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-3); padding:9px 12px 5px; }
+  tr.child-subhead-row td:first-child{ box-shadow:inset 3px 0 0 #E0D6BE; }
+  .child-head td{ background:#F5F8FC; padding-top:8px; padding-bottom:4px; }
+  .child-subhead{ font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3); }
+
+  /* In-table link — lighter brand blue (#2C5FBF), no underline by default.
+     Network payment ID navigates within the app, so it carries no external
+     icon. (Links that open a different page should add an external-link icon.) */
+  .netid-link{ color:var(--link); font-weight:600; cursor:pointer; font-family:ui-monospace,Menlo,monospace; font-size:11.5px; }
+  .netid-link:hover{ text-decoration:underline; }
+  .netid-plain{ font-family:ui-monospace,Menlo,monospace; font-size:11.5px; color:var(--ink-3); }
+  .cons-badge{ display:inline-flex; align-items:center; gap:4px; margin-left:8px; padding:1px 7px; border-radius:5px; background:var(--navy-soft); color:var(--navy); font-size:10.5px; font-weight:700; vertical-align:middle; }
+  .drill-hint{ display:inline-flex; align-items:center; gap:4px; font-size:10.5px; color:var(--ink-3); margin-left:6px; }
+  .legend-hint{ display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--ink-3); }
+
+  .icon-act{ width:28px; height:28px; border:0; background:transparent; border-radius:6px; color:var(--ink-3); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; }
+  .icon-act:hover{ background:var(--bg-hover); color:var(--ink); }
+
+  .detail-back{ display:inline-flex; align-items:center; gap:8px; font-size:13px; color:var(--ink-2); cursor:pointer; margin-bottom:8px; }
+  .detail-back:hover{ color:var(--navy); }
+  h1.detail-title{ font-size:var(--h-sm); font-weight:700; margin:0 0 16px; display:flex; align-items:center; gap:10px; color:var(--navy); }
+  .detail-head{ display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-bottom:18px; }
+  .detail-head-cell{ padding:14px 16px; border-right:1px solid var(--line); }
+  .detail-head-cell:last-child{ border-right:0; }
+  .detail-head-cell .lbl{ font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3); margin-bottom:5px; }
+  .detail-head-cell .val{ font-size:15px; font-weight:700; color:var(--ink); }
+  .detail-head-cell .val.mono{ font-size:13px; }
+  .tabs{ display:flex; gap:2px; border-bottom:1px solid var(--line); margin-bottom:16px; flex-wrap:wrap; }
+  .tab{ padding:10px 14px; border:0; border-bottom:2px solid transparent; background:transparent; font-size:13px; font-weight:600; color:var(--ink-3); cursor:pointer; }
+  .tab:hover{ color:var(--ink); }
+  .tab.on{ color:var(--ink); border-bottom-color:var(--navy); }
+  .tab .tab-count{ color:var(--ink-3); font-weight:600; }
+
+  .doc-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .doc-card{ border:1px solid var(--line); border-radius:10px; padding:16px; display:flex; align-items:flex-start; gap:12px; }
+  .doc-ic{ width:38px; height:38px; border-radius:8px; background:var(--navy-soft); color:var(--navy); display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .doc-card .dt{ font-weight:700; font-size:13.5px; }
+  .doc-card .dd{ font-size:11.5px; color:var(--ink-3); margin-top:2px; }
+  .doc-dl{ margin-left:auto; }
+  .info-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 28px; }
+  .info-row{ display:flex; flex-direction:column; gap:3px; padding:11px 0; border-bottom:1px solid var(--line-soft); }
+  .info-row .ik{ font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-3); }
+  .info-row .iv{ font-size:13.5px; color:var(--ink); }
+  .empty-note{ padding:28px; text-align:center; color:var(--ink-3); font-size:13px; }
+
+  /* floating prototype switcher */
+  /* Lab/options trigger styled as a brand Avatar (first variant: white fill, navy ring). */
+  .pp-fab{ position:fixed; top:14px; right:18px; z-index:80; width:36px; height:36px; border-radius:999px; background:var(--paper); color:var(--navy); border:1.5px solid var(--navy); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:background var(--t),box-shadow var(--t); }
+  .pp-fab:hover{ background:var(--navy-soft); box-shadow:var(--elev-popover); }
+  .pp-panel{ position:fixed; top:58px; right:18px; z-index:80; width:340px; background:var(--paper); border:1px solid var(--line); border-radius:12px; box-shadow:var(--elev-popover); padding:14px; }
+  .pp-head{ display:flex; align-items:center; gap:8px; padding-bottom:10px; border-bottom:1px solid var(--line); margin-bottom:12px; }
+  .pp-head .kbd{ font-family:ui-monospace,Menlo,monospace; font-size:10px; background:#232220; color:#fff; padding:2px 6px; border-radius:4px; letter-spacing:.06em; font-weight:600; }
+  .pp-head .ttl{ font-size:13px; font-weight:700; }
+  .pp-card{ display:flex; gap:10px; padding:10px; border-radius:9px; border:1px solid var(--line); background:#fff; cursor:pointer; margin-bottom:8px; transition:all var(--t); }
+  .pp-card:hover{ border-color:var(--ink-3); }
+  .pp-card.on{ border-color:var(--navy); box-shadow:0 0 0 1px var(--navy); background:var(--navy-soft); }
+  .pp-card .pp-letter{ width:22px; height:22px; flex-shrink:0; border-radius:6px; background:var(--ink); color:#fff; font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; }
+  .pp-card.on .pp-letter{ background:var(--navy); }
+  .pp-card .pp-t{ font-size:12.5px; font-weight:700; line-height:1.25; }
+  .pp-card .pp-d{ font-size:11px; color:var(--ink-2); line-height:1.35; margin-top:3px; }
+  .pp-tag{ display:inline-block; font-size:8.5px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; padding:1px 5px; border-radius:4px; margin-left:5px; vertical-align:middle; }
+  .pp-tag.drop{ background:var(--error-bg); color:#9C1729; }
+  .pp-tag.lean{ background:var(--check-bg); color:#066605; }
+  /* Secondary section — data-clarity add-on, demoted below the 3 options. */
+  .pp-divider{ border-top:1px solid var(--line); margin:12px 0 8px; }
+  .pp-sec-label{ font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-3); margin-bottom:8px; }
+  .pp-card.is-secondary{ padding:9px 10px; }
+  .pp-card.is-secondary .pp-t{ font-size:11.5px; }
+  .pp-card.is-secondary .pp-d{ font-size:10.5px; color:var(--ink-3); }
+  .pp-letter-sec{ background:var(--ink-3) !important; }
+  .pp-card.is-secondary.on .pp-letter-sec{ background:var(--navy) !important; }
+
+  /* compact, collapsed-by-default pros & cons */
+  .pc{ margin-top:16px; border:1px solid var(--line); border-radius:8px; background:var(--paper-warm); }
+  .pc-bar{ display:flex; align-items:center; gap:8px; padding:8px 12px; font-size:12px; font-weight:600; color:var(--ink-2); cursor:pointer; }
+  .pc-bar .pc-chev{ transition:transform var(--t); color:var(--ink-3); }
+  .pc-bar .pc-chev.open{ transform:rotate(90deg); }
+  .pc-bar .pc-spacer{ margin-left:auto; font-weight:400; color:var(--ink-3); }
+  .pc-body{ display:grid; grid-template-columns:1fr 1fr; border-top:1px solid var(--line); }
+  .pc-col{ padding:10px 12px; }
+  .pc-col + .pc-col{ border-left:1px solid var(--line); }
+  .pc-col h4{ margin:0 0 6px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+  .pc-col.pro h4{ color:#066605; } .pc-col.con h4{ color:#9C1729; }
+  .pc-li{ display:flex; gap:6px; font-size:11.5px; color:var(--ink-2); line-height:1.35; margin-bottom:5px; }
+  .pc-li svg{ flex-shrink:0; margin-top:2px; }
+  .pc-foot{ grid-column:1/3; border-top:1px solid var(--line); padding:8px 12px; font-size:11.5px; color:var(--ink-2); background:#fff; }
+  .pc-foot b{ color:var(--ink); }
+
+  /* ══════════════════════════════════════════════════════════════════
+     Payments assistant — floating AI helper.
+     Brand rule: the launcher is the only saturated orange surface on the
+     page, so it reads as "the one thing that talks back".
+     ══════════════════════════════════════════════════════════════════ */
+  @keyframes aiBreathe{ 0%,100%{ box-shadow:0 6px 18px rgba(255,97,43,.34), 0 0 0 0 rgba(255,97,43,.34); }
+                        50%{ box-shadow:0 6px 18px rgba(255,97,43,.34), 0 0 0 12px rgba(255,97,43,0); } }
+  @keyframes aiPanelIn{ from{ opacity:0; transform:translateY(14px) scale(.96); }
+                        to{ opacity:1; transform:translateY(0) scale(1); } }
+  @keyframes aiMsgIn{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
+  @keyframes aiChipIn{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:none; } }
+  @keyframes aiDot{ 0%,60%,100%{ transform:translateY(0); opacity:.45; } 30%{ transform:translateY(-4px); opacity:1; } }
+  @keyframes aiSpin{ to{ transform:rotate(360deg); } }
+  @keyframes aiFadeOut{ from{ opacity:1; transform:none; } to{ opacity:0; transform:translateY(-6px); } }
+  @keyframes aiSheen{ 0%{ background-position:-200% 0; } 100%{ background-position:200% 0; } }
+
+  .ai-fab{ position:fixed; right:24px; bottom:24px; z-index:120; width:56px; height:56px; border:0;
+    border-radius:999px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;
+    color:#fff; background:linear-gradient(145deg, #FF7A45 0%, var(--orange) 45%, var(--orange-d) 100%);
+    animation:aiBreathe 3.6s ease-in-out infinite;
+    transition:transform .22s cubic-bezier(.34,1.56,.64,1), filter .22s ease; }
+  .ai-fab:hover{ transform:translateY(-2px) scale(1.06); filter:saturate(1.08); }
+  .ai-fab:active{ transform:scale(.96); }
+  .ai-fab:focus-visible{ outline:none; box-shadow:0 0 0 4px rgba(255,97,43,.32); }
+  .ai-fab.is-open{ animation:none; background:var(--navy); }
+  .ai-fab svg{ transition:transform .28s cubic-bezier(.34,1.56,.64,1); }
+  .ai-fab.is-open svg{ transform:rotate(90deg); }
+  .ai-fab-dot{ position:absolute; top:2px; right:2px; width:12px; height:12px; border-radius:999px;
+    background:var(--navy); border:2.5px solid #fff; }
+
+  .ai-panel{ position:fixed; right:24px; bottom:92px; z-index:120; width:404px; max-width:calc(100vw - 32px);
+    height:min(624px, calc(100vh - 132px)); display:flex; flex-direction:column; overflow:hidden;
+    background:var(--paper); border:1px solid var(--line); border-radius:20px;
+    box-shadow:0 24px 60px rgba(61,60,56,.20), 0 4px 12px rgba(61,60,56,.10);
+    transform-origin:100% 100%; animation:aiPanelIn .26s cubic-bezier(.22,1,.36,1) both; }
+
+  .ai-head{ display:flex; align-items:center; gap:10px; padding:13px 14px; background:var(--paper); }
+  .ai-mark{ flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; color:var(--orange-d); }
+  /* on the welcome screen the header is just the mark; the name fades in
+   as soon as there is a conversation to label */
+  .ai-head-t{ flex:1; min-width:0; transition:opacity .4s ease; }
+  .ai-panel.is-fresh .ai-head-t{ opacity:0; }
+  .ai-head-t b{ display:block; font-size:13.5px; font-weight:600; color:var(--ink); letter-spacing:-.01em; }
+  .ai-head-t > span{ display:block; font-size:11.5px; color:var(--ink-3); margin-top:1px; }
+  .ai-pill{ font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--orange-d);
+    background:#FFF0E8; border-radius:999px; padding:3px 7px; margin-left:6px; vertical-align:1px; }
+  .ai-ico-btn{ width:28px; height:28px; border:0; border-radius:8px; background:transparent; color:var(--ink-3);
+    cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:all var(--t); }
+  .ai-ico-btn:hover{ background:rgba(0,0,0,.06); color:var(--ink); }
+
+  /* it scrolls, it just doesn't advertise it */
+  .ai-body{ flex:1; min-height:0; overflow-y:auto; padding:16px 14px 8px; scrollbar-width:none;
+    -ms-overflow-style:none; background:var(--paper); transition:background .5s ease; }
+  /* first run is warm — the tint covers the whole panel, header included, and
+     retreats to white the moment a chat starts */
+  .ai-panel{ transition:background .5s ease; }
+  .ai-panel.is-fresh{ background:
+    radial-gradient(165% 65% at 2% -25%, rgba(255,209,171,.5) 0%, rgba(255,209,171,.2) 38%, transparent 76%),
+    radial-gradient(85% 155% at 118% -8%, rgba(255,97,43,.14) 0%, rgba(255,97,43,.05) 32%, transparent 70%),
+    radial-gradient(155% 75% at 18% 122%, rgba(255,193,150,.28) 0%, rgba(255,193,150,.1) 38%, transparent 74%),
+    radial-gradient(70% 55% at 68% 55%, rgba(255,177,133,.09), transparent 62%),
+    linear-gradient(165deg, #FFF8F3 0%, #FFFFFF 82%); }
+  .ai-panel.is-fresh .ai-head,
+  .ai-panel.is-fresh .ai-body,
+  .ai-panel.is-fresh .ai-foot{ background:transparent; }
+  .ai-panel.is-fresh .ai-topfade{ background:none; }
+  .ai-body::-webkit-scrollbar{ width:0; height:0; }
+  /* whatever scrolls up dissolves into the header instead of hitting a line */
+  .ai-topfade{ position:sticky; top:-16px; height:20px; margin:-16px -14px 0; z-index:3; pointer-events:none;
+    background:linear-gradient(180deg, var(--paper) 40%, rgba(255,255,255,0) 100%); }
+
+  /* empty state */
+  .ai-empty{ text-align:center; padding:26px 6px 4px; }
+  .ai-empty.is-leaving{ animation:aiFadeOut .24s ease forwards; pointer-events:none; }
+  .ai-empty.is-leaving h4, .ai-empty.is-leaving .ai-hello,
+  .ai-empty.is-leaving .ai-sugg-l, .ai-empty.is-leaving .ai-chip{ animation:none; }
+  .ai-hello{ display:inline-flex; align-items:center; gap:8px; margin:0 0 6px; font-size:15px;
+    font-weight:600; color:var(--navy); animation:aiChipIn .34s ease both; }
+  .ai-wave{ display:inline-flex; color:var(--navy); transform-origin:70% 85%;
+    animation:aiWave 1.6s ease-in-out .5s 2; }
+  @keyframes aiWave{ 0%,60%,100%{ transform:rotate(0); } 15%{ transform:rotate(16deg); }
+    30%{ transform:rotate(-10deg); } 45%{ transform:rotate(12deg); } }
+  .ai-empty-mark{ margin:0 auto 14px; display:flex; align-items:center; justify-content:center; color:var(--orange); }
+  /* same weight and size as the page's own H1, wrapped to two lines */
+  .ai-empty h4{ max-width:none; white-space:nowrap; margin:0 auto 44px; font-size:28px; line-height:1.2; font-weight:700;
+    color:var(--navy); letter-spacing:-.01em; animation:aiChipIn .34s ease .05s both; }
+  .ai-empty p{ margin:0 auto 16px; font-size:12.5px; color:var(--ink-3); line-height:1.5; max-width:270px; }
+  .ai-sugg-l{ font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-3);
+    text-align:center; margin:0 2px 8px; animation:aiChipIn .34s ease .06s both; }
+  .ai-sugg{ display:flex; flex-direction:row; flex-wrap:wrap; justify-content:center; gap:8px; }
+  /* true neutral (equal R/G/B), not the platform's warm-leaning ink tokens — those read greenish against the peach panel */
+  .ai-chip{ display:inline-flex; align-items:center; gap:7px; width:auto; text-align:left; padding:9px 14px; cursor:pointer;
+    font:inherit; font-size:12.5px; font-weight:600; color:#6B6B6B; background:transparent;
+    border:1px solid #BFBFBF; border-radius:999px; transition:all var(--t);
+    animation:aiChipIn .34s ease both; }
+  .ai-chip:hover{ background:var(--bg-hover); border-color:#8A8A8A; transform:translateY(-1px); }
+  .ai-chip svg{ color:#8A8A8A; opacity:.85; flex-shrink:0; }
+
+  /* messages */
+  .ai-msg{ display:flex; gap:9px; margin-bottom:14px; animation:aiMsgIn .28s ease both; }
+  .ai-msg-wrap + .ai-msg.me{ margin-top:18px; }
+  .ai-msg.me{ justify-content:flex-end; }
+  .ai-av{ width:26px; height:26px; border-radius:8px; flex-shrink:0; display:inline-flex; align-items:center;
+    justify-content:center; color:#fff; background:linear-gradient(145deg,#FF7A45,var(--orange-d)); margin-top:2px; }
+  .ai-bub{ max-width:84%; padding:10px 13px; border-radius:14px; font-size:13px; line-height:1.55; }
+  .ai-msg.me .ai-bub{ background:#DAF4FB; color:var(--ink); border-bottom-right-radius:5px; }
+  /* the answer is the page's own voice: no avatar, no bubble, just type */
+  .ai-msg.ai .ai-bub{ max-width:100%; padding:2px 2px 0; background:none; border:0; color:var(--ink); }
+  .ai-bub b{ font-weight:650; color:inherit; }
+  /* blue is reserved for things you can actually click — a payment mention that opens it */
+  .ai-bub b.ai-link{ color:var(--navy); cursor:pointer; }
+  .ai-bub b.ai-link:hover{ text-decoration:underline; }
+  .ai-caret{ display:inline-block; width:2px; height:13px; background:var(--orange); vertical-align:-2px;
+    margin-left:1px; animation:aiDot 1s steps(2) infinite; }
+
+  /* figures + mini table inside an answer */
+  .ai-figs{ display:flex; gap:6px; margin:10px 0 0; }
+  .ai-fig{ flex:1; background:var(--paper-warm); border-radius:10px; padding:8px 9px; min-width:0; }
+  .ai-fig span{ display:block; font-size:9.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--ink-3); }
+  .ai-fig b{ display:block; margin-top:3px; font-size:14px; font-weight:650; color:var(--ink);
+    font-variant-numeric:tabular-nums; }
+  .ai-tbl{ width:100%; margin:10px 0 0; border-collapse:separate; border-spacing:0 4px; font-size:11.5px; }
+  .ai-tbl td{ background:var(--paper-warm); padding:7px 9px; }
+  .ai-tbl td:first-child{ border-radius:8px 0 0 8px; font-weight:600; }
+  .ai-tbl td:last-child{ border-radius:0 8px 8px 0; text-align:right; font-variant-numeric:tabular-nums; }
+  .ai-src{ display:inline-flex; align-items:center; gap:5px; margin-top:9px; font-size:10.5px; color:var(--ink-3); }
+
+  /* follow-ups + feedback */
+  /* once you pick one, the old suggestions fold away instead of piling up */
+  .ai-follow{ display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 4px; max-height:120px; overflow:hidden;
+    transition:max-height .32s cubic-bezier(.4,0,.2,1), opacity .22s ease, margin .32s ease; }
+  .ai-follow.is-gone{ max-height:0; opacity:0; margin-top:0; margin-bottom:0; }
+  .ai-follow button{ display:inline-flex; align-items:center; gap:6px; font:inherit; font-size:11.5px;
+    font-weight:600; color:var(--navy); background:transparent; border:1px solid var(--navy); border-radius:999px;
+    padding:5px 12px; cursor:pointer; transition:all var(--t); animation:aiChipIn .3s ease both; }
+  .ai-follow button svg{ opacity:.55; }
+  .ai-follow button:hover{ background:var(--navy-soft); }
+  .ai-fb{ display:flex; gap:2px; }
+  .ai-meta{ display:flex; align-items:center; gap:9px; margin:1px 0 0 2px; }
+  /* your line hugs its own text and stays pinned to the right edge */
+  .ai-msg.me .ai-me-wrap{ max-width:84%; display:flex; flex-direction:column; align-items:flex-end; }
+  .ai-msg.me .ai-bub{ max-width:100%; }
+  /* a quiet stamp: always under an answer, on hover for your own line */
+  .ai-time{ font-size:10.5px; color:var(--ink-3); }
+  .ai-time.me{ margin:5px 2px 0 0; opacity:0; transition:opacity var(--t); }
+  .ai-msg.me:hover .ai-time.me{ opacity:1; }
+  .ai-fb button{ width:24px; height:24px; border:0; background:transparent; border-radius:6px; cursor:pointer;
+    color:var(--ink-3); display:inline-flex; align-items:center; justify-content:center; }
+  .ai-fb button:hover{ background:rgba(0,0,0,.05); color:var(--ink-2); }
+  .ai-fb button.on{ color:var(--orange-d); }
+
+  /* thinking */
+  .ai-think{ display:flex; margin-bottom:14px; animation:aiMsgIn .28s ease both; }
+  .ai-load{ display:inline-flex; align-items:center; gap:9px; padding:2px 2px 6px; color:var(--ink-3); }
+  .ai-dots{ display:inline-flex; align-items:center; gap:4px; }
+  .ai-dots i{ width:6px; height:6px; border-radius:99px; background:var(--ink-3);
+    animation:aiDot 1.15s ease-in-out infinite; }
+  .ai-dots i:nth-child(2){ animation-delay:.15s; }
+  .ai-dots i:nth-child(3){ animation-delay:.3s; }
+  .ai-dots i{ width:5px; height:5px; border-radius:99px; background:var(--ink-3); animation:aiDot 1.1s infinite; }
+  .ai-dots i:nth-child(2){ animation-delay:.16s; } .ai-dots i:nth-child(3){ animation-delay:.32s; }
+  .ai-step{ font-size:11.5px; color:var(--ink-3); background:linear-gradient(90deg,var(--ink-3) 20%,var(--ink-4) 40%,var(--ink-3) 60%);
+    background-size:200% auto; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    animation:aiSheen 1.6s linear infinite; }
+
+  /* composer */
+  .ai-foot{ padding:4px 12px 12px; background:var(--paper); }
+  .ai-input{ display:flex; align-items:flex-end; gap:7px; border:1px solid var(--line-2); border-radius:16px;
+    padding:8px 8px 8px 13px; transition:border-color var(--t), box-shadow var(--t); background:var(--paper); }
+  .ai-input:focus-within{ border-color:var(--navy); box-shadow:var(--focus-ring); }
+  .ai-input textarea{ flex:1; border:0; outline:none; resize:none; font:inherit; font-size:13px; color:var(--ink);
+    background:transparent; height:48px; max-height:112px; line-height:1.45; padding:7px 0; }
+  .ai-input textarea::placeholder{ color:var(--ink-3); }
+  .ai-send{ width:32px; height:32px; flex-shrink:0; border:0; border-radius:10px; cursor:pointer; color:#fff;
+    background:var(--orange); display:inline-flex; align-items:center; justify-content:center;
+    transition:all .18s ease; }
+  .ai-send:disabled{ background:var(--line); color:var(--ink-4); cursor:default; }
+  .ai-send:not(:disabled):hover{ background:var(--orange-d); transform:scale(1.05); }
+  .ai-send .sp{ animation:aiSpin .7s linear infinite; }
+  .ai-legal{ display:flex; align-items:center; justify-content:center; gap:4px; margin:8px 2px 0;
+    font-size:10px; color:var(--ink-3); text-align:center; }
+  .ai-legal svg{ flex-shrink:0; opacity:.8; }
+
+  @media (prefers-reduced-motion: reduce){
+    .ai-fab, .ai-panel, .ai-msg, .ai-chip, .ai-follow button, .ai-think, .ai-step, .ai-dots i{ animation:none !important; }
+    .ai-fab:hover{ transform:none; }
+  }
+
+  /* full screen + history */
+  .ai-panel.ai-view-full{ top:0; right:0; bottom:0; left:0; width:auto; height:auto;
+    max-width:none; border:0; border-radius:0; box-shadow:none; }
+  .ai-main{ display:flex; flex-direction:column; flex:1; min-width:0; height:100%; }
+  /* full screen with a live chat: a ChatGPT-style left rail for new/past chats */
+  .ai-panel.ai-view-full:has(.ai-sidebar){ flex-direction:row; }
+  .ai-sidebar{ width:250px; flex-shrink:0; display:flex; flex-direction:column; gap:16px;
+    padding:16px 12px; border-right:1px solid var(--line); background:var(--paper); overflow:hidden; }
+  .ai-side-brand{ display:flex; align-items:center; gap:8px; padding:2px 8px; font-size:14px;
+    font-weight:600; color:var(--ink); letter-spacing:-.01em; }
+  .ai-side-brand b{ font-weight:600; }
+  /* full screen: the brand already lives in the sidebar — don't repeat it in the main header */
+  .ai-panel.ai-view-full:has(.ai-sidebar) .ai-head .ai-mark,
+  .ai-panel.ai-view-full:has(.ai-sidebar) .ai-head-t{ visibility:hidden; }
+  .ai-side-new{ display:inline-flex; align-items:center; justify-content:center; gap:7px; width:100%;
+    padding:10px 14px; border:0; border-radius:999px; background:var(--navy); color:#fff; font:inherit;
+    font-size:13px; font-weight:700; cursor:pointer; transition:background var(--t); }
+  .ai-side-new:hover{ background:var(--navy-d); }
+  .ai-side-hist{ flex:1; min-height:0; overflow-y:auto; display:flex; flex-direction:column; gap:14px; }
+  .ai-side-group{ display:flex; flex-direction:column; gap:1px; }
+  .ai-side-l{ font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+    color:var(--ink-3); padding:6px 8px 4px; }
+  .ai-side-item{ display:block; width:100%; text-align:left; padding:8px 10px; border:0; border-radius:8px;
+    background:transparent; font:inherit; font-size:12.5px; color:var(--ink-2); cursor:pointer; white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis; transition:background var(--t); }
+  .ai-side-item:hover{ background:var(--bg-hover); color:var(--ink); }
+  /* the chat you're in reads as selected, so Today never looks like just another past entry */
+  .ai-side-item.on{ background:var(--navy-soft); color:var(--navy); font-weight:600; }
+  .ai-side-empty{ padding:6px 8px; font-size:12.5px; color:var(--ink-3); }
+  .ai-foot-new{ display:flex; align-items:center; justify-content:center; gap:7px; width:100%;
+    padding:11px 16px; border:0; border-radius:999px; background:var(--navy); color:#fff; font:inherit;
+    font-size:13px; font-weight:700; cursor:pointer; transition:background var(--t); }
+  .ai-foot-new:hover{ background:var(--navy-d); }
+  /* the view toggle sits pinned at the very bottom of the sidebar — no label, just the track */
+  .ai-side-foot{ flex-shrink:0; padding-top:10px; }
+  .ai-side-foot .ai-seg{ margin:0; }
+  /* full screen: everything reads as one centered, readable-width column instead of edge-to-edge */
+  .ai-panel.ai-view-full .ai-body{ display:flex; flex-direction:column; align-items:center; }
+  /* the drawer centres only its welcome screen — history and messages stay left-aligned */
+  .ai-panel.ai-view-drawer.is-fresh .ai-body{ display:flex; flex-direction:column; align-items:center; }
+  /* welcome state only: use the empty vertical space instead of hugging the top */
+  .ai-panel.ai-view-full.is-fresh .ai-body,
+  .ai-panel.ai-view-drawer.is-fresh .ai-body{ justify-content:center; }
+  .ai-panel.ai-view-full .ai-empty,
+  .ai-panel.ai-view-full .ai-msg,
+  .ai-panel.ai-view-full .ai-think{ width:100%; max-width:680px; }
+  .ai-panel.ai-view-full .ai-sugg{ flex-direction:column; align-items:center; }
+  .ai-panel.ai-view-full .ai-chip{ width:100%; max-width:420px; }
+  .ai-panel.ai-view-full .ai-foot{ display:flex; flex-direction:column; align-items:center; padding:12px 24px 20px; }
+  .ai-panel.ai-view-full .ai-input,
+  .ai-panel.ai-view-full .ai-legal{ width:100%; max-width:680px; }
+  /* docked to the edge: the assistant becomes part of the page furniture */
+  .ai-panel.ai-view-drawer{ right:0; bottom:0; top:0; height:100vh; width:min(430px, 100vw);
+    border-radius:18px 0 0 18px; border-right:0; }
+  .ai-panel.ai-view-drawer + .ai-fab, body:has(.ai-view-drawer) .ai-fab{ display:none; }
+  .ai-more-sep{ height:1px; margin:5px 4px; background:var(--line); }
+  .ai-more-l{ font-size:9.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+    color:var(--ink-3); padding:3px 10px 4px; }
+  /* the view picker is the platform's own segmented-track grey (same as Individual/Consolidated) */
+  .ai-seg{ display:flex; gap:2px; margin:2px 4px 4px; padding:3px; border-radius:999px; background:var(--ash); }
+  .ai-more .ai-seg button, .ai-side-foot .ai-seg button{ flex:1; display:inline-flex; align-items:center; justify-content:center; gap:5px;
+    padding:6px 8px; border:0; border-radius:999px; background:transparent; cursor:pointer; white-space:nowrap;
+    font:inherit; font-size:11.5px; font-weight:600; color:var(--ink-2); transition:all var(--t); }
+  .ai-more .ai-seg button:hover:not(.on), .ai-side-foot .ai-seg button:hover:not(.on){ background:var(--navy-soft); color:var(--navy); }
+  .ai-more .ai-seg button.on, .ai-side-foot .ai-seg button.on{ background:var(--paper); color:var(--navy);
+    box-shadow:0 1px 3px rgba(61,60,56,.14), 0 1px 1px rgba(61,60,56,.05); }
+  .ai-more .ai-seg button svg, .ai-side-foot .ai-seg button svg{ opacity:.8; }
+  .ai-ico-btn.on{ background:rgba(0,0,0,.06); color:var(--ink); }
+  .ai-more-wrap{ position:relative; display:inline-flex; }
+  .ai-more{ position:absolute; top:32px; right:0; z-index:5; min-width:236px; padding:5px;
+    background:var(--paper); border:1px solid var(--line); border-radius:11px; box-shadow:var(--elev-popover);
+    animation:aiChipIn .16s ease both; }
+  .ai-more button{ display:flex; align-items:center; gap:9px; width:100%; text-align:left; font:inherit;
+    font-size:12.5px; color:var(--ink); background:none; border:0; border-radius:8px; padding:8px 10px;
+    cursor:pointer; }
+  .ai-more button:hover{ background:var(--bg-hover); }
+  /* new chat is the one action worth a filled, rounded button of its own */
+  .ai-more .ai-new-item{ justify-content:center; gap:7px; margin-bottom:2px; font-weight:700;
+    color:#fff; background:var(--navy); border-radius:999px; }
+  .ai-more .ai-new-item:hover{ background:var(--navy-d); }
+  .ai-more button svg{ color:var(--ink-3); flex-shrink:0; }
+  .ai-hist{ display:flex; flex-direction:column; gap:14px; padding:2px 0 6px; }
+  .ai-hist-empty{ text-align:center; padding:26px 8px 8px; }
+  .ai-hist-empty h4{ margin:0 0 5px; font-size:15px; font-weight:650; color:var(--ink); }
+  .ai-hist-empty p{ margin:0 auto 14px; font-size:12.5px; color:var(--ink-3); line-height:1.5; max-width:250px; }
+  .ai-hist-cta{ font:inherit; font-size:13px; font-weight:700; color:#fff; background:var(--navy);
+    border:1px solid var(--navy); border-radius:999px; padding:9px 20px; cursor:pointer; transition:all var(--t); }
+  .ai-hist-cta:hover{ background:var(--navy-d); border-color:var(--navy-d); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useRef, Fragment } = React;
+const money = (n) => "$" + n.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:2 });
+// Net settlement fee shown like the source table: rate (%) + amount ($).
+const FeeCell = ({ payerPaid, fee, q }) => (
+  <Fragment>
+    <span className="fee-pct"><Hl q={q}>{((fee/payerPaid)*100).toFixed(2)+"%"}</Hl></span>
+    <span className="fee-amt"><Hl q={q}>{money(fee)}</Hl></span>
+  </Fragment>
+);
+const ORG_BY_PROVIDER = {
+  "Jesus Kris":["Acme Payment Engine","ACME-PE-01"],
+  "Maria Gomez":["Medica Payment Engine","MED-PE-02"],
+  "David Chen":["Harvard Pilgrim Payment Engine","HPHC-PE-03"],
+  "Sara Patel":["Oxford Payment Engine","OXF-PE-04"],
+};
+
+// Sample data taken from the meeting captures. Consolidated totals are the
+// exact figures shown; child amounts sum to the consolidated payer-paid.
+const DATA = [
+  { netId:"NET-ACME-554120", tin:"748395033", npi:"1417224445", provider:"Jesus Kris", subAccount:"SubAccount A",
+    twoOh:"20-PAY-748395033-0001", issuer:"ISS-9981245", type:"ACH", modality:"Electronic", status:"Issued", date:"06/10/2026",
+    payerPaid:104.99, fee:2.10, deposit:102.89,
+    children:[
+      { date:"06/10/2026", amount:5.00,  id:"48dec6bebe7bb906255242e228aed6e6", status:"Created", modality:"Electronic", claim:"CLM-100231" },
+      { date:"06/07/2026", amount:99.99, id:"bb22cc33dd44ee55ff66778899001122", status:"Cleared", modality:"Electronic", claim:"CLM-100237" },
+    ]},
+  { netId:"NET-ACME-554121", tin:"552019884", npi:"1689012345", provider:"Maria Gomez", subAccount:"SubAccount A",
+    twoOh:"20-PAY-552019884-0007", issuer:"ISS-7741190", type:"VCC", modality:"Electronic", status:"Issued", date:"06/10/2026",
+    payerPaid:6555.55, fee:196.67, deposit:6358.88,
+    children:[
+      { date:"06/10/2026", amount:2200.00, id:"a1f0e2233809d44a17c9925f2dd03380", status:"Issued", modality:"Electronic", claim:"CLM-200110" },
+      { date:"06/09/2026", amount:1855.55, id:"c7d9b41aa0f25517d310bb29d4117741", status:"Issued", modality:"Electronic", claim:"CLM-200118" },
+      { date:"06/08/2026", amount:2500.00, id:"e3a8f9012bb74c8890aa1c2299109920", status:"Cleared", modality:"Electronic", claim:"CLM-200126" },
+    ]},
+  { netId:"NET-ZELS-118093", tin:"610228745", npi:"1295830011", provider:"David Chen", subAccount:"SubAccount C",
+    twoOh:"20-PAY-610228745-0003", issuer:"ISS-6620034", type:"Check", modality:"Paper", status:"Cleared", date:"06/06/2026",
+    payerPaid:538.00, fee:16.14, deposit:521.86,
+    children:[
+      { date:"06/06/2026", amount:538.00, id:"f0b7c12aa9d4456e0011bb2299304456", status:"Cleared", modality:"Paper", claim:"CLM-300455" },
+    ]},
+  { netId:"NET-ACME-554199", tin:"489201337", npi:"1730256677", provider:"Sara Patel", subAccount:"SubAccount D",
+    twoOh:"20-PAY-489201337-0011", issuer:"ISS-5519882", type:"ACH", modality:"Electronic", status:"Issued", date:"06/11/2026",
+    payerPaid:780.90, fee:23.43, deposit:757.47,
+    children:[
+      { date:"06/11/2026", amount:420.10, id:"11aa9c0bb2231d44e09f1c2230502231", status:"Created", modality:"Electronic", claim:"CLM-400771" },
+      { date:"06/11/2026", amount:360.80, id:"22bb8d1cc5532e55f10a2d3341605532", status:"Issued",  modality:"Electronic", claim:"CLM-400779" },
+    ]},
+  { netId:"NET-ZELS-118120", tin:"748395033", npi:"1417224445", provider:"Jesus Kris", subAccount:"SubAccount B",
+    twoOh:"20-PAY-748395033-0014", issuer:"ISS-4410023", type:"Check", modality:"Paper", status:"Issued", date:"06/05/2026",
+    payerPaid:320.00, fee:9.60, deposit:310.40,
+    children:[
+      { date:"06/05/2026", amount:320.00, id:"33cc7e2dd8843f66021b3e4452706643", status:"Issued", modality:"Paper", claim:"CLM-500233" },
+    ]},
+].map(p => { const o = ORG_BY_PROVIDER[p.provider] || ["—","—"]; return { ...p, org:o[0], orgId:o[1], claimCount:p.children.length, isConsolidated:p.children.length>1 }; });
+
+// ── filtering infrastructure ──────────────────────────────────────────
+const uniq = (a) => [...new Set(a)];
+const PROVIDERS = uniq(DATA.map(p=>p.provider));
+const ORGS      = uniq(DATA.map(p=>p.org));
+const ORG_IDS   = uniq(DATA.map(p=>p.orgId));
+const CLAIMS    = uniq(DATA.flatMap(p=>p.children.map(c=>c.claim)));
+const STATUSES  = ["Issued","Cleared","Created","Pending"];
+const TYPES     = ["ACH","VCC","Check"];
+const MODALITIES= ["Electronic","Paper"];
+const AMOUNT_RANGES = [
+  { id:"u100",  label:"Under $100",     test:n=>n<100 },
+  { id:"100-1k",label:"$100 – $1,000",  test:n=>n>=100 && n<=1000 },
+  { id:"o1k",   label:"Over $1,000",    test:n=>n>1000 },
+];
+const emptyFilters = () => ({ status:new Set(), type:new Set(), modality:new Set(), provider:new Set(), org:new Set(), orgId:new Set(), claim:new Set(), amount:null });
+const anyFilter = (q,f) => !!q.trim() || f.amount || ["status","type","modality","provider","org","orgId","claim"].some(k=>f[k].size>0);
+
+const lc = (v) => String(v).toLowerCase();
+// Consolidated-level search must cover the 4 PRD values: payment type, payer
+// paid amount, net settlement fee and deposit amount (raw + $-formatted).
+function parentText(p,q){ q=lc(q); return [p.tin,p.provider,p.subAccount,p.twoOh,p.issuer,p.netId,p.type,p.org,p.orgId,
+  String(p.payerPaid),money(p.payerPaid),String(p.fee),money(p.fee),String(p.deposit),money(p.deposit)].some(v=>lc(v).includes(q)); }
+function childText(c,q){ q=lc(q); return [c.id,c.claim,c.date,c.status,c.modality,String(c.amount),money(c.amount)].some(v=>lc(v).includes(q)); }
+
+// Evaluate a network payment against query + filters (parent-level views).
+// Returns the payment annotated with `matchedChildIdx` (a Set), or null.
+function evalParent(p, q, f){
+  if(f.type.size && !f.type.has(p.type)) return null;
+  if(f.modality.size && !f.modality.has(p.modality)) return null;
+  if(f.provider.size && !f.provider.has(p.provider)) return null;
+  if(f.org.size && !f.org.has(p.org)) return null;
+  if(f.orgId.size && !f.orgId.has(p.orgId)) return null;
+  if(f.amount){ const r=AMOUNT_RANGES.find(x=>x.id===f.amount); if(r && !r.test(p.payerPaid)) return null; }
+  if(f.status.size && !(f.status.has(p.status) || p.children.some(c=>f.status.has(c.status)))) return null;
+  if(f.claim.size && !p.children.some(c=>f.claim.has(c.claim))) return null;
+  const matched = new Set();
+  p.children.forEach((c,i)=>{
+    const byQ = q.trim() && childText(c,q);
+    const byClaim = f.claim.size && f.claim.has(c.claim);
+    const byStatus = f.status.size && f.status.has(c.status);
+    if(byQ || byClaim || byStatus) matched.add(i);
+  });
+  if(q.trim() && !parentText(p,q) && matched.size===0) return null;
+  return { ...p, matchedChildIdx:matched };
+}
+function parentRows(q,f){ return DATA.map(p=>evalParent(p,q,f)).filter(Boolean); }
+
+// Individual-level rows (Option 1 individual mode + Option 3).
+function individualRows(q,f){
+  const out=[];
+  for(const p of DATA){
+    if(f.type.size && !f.type.has(p.type)) continue;
+    if(f.modality.size && !f.modality.has(p.modality)) continue;
+    if(f.provider.size && !f.provider.has(p.provider)) continue;
+    if(f.org.size && !f.org.has(p.org)) continue;
+    if(f.orgId.size && !f.orgId.has(p.orgId)) continue;
+    for(const c of p.children){
+      if(f.status.size && !f.status.has(c.status)) continue;
+      if(f.claim.size && !f.claim.has(c.claim)) continue;
+      if(f.amount){ const r=AMOUNT_RANGES.find(x=>x.id===f.amount); if(r && !r.test(c.amount)) continue; }
+      if(q.trim() && !(parentText(p,q) || childText(c,q))) continue;
+      out.push({ ...c, parent:p });
+    }
+  }
+  return out;
+}
+
+function EmptyState(){
+  return <div className="surface"><div className="empty-note">No payments match your search and filters.</div></div>;
+}
+
+// Underlines the part of a cell that matches the current query. Used so a
+// search hit is visible in place (parent or child) without extra tints/chips.
+function Hl({ children, q }){
+  const text = children==null ? "" : String(children);
+  const term = (q||"").trim();
+  if(!term) return text;
+  const i = text.toLowerCase().indexOf(term.toLowerCase());
+  if(i<0) return text;
+  return <Fragment>{text.slice(0,i)}<span className="hl">{text.slice(i,i+term.length)}</span>{text.slice(i+term.length)}</Fragment>;
+}
+const dotCls = (t) => t==="ACH"?"dot-ach":t==="Check"?"dot-check":"dot-vcc";
+// Current network, derived from the Network payment ID prefix (mock).
+const networkOf = (netId) => { const s = String(netId).split("-")[1]; return s==="ACME"?"Acme":s==="ZELS"?"Zelis":s; };
+function TypeChip({ type, q }){ return <span className="netchip"><span className={"dot "+dotCls(type)}/><Hl q={q}>{type}</Hl></span>; }
+function StatusPill({ status, q }){ return <span className={"pill is-"+status.toLowerCase()}><span className="dot"/><Hl q={q}>{status}</Hl></span>; }
+function Eye(){ return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>; }
+function Dots(){ return <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>; }
+
+// Inline definition — a small ⓘ that reveals a one-line tooltip on hover.
+// Used sparingly (Data clarity option) only where a field is ambiguous.
+function InfoTip({ text }){
+  const [show, setShow] = useState(false);
+  const [pos, setPos] = useState({ x:0, y:0 });
+  const ref = useRef(null);
+  const enter = () => { if(!ref.current) return; const r = ref.current.getBoundingClientRect(); setPos({ x:r.left + r.width/2, y:r.top }); setShow(true); };
+  return (
+    <span className="infotip" ref={ref} onMouseEnter={enter} onMouseLeave={()=>setShow(false)} onClick={(e)=>e.stopPropagation()}>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      {show && ReactDOM.createPortal(
+        <span className="tip-fixed" style={{ left:pos.x+"px", top:pos.y+"px" }}>{text}</span>,
+        document.body
+      )}
+    </span>
+  );
+}
+
+// Generic hover tooltip: wraps any trigger and portals brand-styled content.
+function HoverTip({ children, content, wide }){
+  const [show, setShow] = useState(false);
+  const [pos, setPos] = useState({ x:0, y:0 });
+  const ref = useRef(null);
+  const enter = () => { if(!ref.current) return; const r = ref.current.getBoundingClientRect(); setPos({ x:r.left + r.width/2, y:r.top }); setShow(true); };
+  return (
+    <span className="hovertip" ref={ref} onMouseEnter={enter} onMouseLeave={()=>setShow(false)} onClick={(e)=>e.stopPropagation()}>
+      {children}
+      {show && ReactDOM.createPortal(
+        <span className={"tip-fixed"+(wide?" tip-wide":"")} style={{ left:pos.x+"px", top:pos.y+"px" }}>{content}</span>,
+        document.body
+      )}
+    </span>
+  );
+}
+// Full breakdown of the individual payments inside a consolidation (drill view).
+function ConsolidationBreakdown({ p }){
+  return (
+    <span className="tip-bd">
+      <span className="tip-bd-head"><b>{p.netId}</b> · {p.claimCount} individual payments</span>
+      {p.children.map((c,i)=>(
+        <span className="tip-bd-row" key={i}>
+          <span className="tip-bd-claim">{c.claim}</span>
+          <span className="tip-bd-amt">{money(c.amount)}</span>
+        </span>
+      ))}
+      <span className="tip-bd-total"><span>Deposit total</span><span>{money(p.deposit)}</span></span>
+    </span>
+  );
+}
+
+// Sortable column header with the blue up/down arrows from the DataTable
+// reference. Click toggles asc → desc on that column. Optional `info`
+// appends a definition tooltip (Data clarity option).
+function Th({ label, k, sort, setSort, num, info }){
+  const active = sort.key===k;
+  const doSort = ()=>setSort(s=> s.key===k ? {key:k, dir:-s.dir} : {key:k, dir:1});
+  const labelEl = <span className="th-sortlabel" onClick={doSort}>{label}</span>;
+  const iconsEl = (
+    <span className="th-icons">
+      <span className="th-ic sort" onClick={doSort} title="Sort">
+        {/* up arrow + down arrow (thick line) */}
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></svg>
+      </span>
+      <span className="th-ic filter" title="Filter">
+        {/* funnel (thick line) */}
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+      </span>
+      {info && <InfoTip text={info}/>}
+    </span>
+  );
+  return (
+    <th className={num?"num":""}>
+      <span className="th-cell">
+        {labelEl}{iconsEl}
+      </span>
+    </th>
+  );
+}
+function sortRows(rows, sort, get){
+  if(!sort.key) return rows;
+  const g = get || ((r,k)=>r[k]);
+  const d = sort.dir;
+  return [...rows].sort((a,b)=>{
+    const av=g(a,sort.key), bv=g(b,sort.key);
+    if(typeof av==="number" && typeof bv==="number") return (av-bv)*d;
+    return String(av).localeCompare(String(bv))*d;
+  });
+}
+
+// ── Consolidated results table (Option 1 consolidated mode) — columns match the capture ──
+function ConsolidatedTable({ rows, onOpen, sort, setSort, recentId, q }){
+  return (
+    <div className="surface">
+      <table className="tbl zebra">
+        <thead><tr>
+          <Th label="TIN" k="tin" sort={sort} setSort={setSort}/>
+          <th>NPI</th>
+          <Th label="Provider name" k="provider" sort={sort} setSort={setSort}/>
+          <th>Sub-account</th><th>2.0 payment ID</th><th>Issuer payment ID</th>
+          <th>Network payment ID</th>
+          <Th label="Payment type" k="type" sort={sort} setSort={setSort}/>
+          <Th label="Payer paid amount" k="payerPaid" sort={sort} setSort={setSort} num/>
+          <Th label="Net settlement fee" k="fee" sort={sort} setSort={setSort} num/>
+          <Th label="Deposit amount" k="deposit" sort={sort} setSort={setSort} num/>
+          <Th label="Claim count" k="claimCount" sort={sort} setSort={setSort} num/>
+          <th>Current status</th><th>Current network</th><th>Current modality</th>
+          <th></th>
+        </tr></thead>
+        <tbody>
+          {rows.map(p=>(
+            <tr key={p.netId} className={"row-hover"+(p.netId===recentId?" is-recent":"")}>
+              <td className="mono"><Hl q={q}>{p.tin}</Hl></td>
+              <td className="mono"><Hl q={q}>{p.npi}</Hl></td>
+              <td><Hl q={q}>{p.provider}</Hl></td>
+              <td><Hl q={q}>{p.subAccount}</Hl></td>
+              <td className="mono"><Hl q={q}>{p.twoOh}</Hl></td>
+              <td className="mono"><Hl q={q}>{p.issuer}</Hl></td>
+              <td><span className="netid-link" onClick={(e)=>{ e.stopPropagation(); onOpen(p.netId); }}><Hl q={q}>{p.netId}</Hl></span></td>
+              <td><TypeChip type={p.type} q={q}/></td>
+              <td className="num"><Hl q={q}>{money(p.payerPaid)}</Hl></td>
+              <td className="num fee-cell"><FeeCell payerPaid={p.payerPaid} fee={p.fee} q={q}/></td>
+              <td className="num strong"><Hl q={q}>{money(p.deposit)}</Hl></td>
+              <td className="num">{p.claimCount}</td>
+              <td><StatusPill status={p.status} q={q}/></td>
+              <td><Hl q={q}>{networkOf(p.netId)}</Hl></td>
+              <td><Hl q={q}>{p.modality}</Hl></td>
+              <td><button className="icon-act" onClick={()=>onOpen(p.netId)}><Eye/></button></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ── Individual payments table (Option 1 individual mode + Option 3) ──
+function IndividualTable({ rows, drill, onOpen, sort, setSort, recentId, q }){
+  return (
+    <div className="surface">
+      <table className="tbl zebra">
+        <thead><tr>
+          <Th label="TIN" k="tin" sort={sort} setSort={setSort}/>
+          <Th label="Provider name" k="provider" sort={sort} setSort={setSort}/>
+          <Th label="Payment date" k="date" sort={sort} setSort={setSort}/>
+          <th>Payment ID</th><th>Payment type</th>
+          <Th label="Amount" k="amount" sort={sort} setSort={setSort} num/>
+          <th>Network payment ID</th><th>Current status</th><th></th>
+        </tr></thead>
+        <tbody>
+          {rows.map((c,i)=>(
+            <tr key={i} className={"row-hover"+(c.parent.netId===recentId?" is-recent":"")}>
+              <td className="mono"><Hl q={q}>{c.parent.tin}</Hl></td>
+              <td className="prov-2line"><Hl q={q}>{c.parent.provider}</Hl><small><Hl q={q}>{c.parent.subAccount}</Hl></small></td>
+              <td><Hl q={q}>{c.date}</Hl></td>
+              <td className="mono"><Hl q={q}>{c.id.slice(0,14)+"…"}</Hl></td>
+              <td><TypeChip type={c.parent.type} q={q}/></td>
+              <td className="num strong"><Hl q={q}>{money(c.amount)}</Hl></td>
+              <td>
+                {drill
+                  ? <span className="netid-link" onClick={()=>onOpen(c.parent.netId)}><Hl q={q}>{c.parent.netId}</Hl></span>
+                  : <span className="netid-plain"><Hl q={q}>{c.parent.netId}</Hl></span>}
+                {drill && c.parent.isConsolidated && (
+                  <HoverTip wide content={<ConsolidationBreakdown p={c.parent}/>}>
+                    <span className="drill-hint">+{c.parent.claimCount-1} more</span>
+                  </HoverTip>
+                )}
+              </td>
+              <td><StatusPill status={c.status} q={q}/></td>
+              <td><button className="icon-act"><Dots/></button></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ── Option 2: single table with expandable hierarchy ──
+function ExpandableTable({ rows, onOpen, sort, setSort, clarity, recentId, q }){
+  const [open, setOpen] = useState({});
+  return (
+    <div className="surface">
+      <table className="tbl">
+        <thead><tr>
+          <th style={{width:30}}></th>
+          <Th label="TIN" k="tin" sort={sort} setSort={setSort}/>
+          <Th label="Provider name" k="provider" sort={sort} setSort={setSort}/>
+          <th>Sub-account</th><th>2.0 payment ID</th>
+          <th><span className="th-cell">Network payment ID{clarity && <InfoTip text={<span>One <b>settlement</b> that groups several individual payments to a sub-account.</span>}/>}</span></th>
+          <Th label="Payment type" k="type" sort={sort} setSort={setSort}/>
+          <Th label="Payer paid amount" k="payerPaid" sort={sort} setSort={setSort} num/>
+          <Th label="Net settlement fee" k="fee" sort={sort} setSort={setSort} num/>
+          <Th label="Deposit amount" k="deposit" sort={sort} setSort={setSort} num info={clarity ? <span>What the provider receives — <b>Payer paid − Net settlement fee</b>.</span> : undefined}/>
+          <th></th>
+        </tr></thead>
+        <tbody>
+          {rows.map(p=>{
+            const matched = p.matchedChildIdx || new Set();
+            // A child match auto-expands the row so the user sees the hit;
+            // the user can still collapse it explicitly.
+            const isOpen = open[p.netId] !== undefined ? open[p.netId] : matched.size>0;
+            return (
+              <Fragment key={p.netId}>
+                <tr className={"row-hover"+(p.isConsolidated?" row-clickable":"")+(p.netId===recentId?" is-recent":"")}
+                    onClick={(e)=>{ if(e.target.closest(".netid-link,.icon-act,.exp-btn,.infotip")) return; if(p.isConsolidated) setOpen(o=>({...o,[p.netId]:!isOpen})); }}>
+                  <td>
+                    {p.isConsolidated
+                      ? <button className={"exp-btn "+(isOpen?"open":"")} onClick={(e)=>{ e.stopPropagation(); setOpen(o=>({...o,[p.netId]:!isOpen})); }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+                        </button>
+                      : <span className="exp-placeholder"/>}
+                  </td>
+                  <td className="mono"><Hl q={q}>{p.tin}</Hl></td>
+                  <td><Hl q={q}>{p.provider}</Hl></td>
+                  <td><Hl q={q}>{p.subAccount}</Hl></td>
+                  <td className="mono"><Hl q={q}>{p.twoOh}</Hl></td>
+                  <td>
+                    <span className="netid-link" onClick={(e)=>{ e.stopPropagation(); onOpen(p.netId); }}><Hl q={q}>{p.netId}</Hl></span>
+                    {clarity && p.isConsolidated && <span className="cons-badge" title={p.claimCount+" individual payments"}><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="6" rx="1.4"/><rect x="3" y="13" width="18" height="6" rx="1.4"/></svg>{p.claimCount}</span>}
+                  </td>
+                  <td><TypeChip type={p.type} q={q}/></td>
+                  <td className="num"><Hl q={q}>{money(p.payerPaid)}</Hl></td>
+                  <td className="num fee-cell"><FeeCell payerPaid={p.payerPaid} fee={p.fee} q={q}/></td>
+                  <td className="num strong"><Hl q={q}>{money(p.deposit)}</Hl></td>
+                  <td><button className="icon-act" onClick={()=>onOpen(p.netId)}><Eye/></button></td>
+                </tr>
+                {isOpen && (
+                  <tr className="child-subhead-row">
+                    <td></td>
+                    <td colSpan="3">Payment ID</td>
+                    <td>Payment date</td>
+                    <td>Claim number</td>
+                    <td>Delivery modality</td>
+                    <td className="num">Amount</td>
+                    <td colSpan="2">Current status</td>
+                    <td></td>
+                  </tr>
+                )}
+                {isOpen && p.children.map((c,i)=>(
+                  <tr key={i} className="child-row">
+                    <td></td>
+                    <td colSpan="3"><span className="mono"><Hl q={q}>{c.id.slice(0,16)+"…"}</Hl></span></td>
+                    <td><Hl q={q}>{c.date}</Hl></td>
+                    <td className="mono ink-3"><Hl q={q}>{c.claim}</Hl></td>
+                    <td><Hl q={q}>{c.modality}</Hl></td>
+                    <td className="num"><Hl q={q}>{money(c.amount)}</Hl></td>
+                    <td colSpan="2"><StatusPill status={c.status} q={q}/></td>
+                    <td></td>
+                  </tr>
+                ))}
+              </Fragment>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ── Option 4: unified, consolidation-aware ──
+// One search, one table. Every row IS a network (consolidated) payment with
+// the 4 values aggregated. Consolidated rows carry a count badge + expand in
+// place; single payments are just 1-child rows. No toggle, no separate mode.
+// A search match on a child surfaces inside the expanded row (demo on row 2).
+function UnifiedTable({ rows, onOpen, sort, setSort, recentId, q }){
+  const [open, setOpen] = useState({});
+  return (
+    <div className="surface">
+      <table className="tbl">
+        <thead><tr>
+          <th style={{width:30}}></th>
+          <Th label="TIN" k="tin" sort={sort} setSort={setSort}/>
+          <Th label="Provider name" k="provider" sort={sort} setSort={setSort}/>
+          <th>Sub-account</th><th>Network payment ID</th><th>Payment type</th>
+          <Th label="Payer paid amount" k="payerPaid" sort={sort} setSort={setSort} num/>
+          <Th label="Net settlement fee" k="fee" sort={sort} setSort={setSort} num/>
+          <Th label="Deposit amount" k="deposit" sort={sort} setSort={setSort} num/>
+          <th></th>
+        </tr></thead>
+        <tbody>
+          {rows.map(p=>{
+            const matched = p.matchedChildIdx || new Set();
+            const isOpen = open[p.netId] !== undefined ? open[p.netId] : matched.size>0;
+            return (
+              <Fragment key={p.netId}>
+                <tr className={"row-hover"+(p.isConsolidated?" row-clickable":"")+(p.netId===recentId?" is-recent":"")}
+                    onClick={(e)=>{ if(e.target.closest(".netid-link,.icon-act,.exp-btn,.infotip")) return; if(p.isConsolidated) setOpen(o=>({...o,[p.netId]:!isOpen})); }}>
+                  <td>
+                    {p.isConsolidated
+                      ? <button className={"exp-btn "+(isOpen?"open":"")} onClick={(e)=>{ e.stopPropagation(); setOpen(o=>({...o,[p.netId]:!isOpen})); }}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+                        </button>
+                      : <span className="exp-placeholder"/>}
+                  </td>
+                  <td className="mono">{p.tin}</td>
+                  <td>{p.provider}</td>
+                  <td>{p.subAccount}</td>
+                  <td>
+                    <span className="netid-link" onClick={(e)=>{ e.stopPropagation(); onOpen(p.netId); }}>{p.netId}</span>
+                    {p.isConsolidated && (
+                      <span className="cons-badge" title={p.claimCount+" individual payments in this consolidation"}>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="6" rx="1.4"/><rect x="3" y="13" width="18" height="6" rx="1.4"/></svg>
+                        {p.claimCount}
+                      </span>
+                    )}
+                    {matched.size>0 && <span className="match-chip" title="Search matched an individual payment in this consolidation">match inside</span>}
+                  </td>
+                  <td><TypeChip type={p.type}/></td>
+                  <td className="num">{money(p.payerPaid)}</td>
+                  <td className="num fee-cell"><FeeCell payerPaid={p.payerPaid} fee={p.fee} q={q}/></td>
+                  <td className="num strong">{money(p.deposit)}</td>
+                  <td><button className="icon-act" onClick={()=>onOpen(p.netId)}><Eye/></button></td>
+                </tr>
+                {isOpen && <tr className="child-head"><td></td><td colSpan="9"><span className="child-subhead">{p.claimCount} individual payments in this consolidation</span></td></tr>}
+                {isOpen && p.children.map((c,i)=>(
+                  <tr key={i} className={"child-row"+(matched.has(i)?" is-match":"")}>
+                    <td></td>
+                    <td colSpan="3"><span className="mono">{c.id.slice(0,16)}…</span></td>
+                    <td>{c.date}</td>
+                    <td>{c.modality}</td>
+                    <td className="num">{money(c.amount)}</td>
+                    <td className="mono ink-3">{c.claim}</td>
+                    <td><StatusPill status={c.status}/></td>
+                  </tr>
+                ))}
+              </Fragment>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ── Consolidated detail page (shared) — matches the capture's tabs + columns ──
+function ConsolidatedDetail({ netId, onBack, clarity }){
+  const p = DATA.find(x=>x.netId===netId) || DATA[0];
+  const [tab, setTab] = useState("individual");
+  const TABS = [
+    { id:"individual", label:"Individual payments", count:p.claimCount },
+    { id:"claims", label:"Claims", count:p.claimCount },
+    { id:"provider", label:"Provider details" },
+    { id:"payer", label:"Payer details" },
+    { id:"documents", label:"Documents", count:3 },
+    { id:"notes", label:"Notes" },
+  ];
+  return (
+    <div>
+      <div className="breadcrumb">
+        <span className="crumb-link" onClick={onBack}>Global payment search</span>
+        <span className="sep">›</span><span style={{color:"var(--ink)"}}>Consolidated payment</span>
+      </div>
+      <div className="detail-back" onClick={onBack}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        Back to results
+      </div>
+      <h1 className="detail-title">Consolidated payment <TypeChip type={p.type}/></h1>
+
+      <div className="detail-head">
+        <div className="detail-head-cell"><div className="lbl">Network payment ID · consolidated</div><div className="val mono">{p.netId}</div></div>
+        <div className="detail-head-cell"><div className="lbl">Payment amount · consolidated</div><div className="val">{money(p.payerPaid)}</div></div>
+        <div className="detail-head-cell"><div className="lbl">Payment date</div><div className="val">{p.date}</div></div>
+        <div className="detail-head-cell"><div className="lbl">Payment status</div><div className="val"><StatusPill status={p.status}/></div></div>
+      </div>
+
+      <div className="tabs">
+        {TABS.map(t=>(
+          <button key={t.id} className={"tab "+(tab===t.id?"on":"")} onClick={()=>setTab(t.id)}>
+            {t.label}{t.count!=null && <span className="tab-count"> ({t.count})</span>}
+          </button>
+        ))}
+      </div>
+
+      {tab==="individual" && (
+        <div className="surface"><table className="tbl">
+          <thead><tr>
+            <th><span className="th-cell">{clarity ? "Settlement date" : "Payment date"}{clarity && <InfoTip text={<span>The date funds <b>settled</b> to the provider — formerly "Payment date".</span>}/>}</span></th>
+            <th className="num">Amount</th><th>Payment ID</th><th>Current status</th><th>Delivery modality</th><th>Claim number</th><th></th>
+          </tr></thead>
+          <tbody>{p.children.map((c,i)=>(
+            <tr key={i} className="row-hover">
+              <td>{c.date}</td>
+              <td className="num strong">{money(c.amount)}</td>
+              <td className="mono">{c.id}</td>
+              <td><StatusPill status={c.status}/></td>
+              <td>{c.modality}</td>
+              <td className="mono ink-3">{c.claim}</td>
+              <td><button className="icon-act"><Eye/></button></td>
+            </tr>
+          ))}</tbody>
+        </table></div>
+      )}
+
+      {tab==="claims" && (
+        <div className="surface"><table className="tbl">
+          <thead><tr><th>Claim number</th><th>Linked payment</th><th>Modality</th><th className="num">Billed</th><th>Status</th></tr></thead>
+          <tbody>{p.children.map((c,i)=>(
+            <tr key={i} className="row-hover"><td className="mono">{c.claim}</td><td className="mono ink-3">{c.id.slice(0,16)}…</td>
+              <td>{c.modality}</td><td className="num">{money(c.amount)}</td><td><StatusPill status={c.status}/></td></tr>
+          ))}</tbody>
+        </table></div>
+      )}
+
+      {tab==="provider" && (
+        <div className="surface" style={{padding:"18px"}}><div className="info-grid">
+          <div className="info-row"><span className="ik">Provider name</span><span className="iv">{p.provider}</span></div>
+          <div className="info-row"><span className="ik">TIN</span><span className="iv mono">{p.tin}</span></div>
+          <div className="info-row"><span className="ik">NPI</span><span className="iv mono">{p.npi}</span></div>
+          <div className="info-row"><span className="ik">Sub-account</span><span className="iv">{p.subAccount}</span></div>
+          <div className="info-row"><span className="ik">Current network</span><span className="iv"><TypeChip type={p.type}/></span></div>
+          <div className="info-row"><span className="ik">Current modality</span><span className="iv">{p.modality}</span></div>
+        </div></div>
+      )}
+
+      {tab==="payer" && (
+        <div className="surface" style={{padding:"18px"}}>
+          <p className="ink-2" style={{margin:"0 0 12px", fontSize:13}}>1 consolidation always belongs to <b>1 sub-account</b> ({p.subAccount}).</p>
+          <div className="info-grid">
+            <div className="info-row"><span className="ik">Payer</span><span className="iv">Medical Benefits Administrators</span></div>
+            <div className="info-row"><span className="ik">Payer check / trace</span><span className="iv mono">081000604900002</span></div>
+            <div className="info-row"><span className="ik">Settlement date</span><span className="iv">{p.date}</span></div>
+            <div className="info-row"><span className="ik">2.0 payment ID</span><span className="iv mono">{p.twoOh}</span></div>
+          </div>
+        </div>
+      )}
+
+      {tab==="documents" && (
+        <div className="doc-grid">
+          {[["Consolidated 835","X12 835 remittance"],["Consolidated EPRA","Electronic PRA"],["Consolidated PRA","Provider remittance advice"]].map(([t,d])=>(
+            <div className="doc-card" key={t}>
+              <span className="doc-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+              <div><div className="dt">{t}</div><div className="dd">{d}</div></div>
+              <button className="icon-act doc-dl"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab==="notes" && <div className="surface"><div className="empty-note">No notes on this consolidated payment yet.</div></div>}
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// Payments assistant — a scripted AI helper over the real DATA above.
+// Every figure it quotes is computed from the same rows the table renders,
+// so the demo can be interrogated without going off-script.
+// ══════════════════════════════════════════════════════════════════════
+const AiIcons = {
+  spark:(s=18)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M18.5 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg>),
+  wave:(s=17)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0"/><path d="M14 10V4a2 2 0 0 0-4 0v2"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-6-2.3l-3.6-3.6a2 2 0 0 1 2.8-2.8L7 15"/></svg>),
+  smile:(s=44)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M8.4 14.2a4.4 4.4 0 0 0 7.2 0"/><line x1="9" y1="9.4" x2="9" y2="9.4"/><line x1="15" y1="9.4" x2="15" y2="9.4"/></svg>),
+  chat:(s=18)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.5 9.5 0 0 1-2.8-.4L3 21l1.6-4.6A8.2 8.2 0 0 1 3.6 11.5 8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/><line x1="9.1" y1="10" x2="9.1" y2="10"/><line x1="14.9" y1="10" x2="14.9" y2="10"/><path d="M9.1 13.2a3.5 3.5 0 0 0 5.8 0"/></svg>),
+  close:(s=18)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>),
+  reset:(s=15)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 9 8 9"/></svg>),
+  send:(s=15)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>),
+  load:(s=15)=>(<svg className="sp" width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M12 3a9 9 0 1 0 9 9"/></svg>),
+  up:(s=14)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M7 22V11l5-9a2.5 2.5 0 0 1 2.5 3l-1 4H20a2 2 0 0 1 2 2.4l-1.4 7A2 2 0 0 1 18.6 22z"/></svg>),
+  down:(s=14)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" style={{transform:"rotate(180deg)"}}><path d="M7 22V11l5-9a2.5 2.5 0 0 1 2.5 3l-1 4H20a2 2 0 0 1 2 2.4l-1.4 7A2 2 0 0 1 18.6 22z"/></svg>),
+  reply:(s=12)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><line x1="6" y1="18" x2="18" y2="6"/><polyline points="9 6 18 6 18 15"/></svg>),
+  plus:(s=15)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>),
+  dots:(s=15)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg>),
+  hist:(s=15)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4"/><polyline points="3 3 3 8 8 8"/><polyline points="12 8 12 12 15 14"/></svg>),
+  bubble:(s=14)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="8" width="12" height="10" rx="2.5"/><path d="M13 18l-1.5 3-1-3"/></svg>),
+  drawer:(s=14)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><line x1="14" y1="4" x2="14" y2="20"/></svg>),
+  tick:(s=13)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><polyline points="4.5 12.5 9.5 17.5 19.5 6.5"/></svg>),
+  max:(s=15)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 4 20 4 20 9"/><polyline points="9 20 4 20 4 15"/><line x1="20" y1="4" x2="14" y2="10"/><line x1="4" y1="20" x2="10" y2="14"/></svg>),
+  min:(s=15)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 10 14 10 14 4"/><polyline points="4 14 10 14 10 20"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="10" y1="14" x2="3" y2="21"/></svg>),
+  arrow:(s=13)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>),
+  db:(s=12)=>(<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>),
+};
+
+const AI_USER = "Alex";
+
+const AI_SUGGEST = [
+  "How much did we pay in fees?",
+  "Where is claim CLM-200110?",
+  "What is in this batch?",
+  "What is a network payment ID?",
+];
+
+/* Answers are computed live from DATA so nothing can drift out of sync. */
+function aiAnswer(qRaw){
+  const q = qRaw.toLowerCase();
+  const sum = (f)=>DATA.reduce((a,p)=>a+f(p),0);
+  const has = (...w)=>w.some(x=>q.includes(x));
+  /* the only bold worth a click: a specific payment the reader can open */
+  const link = (id)=>"<b class=\"ai-link\" data-net=\""+id+"\">"+id+"</b>";
+
+  if (has("fee","commission","charged"))
+    return { text:"Across the "+DATA.length+" payments in view, fees came to <b>"+money(sum(p=>p.fee))+"</b> on <b>"+money(sum(p=>p.payerPaid))+"</b> paid — an effective <b>"+((sum(p=>p.fee)/sum(p=>p.payerPaid))*100).toFixed(2)+"%</b>. Card payments carry the highest rate.",
+      figs:[["Payer paid",money(sum(p=>p.payerPaid))],["Fees",money(sum(p=>p.fee))],["Deposited",money(sum(p=>p.deposit))]],
+      follow:["Which one had the highest fee?","Show me only VCC payments"] };
+
+  if (has("consolidat","grouped","bundle"))
+    { const c=DATA.filter(p=>p.isConsolidated);
+      return { text:"<b>"+c.length+" of "+DATA.length+"</b> payments are consolidated — one network payment carrying several claim payments. The rest are single-claim.",
+        rows:c.map(p=>[p.netId+" · "+p.provider, p.claimCount+" claims · "+money(p.payerPaid)]),
+        follow:["Why are payments consolidated?","Show the largest payment"] }; }
+
+  if (has("largest","biggest","highest","most"))
+    { const p=[...DATA].sort((a,b)=>b.payerPaid-a.payerPaid)[0];
+      return { text:"The largest is "+link(p.netId)+" to <b>"+p.provider+"</b> — "+money(p.payerPaid)+" paid by "+p.type+", grouping "+p.claimCount+" claim payments.",
+        figs:[["Payer paid",money(p.payerPaid)],["Fee",money(p.fee)],["Deposited",money(p.deposit)]],
+        follow:["Break it down by claim","How much did we pay in fees?"] }; }
+
+  if (has("break it down","by claim","children","detail"))
+    { const p=[...DATA].sort((a,b)=>b.payerPaid-a.payerPaid)[0];
+      return { text:link(p.netId)+" breaks into "+p.claimCount+" claim payments:",
+        rows:p.children.map(c=>[c.claim+" · "+c.status, money(c.amount)]),
+        follow:["What is a network payment ID?"] }; }
+
+  if (has("network payment id","net-","what is a network"))
+    return { text:"A <b>network payment ID</b> is the single identifier the payment network assigns when several claim payments travel together as one deposit. It's the number to quote to a payer — the individual claim payments sit underneath it.",
+      follow:["Which payments are consolidated?","How do I reconcile one?"] };
+
+  if (has("vcc","card","virtual"))
+    { const v=DATA.filter(p=>p.type==="VCC");
+      return { text:"<b>"+v.length+"</b> payment came through as a virtual card, for "+money(v.reduce((a,p)=>a+p.payerPaid,0))+". Its fee rate is the steepest of the three methods.",
+        rows:v.map(p=>[p.provider+" · "+p.netId, money(p.payerPaid)+" · fee "+money(p.fee)]),
+        follow:["Compare fees by payment type"] }; }
+
+  if (has("compare fees","by payment type","by type"))
+    { const t=["ACH","VCC","Check"].map(k=>{ const g=DATA.filter(p=>p.type===k);
+        return [k+" · "+g.length+" payment"+(g.length===1?"":"s"), g.length? ((g.reduce((a,p)=>a+p.fee,0)/g.reduce((a,p)=>a+p.payerPaid,0))*100).toFixed(2)+"%" : "—"]; });
+      return { text:"Effective fee rate by payment type, on the payments in view:", rows:t,
+        follow:["Show me only VCC payments"] }; }
+
+  if (has("reconcile","match","post"))
+    return { text:"Search the <b>network payment ID</b> from your bank statement, open it, and every claim payment inside is listed with its own status. That view is what you post against — the deposit total always equals payer paid minus fees.",
+      follow:["Which payments are consolidated?"] };
+
+  const claimHit = /clm-?\s?(\d{6})/i.exec(qRaw);
+  if (claimHit || has("claim ")){
+    const id = claimHit ? "CLM-" + claimHit[1] : null;
+    let owner = null, child = null;
+    DATA.forEach(p=>p.children.forEach(c=>{ if (id && c.claim === id){ owner = p; child = c; } }));
+    if (owner)
+      return { text:"<b>" + child.claim + "</b> is inside " + link(owner.netId) + " to " + owner.provider +
+          " — " + money(child.amount) + ", " + child.status.toLowerCase() + " on " + child.date + ".",
+        rows:owner.children.map(c=>[c.claim + (c.claim===child.claim ? " \u00b7 this one" : ""), money(c.amount) + " \u00b7 " + c.status]),
+        follow:["Which payments are consolidated?","How do I reconcile one?"] };
+    return { text:"Every claim payment travels inside a network payment. Give me a claim number \u2014 " +
+        CLAIMS.slice(0,3).join(", ") + " are in view \u2014 and I'll show which payment carries it.",
+      follow:["Where is claim " + CLAIMS[0] + "?"] };
+  }
+
+  if (has("batch"))
+    return { text:"A <b>batch</b> is the file a payer sends in one run; the payments in view arrived across several of them. Batch search is the place to open one end to end \u2014 here I can only see the payments themselves.",
+      figs:[["Payments in view", String(DATA.length)], ["Claim payments", String(DATA.reduce((a,p)=>a+p.children.length,0))], ["Payers", String(uniq(DATA.map(p=>p.org)).length)]],
+      follow:["Which payments are consolidated?","How much did we pay in fees?"] };
+
+  const who = DATA.find(p=>q.includes(p.provider.toLowerCase().split(" ")[0]));
+  if (who)
+    return { text:"<b>"+who.provider+"</b> (TIN "+who.tin+") has "+DATA.filter(p=>p.provider===who.provider).length+" payment(s) in view. The most recent is "+link(who.netId)+" — "+money(who.payerPaid)+" by "+who.type+".",
+      figs:[["Payer paid",money(who.payerPaid)],["Fee",money(who.fee)],["Deposited",money(who.deposit)]],
+      follow:["Break it down by claim"] };
+
+  return { text:"I can work over the payments in view — fees, consolidation, payment types, or a specific provider. Try one of these:",
+    follow:["How much did we pay in fees?","Which payments are consolidated?","Compare fees by payment type"] };
+}
+
+/* Past conversations — staged so the history state can be demoed both ways. */
+const AI_PAST = [
+  { id:1, t:"Fees on June deposits",        when:"Yesterday",  group:"Yesterday",       q:"How much did we pay in fees?",       at:"4:12 PM" },
+  { id:2, t:"Consolidated vs individual",   when:"2 days ago", group:"Previous 7 days", q:"Which payments are consolidated?",   at:"11:47 AM" },
+  { id:3, t:"Maria Gomez · card settlement",when:"Last week",  group:"Previous 7 days", q:"Show me only VCC payments",          at:"2:38 PM" },
+  { id:4, t:"What a network payment ID is", when:"Last week",  group:"Previous 7 days", q:"What is a network payment ID?",      at:"9:03 AM" },
+];
+/* buckets AI_PAST into {label, items} groups, preserving first-seen order — the ChatGPT-style sidebar grouping */
+function groupPast(list){
+  var order=[], map={};
+  list.forEach(function(c){
+    if(!map[c.group]){ map[c.group]=[]; order.push(c.group); }
+    map[c.group].push(c);
+  });
+  return order.map(function(label){ return { label:label, items:map[label] }; });
+}
+
+const aiNow = ()=> new Date().toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" });
+
+const AI_VIEWS = [
+  { id:"bubble", label:"Bubble",      short:"Bubble", ico:"bubble" },
+  { id:"drawer", label:"Side drawer", short:"Drawer", ico:"drawer" },
+  { id:"full",   label:"Full screen", short:"Full",   ico:"max" },
+];
+
+const AI_STEPS = ["Reading your question…","Searching 608,170 payments…","Checking fees and totals…","Writing the answer…"];
+
+function AiMessage({ m, onFollow, isLast, onOpenPay }){
+  const [fb,setFb] = useState(null);
+  if (m.role==="me") return (<div className="ai-msg me"><div className="ai-me-wrap"><div className="ai-bub">{m.text}</div><div className="ai-time me">{m.at}</div></div></div>);
+  /* dangerouslySetInnerHTML can't carry onClick, so one delegated handler on the bubble reads the .ai-link's netId */
+  const onBubClick = (e)=>{
+    const t = e.target.closest && e.target.closest(".ai-link");
+    if (t && t.dataset.net && onOpenPay) onOpenPay(t.dataset.net);
+  };
+  return (
+    <div className="ai-msg-wrap">
+      <div className="ai-msg ai">
+        <div className="ai-bub" onClick={onBubClick}>
+          <span dangerouslySetInnerHTML={{__html:m.shown}}/>{!m.done && <i className="ai-caret"/>}
+          {m.done && m.figs && (<div className="ai-figs">{m.figs.map((f,i)=>(
+            <div className="ai-fig" key={i}><span>{f[0]}</span><b>{f[1]}</b></div>))}</div>)}
+          {m.done && m.rows && (<table className="ai-tbl"><tbody>{m.rows.map((r,i)=>(
+            <tr key={i}><td>{r[0]}</td><td>{r[1]}</td></tr>))}</tbody></table>)}
+        </div>
+      </div>
+      {m.done && (
+        <Fragment>
+          <div className="ai-meta">
+            <span className="ai-time">{m.at}</span>
+            <div className="ai-fb">
+              <button className={fb==="up"?"on":""} onClick={()=>setFb("up")} title="Helpful" aria-label="Helpful">{AiIcons.up()}</button>
+              <button className={fb==="down"?"on":""} onClick={()=>setFb("down")} title="Not helpful" aria-label="Not helpful">{AiIcons.down()}</button>
+            </div>
+          </div>
+          {m.follow && (<div className={"ai-follow"+(isLast?"":" is-gone")}>{m.follow.map((f,i)=>(
+            <button key={i} style={{animationDelay:(i*60)+"ms"}} onClick={()=>onFollow(f)}>{AiIcons.reply()}{f}</button>))}</div>)}
+        </Fragment>
+      )}
+    </div>
+  );
+}
+
+function Assistant({ hasHistory, onOpen }){
+  /* the assistant has its own tile in the hub, so it can be linked to directly:
+     /summarization?ask=1 lands with the panel already open */
+  const [open,setOpen]   = useState(/[?&]ask=1/.test(typeof location === 'undefined' ? '' : location.search));
+  const [seen,setSeen]   = useState(false);
+  const [msgs,setMsgs]   = useState([]);
+  const [draft,setDraft] = useState("");
+  const [busy,setBusy]   = useState(false);
+  const [step,setStep]   = useState(0);
+  const [view,setView]       = useState('bubble');
+  const [showHist,setShowHist] = useState(false);
+  const [menu,setMenu]         = useState(false);
+  const [leaving,setLeaving]   = useState(false);
+  const [hadChat,setHadChat]   = useState(false);
+  const bodyRef = useRef(null), taRef = useRef(null), timers = useRef([]);
+
+  const clearTimers = ()=>{ timers.current.forEach(clearTimeout); timers.current=[]; };
+  const scroll = ()=>{ const el=bodyRef.current; if(el) el.scrollTop = el.scrollHeight; };
+  React.useEffect(scroll, [msgs, busy, step]);
+  React.useEffect(()=>{ if(open && taRef.current) taRef.current.focus(); }, [open]);
+  React.useEffect(()=>()=>clearTimers(), []);
+  React.useEffect(()=>{
+    const esc = (e)=>{ if(e.key==="Escape"){ setMenu(false); setOpen(false); } };
+    window.addEventListener("keydown", esc); return ()=>window.removeEventListener("keydown", esc);
+  },[]);
+
+  /* send() does the work; ask() decides whether the welcome screen has to
+     fade out first, so the answer never lands on top of the greeting */
+  function send(t){
+    setDraft(""); setBusy(true); setStep(0); setHadChat(true);
+    setMsgs(m=>[...m,{ role:"me", text:t, at:aiNow() }]);
+    /* the status line walks the steps so the wait reads as work, not lag */
+    AI_STEPS.forEach((_,i)=>{ if(i) timers.current.push(setTimeout(()=>setStep(i), i*640)); });
+    timers.current.push(setTimeout(()=>{
+      const a = aiAnswer(t);
+      setBusy(false);
+      setMsgs(m=>[...m,{ role:"ai", ...a, shown:"", done:false, at:aiNow() }]);
+      /* reveal word by word — cheap, but it makes the answer feel composed */
+      const words = a.text.split(" ");
+      words.forEach((w,i)=>{
+        timers.current.push(setTimeout(()=>{
+          setMsgs(m=>{ const c=[...m], last=c.length-1;
+            c[last] = {...c[last], shown: words.slice(0,i+1).join(" "), done: i===words.length-1 };
+            return c; });
+        }, 34*i));
+      });
+    }, AI_STEPS.length*640));
+  }
+
+  function ask(text){
+    const t = (text||"").trim();
+    if (!t || busy) return;
+    if (msgs.length === 0){
+      setLeaving(true);
+      timers.current.push(setTimeout(()=>{ setLeaving(false); send(t); }, 260));
+      return;
+    }
+    send(t);
+  }
+  const reset = ()=>{ clearTimers(); setMsgs([]); setBusy(false); setDraft(""); setShowHist(false); setLeaving(false); };
+  /* a past chat is already resolved — load it in full, don't replay the ask/think/answer sequence */
+  const openPast = (c)=>{
+    clearTimers();
+    const a = aiAnswer(c.q);
+    setBusy(false); setDraft(""); setShowHist(false); setMenu(false); setLeaving(false);
+    setMsgs([ { role:"me", text:c.q, at:c.at }, { role:"ai", ...a, shown:a.text, done:true, at:c.at } ]);
+    setHadChat(true);
+  };
+  const toggle = ()=>{ setOpen(o=>!o); setSeen(true); };
+  /* a clicked payment mention opens it in the table behind the panel, same as any other netid-link */
+  const openPayment = (id)=>{ if (onOpen) onOpen(id); setOpen(false); };
+
+  /* the chat you're in right now sits at the top of history under Today, so it's never lost among the past ones */
+  const liveChat = msgs.length ? { id:"live", t:(msgs.find(m=>m.role==="me")||{}).text || "Current chat" } : null;
+  const histGroups = (liveChat ? [{ label:"Today", items:[liveChat], live:true }] : [])
+    .concat(hasHistory ? groupPast(AI_PAST) : []);
+  const renderHist = ()=> histGroups.map(g=>(
+    <div className="ai-side-group" key={g.label}>
+      <div className="ai-side-l">{g.label}</div>
+      {g.items.map(c=>(
+        <button className={"ai-side-item"+(g.live?" on":"")} key={c.id}
+          onClick={()=> g.live ? setShowHist(false) : openPast(c)}>{c.t}</button>
+      ))}
+    </div>
+  ));
+
+  return (
+    <Fragment>
+      <button className={"ai-fab"+(open?" is-open":"")} onClick={toggle}
+        title={open?"Close the assistant":"Ask the payments assistant"}
+        aria-label={open?"Close the assistant":"Ask the payments assistant"} aria-expanded={open}>
+        {open ? AiIcons.close(20) : AiIcons.chat(24)}
+        {!open && !seen && <span className="ai-fab-dot"/>}
+      </button>
+
+      {open && (
+        <div className={"ai-panel ai-view-"+view+(msgs.length===0 && !busy && !showHist && !leaving?" is-fresh":"")} role="dialog" aria-label="Payments Assistant">
+          {view==="full" && (
+            <div className="ai-sidebar">
+              <div className="ai-side-brand"><span className="ai-mark">{AiIcons.chat(18)}</span><b>Payments Assistant</b></div>
+              <button className="ai-side-new" onClick={reset}>{AiIcons.plus(14)}<span>New chat</span></button>
+              <div className="ai-side-hist">
+                {histGroups.length ? renderHist() : <div className="ai-side-empty">No chats yet</div>}
+              </div>
+              <div className="ai-side-foot">
+                <div className="ai-seg">
+                  {AI_VIEWS.map(v=>(
+                    <button key={v.id} className={view===v.id?"on":""} onClick={()=>setView(v.id)} title={v.label}>
+                      {AiIcons[v.ico](14)}<span>{v.short}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="ai-main">
+          <div className="ai-head">
+            <span className="ai-mark">{AiIcons.chat(20)}</span>
+            <div className="ai-head-t"><b>Payments Assistant</b></div>
+            {view!=="full" && (
+              <span className="ai-more-wrap">
+                <button className={"ai-ico-btn"+(menu?" on":"")} onClick={()=>setMenu(m=>!m)} title="More" aria-label="More">{AiIcons.dots()}</button>
+                {menu && (
+                  <div className="ai-more">
+                    <button className="ai-new-item" onClick={()=>{ reset(); setMenu(false); }}>{AiIcons.plus(14)}<span>New chat</span></button>
+                    <button onClick={()=>{ setShowHist(h=>!h); setMenu(false); }}>{AiIcons.hist(14)}<span>{showHist?"Back to chat":"Chat history"}</span></button>
+                    <div className="ai-more-sep"/>
+                    <div className="ai-more-l">View</div>
+                    <div className="ai-seg">
+                      {AI_VIEWS.map(v=>(
+                        <button key={v.id} className={view===v.id?"on":""} onClick={()=>{ setView(v.id); setMenu(false); }} title={v.label}>
+                          {AiIcons[v.ico](14)}<span>{v.short}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </span>
+            )}
+            <button className="ai-ico-btn" onClick={()=>setOpen(false)} title="Close" aria-label="Close">{AiIcons.close(16)}</button>
+          </div>
+
+          <div className="ai-body" ref={bodyRef} aria-live="polite">
+            <div className="ai-topfade" aria-hidden="true"/>
+            {/* full screen already shows history permanently in the sidebar — the body always stays on the live conversation */}
+            {showHist && view!=="full" ? (
+              <div className="ai-hist">
+                {histGroups.length ? renderHist() : (
+                  <div className="ai-hist-empty">
+                    <div className="ai-empty-mark">{AiIcons.hist(22)}</div>
+                    <h4>No chats yet</h4>
+                    <p>Once you ask something, your conversations show up here so you can pick them back up.</p>
+                    <button className="ai-hist-cta" onClick={()=>setShowHist(false)}>Start a chat</button>
+                  </div>
+                )}
+              </div>
+            ) : (<Fragment>
+            {msgs.length===0 && !busy && (
+              <div className={"ai-empty"+(leaving?" is-leaving":"")}>
+                <div className="ai-hello"><span>Hello, {AI_USER}</span><span className="ai-wave">{AiIcons.wave(17)}</span></div>
+                <h4>How can I help you?</h4>
+                <div className="ai-sugg-l">Try asking</div>
+                <div className="ai-sugg">
+                  {AI_SUGGEST.map((s,i)=>(
+                    <button className="ai-chip" key={s} style={{animationDelay:(120+i*70)+"ms"}} onClick={()=>ask(s)}>
+                      {AiIcons.arrow()}<span>{s}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {msgs.map((m,i)=><AiMessage key={i} m={m} onFollow={ask} isLast={i===msgs.length-1} onOpenPay={openPayment}/>)}
+            {busy && (
+              <div className="ai-think">
+                <span className="ai-load"><span className="ai-dots"><i/><i/><i/></span><span className="ai-step">{AI_STEPS[step]}</span></span>
+              </div>
+            )}
+            </Fragment>)}
+          </div>
+
+          {/* browsing history there is no conversation to type into — one clear action instead of a dead composer */}
+          <div className="ai-foot">
+            {showHist && view!=="full" ? (
+              <button className="ai-foot-new" onClick={reset}>{AiIcons.plus(15)}<span>New chat</span></button>
+            ) : (<Fragment>
+              <div className="ai-input">
+                <textarea ref={taRef} rows="2" value={draft} placeholder="Ask about these payments…"
+                  onChange={e=>{ setDraft(e.target.value); e.target.style.height="auto"; e.target.style.height=Math.max(48,Math.min(e.target.scrollHeight,112))+"px"; }}
+                  onKeyDown={e=>{ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); ask(draft); e.target.style.height="auto"; } }}/>
+                <button className="ai-send" disabled={!draft.trim()||busy} onClick={()=>ask(draft)}
+                  title="Send" aria-label="Send">{busy?AiIcons.load():AiIcons.send()}</button>
+              </div>
+              <p className="ai-legal">{AiIcons.spark(11)}Answers are AI-generated — check anything important.</p>
+            </Fragment>)}
+          </div>
+          </div>
+        </div>
+      )}
+    </Fragment>
+  );
+}
+
+// ── floating prototype switcher (English) ──
+const OPTIONS = [
+  { id:"toggle", letter:"1", title:"Toggle Individual / Consolidated", desc:"Toggle in results between individual and consolidated payments." },
+  { id:"expand", letter:"2", title:"Single table, expandable", desc:"One table; consolidated rows expand to their child payments." },
+  { id:"drill",  letter:"3", title:"Drill-in from individual payment", desc:"Individual search untouched; click the Network Payment ID to open the consolidated view." },
+];
+// Cross-cutting add-on (not a 4th layout) — demoted below the three options.
+const SECONDARY = { id:"clarity", title:"Data clarity (on option 2)", desc:"Add-on, not a layout: option 2 with restrained relabels + hover definitions, only where a field is ambiguous." };
+function Switcher({ option, setOption, aiHist, setAiHist }){
+  const [open, setOpen] = useState(false);
+  const pick = (id)=>{ setOption(id); setOpen(false); };
+  return (
+    <Fragment>
+      <button className="pp-fab" onClick={()=>setOpen(o=>!o)} title="Prototype options">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/></svg>
+      </button>
+      {open && (
+        <div className="pp-panel">
+          <div className="pp-head"><span className="kbd">PROTO</span><span className="ttl">Consolidated payments · 3 options</span></div>
+          {OPTIONS.map(o=>(
+            <div key={o.id} className={"pp-card "+(option===o.id?"on":"")} onClick={()=>pick(o.id)}>
+              <span className="pp-letter">{o.letter}</span>
+              <div>
+                <div className="pp-t">{o.title}</div>
+                <div className="pp-d">{o.desc}</div>
+              </div>
+            </div>
+          ))}
+          <div className="pp-divider"/>
+          <div className="pp-sec-label">Data-clarity layer · applies on top</div>
+          <div className={"pp-card is-secondary "+(option===SECONDARY.id?"on":"")} onClick={()=>pick(SECONDARY.id)}>
+            <span className="pp-letter pp-letter-sec"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span>
+            <div>
+              <div className="pp-t">{SECONDARY.title}</div>
+              <div className="pp-d">{SECONDARY.desc}</div>
+            </div>
+          </div>
+          <div className="pp-divider"/>
+          <div className="pp-sec-label">Ask Acme · chat history</div>
+          <div className={"pp-card is-secondary "+(aiHist?"on":"")} onClick={()=>setAiHist(true)}>
+            <span className="pp-letter pp-letter-sec">H</span>
+            <div><div className="pp-t">With past chats</div>
+              <div className="pp-d">The history panel lists earlier conversations; picking one replays it.</div></div>
+          </div>
+          <div className={"pp-card is-secondary "+(!aiHist?"on":"")} onClick={()=>setAiHist(false)}>
+            <span className="pp-letter pp-letter-sec">&mdash;</span>
+            <div><div className="pp-t">No history yet</div>
+              <div className="pp-d">First-run state: the history panel invites the user to start a chat.</div></div>
+          </div>
+        </div>
+      )}
+    </Fragment>
+  );
+}
+
+function SideNav(){
+  const Item = ({label, on, child}) => <div className={"sidenav-item"+(on?" is-on":"")+(child?" is-child":"")}>{!child && <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>}{label}</div>;
+  return (
+    <nav className="sidenav">
+      <div className="sidenav-sect">Internal administration</div>
+      <Item label="Dashboard"/>
+      <Item label="Global payments" on/>
+      <Item label="Global payment search" on child/>
+      <Item label="Global batch search" child/>
+      <Item label="Global user admin" child/>
+      <Item label="Global audit" child/>
+      <div className="sidenav-sect">Payer implementation</div>
+      <Item label="Create organization"/>
+      <Item label="Payment programs"/>
+      <Item label="EPRA content"/>
+      <Item label="Payment rules"/>
+      <div className="sidenav-sect">Payer organizations</div>
+      <Item label="Search organizations"/>
+    </nav>
+  );
+}
+
+function Pager({ shown }){
+  const [pg,setPg] = useState(1);
+  const pages = [1,2,3,4,5];
+  return (
+    <div className="pager">
+      <span className="results-count">Showing 1–{shown} of 608,170 results</span>
+      <span className="pager-pages">
+        <span className={"pager-nav"+(pg===1?" is-off":"")} onClick={()=>setPg(p=>Math.max(1,p-1))}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>Previous
+        </span>
+        {pages.map(n=><button key={n} className={pg===n?"on":""} onClick={()=>setPg(n)}>{n}</button>)}
+        <span className="pager-nav" onClick={()=>setPg(p=>Math.min(5,p+1))}>
+          Next<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </span>
+      </span>
+    </div>
+  );
+}
+
+// Date-range filter in the search bar (a dropdown chip, as in the original).
+function RangeFilter(){
+  const [open, setOpen] = useState(false);
+  const [val, setVal] = useState("In the last 6 months");
+  const OPTS = ["In the last 30 days","In the last 6 months","In the last 12 months","All time"];
+  return (
+    <span className="filter-wrap">
+      <button className="range-chip" onClick={()=>setOpen(o=>!o)}>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        {val}
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </button>
+      {open && (
+        <div className="fdrop" style={{right:0, left:"auto"}}>
+          {OPTS.map(o=>(
+            <div key={o} className="fopt" onClick={()=>{ setVal(o); setOpen(false); }}>
+              <span className={"fcheck"+(val===o?" on":"")}>{val===o && <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}</span>
+              {o}
+            </div>
+          ))}
+        </div>
+      )}
+    </span>
+  );
+}
+
+function FilterChip({ id, label, openKey, setOpenKey, options, single, selected, value, onToggle, onPick }){
+  const isOpen = openKey===id;
+  const count = single ? (value?1:0) : selected.size;
+  return (
+    <span className="filter-wrap">
+      <button className={"filter-chip"+(count?" is-active":"")} onClick={()=>setOpenKey(isOpen?null:id)}>
+        {count>0 && <span className="chip-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>}
+        {label}{count>0 && <span className="chip-count">{count}</span>}
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      {isOpen && (
+        <div className="fdrop">
+          {options.map(o=>{
+            const on = single ? value===o.id : selected.has(o.id);
+            return (
+              <div key={o.id} className="fopt" onClick={()=> single ? onPick(on?null:o.id) : onToggle(o.id)}>
+                <span className={"fcheck"+(on?" on":"")}>{on && <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>}</span>
+                {o.label}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </span>
+  );
+}
+
+function SearchView({ option, onOpen, recentId }){
+  const [mode, setMode] = useState("consolidated");
+  const [q, setQ] = useState("");
+  const [filters, setFilters] = useState(emptyFilters());
+  const [openKey, setOpenKey] = useState(null);
+  const [sort, setSort] = useState({ key:null, dir:1 });
+  const toggle = (key,val) => setFilters(f=>{ const s=new Set(f[key]); s.has(val)?s.delete(val):s.add(val); return {...f,[key]:s}; });
+  const pickAmount = (val) => setFilters(f=>({...f, amount:val}));
+  const clearAll = () => { setQ(""); setFilters(emptyFilters()); setOpenKey(null); };
+  const active = anyFilter(q,filters);
+  const opt = (arr) => arr.map(v=>({ id:v, label:v }));
+
+  const pRows = sortRows(parentRows(q,filters), sort);
+  const iRows = sortRows(individualRows(q,filters), sort, (r,k)=> (k in r ? r[k] : r.parent[k]));
+  const usingIndividual = option==="drill" || (option==="toggle" && mode==="individual");
+  const shown = usingIndividual ? iRows.length : pRows.length;
+
+  const CHIPS = [
+    { id:"amount",   label:"Payment amount",   single:true, options:AMOUNT_RANGES },
+    { id:"claim",    label:"Claim number",     options:opt(CLAIMS) },
+    { id:"status",   label:"Current status",   options:opt(STATUSES) },
+    { id:"type",     label:"Current network",  options:opt(TYPES) },
+    { id:"modality", label:"Current modality", options:opt(MODALITIES) },
+    { id:"provider", label:"Provider",         options:opt(PROVIDERS) },
+    { id:"org",      label:"Organization",     options:opt(ORGS) },
+    { id:"orgId",    label:"Organization IDs", options:opt(ORG_IDS) },
+  ];
+
+  return (
+    <div>
+      <div className="breadcrumb"><span className="crumb-link">Home</span><span className="sep">›</span><span style={{color:"var(--ink)"}}>Global payment search</span></div>
+      <div className="title-row">
+        <div>
+          <h1 className="page">Payments</h1>
+          <div className="page-sub">Enter any payment information to begin a search — payment date, amount, payment ID, and other payment information.</div>
+        </div>
+        <button className="btn btn-quiet">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Search by card number
+        </button>
+      </div>
+      <div className="searchbar">
+        <div className="search-input">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input placeholder="Try a TIN, provider, network ID, payment ID, or claim…" value={q} onChange={e=>setQ(e.target.value)}/>
+          {q && <button className="icon-act" onClick={()=>setQ("")} title="Clear search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></button>}
+          <RangeFilter/>
+        </div>
+        <button className="btn btn-primary">Search</button>
+      </div>
+
+      <h2 className="section-title">All payments</h2>
+      <div className="filter-label">Filter payments by</div>
+      {(() => {
+        const renderChip = (c)=>(
+          <FilterChip key={c.id} id={c.id} label={c.label} openKey={openKey} setOpenKey={setOpenKey}
+            options={c.options} single={c.single}
+            selected={c.single?null:filters[c.id]} value={c.single?filters.amount:null}
+            onToggle={(v)=>toggle(c.id,v)} onPick={pickAmount}/>
+        );
+        return (
+          <Fragment>
+            {/* Row 1: first five filters + All filters / Clear all on the right.
+                Row 2: the remaining filters — matches the original two-line wrap. */}
+            <div className="filters">
+              {CHIPS.slice(0,5).map(renderChip)}
+              {active
+                ? <span className="all-filters" onClick={clearAll}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Clear all</span>
+                : <span className="all-filters">All filters<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></span>}
+            </div>
+            <div className="filters">
+              {CHIPS.slice(5).map(renderChip)}
+            </div>
+          </Fragment>
+        );
+      })()}
+
+      <div className="results-meta">
+        <span className="results-count">Showing 1–{shown} of 608,170 results</span>
+        {option==="toggle" && (
+          <div className="seg">
+            <button className={mode==="individual"?"on":""} onClick={()=>setMode("individual")}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              Individual payments
+            </button>
+            <button className={mode==="consolidated"?"on":""} onClick={()=>setMode("consolidated")}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="7" rx="1.5"/><rect x="3" y="14" width="18" height="7" rx="1.5"/></svg>
+              Consolidated payments
+            </button>
+          </div>
+        )}
+        {option==="drill" && <span className="legend-hint"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg> Click a Network Payment ID to open its consolidation</span>}
+        {option==="clarity" && <span className="legend-hint"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> Hover the ⓘ on ambiguous columns for an inline definition</span>}
+      </div>
+
+      {option==="toggle" && (mode==="consolidated"
+        ? (pRows.length ? <ConsolidatedTable rows={pRows} onOpen={onOpen} sort={sort} setSort={setSort} recentId={recentId} q={q}/> : <EmptyState/>)
+        : (iRows.length ? <IndividualTable rows={iRows} drill={false} onOpen={onOpen} sort={sort} setSort={setSort} recentId={recentId} q={q}/> : <EmptyState/>))}
+      {option==="expand" && (pRows.length ? <ExpandableTable rows={pRows} onOpen={onOpen} sort={sort} setSort={setSort} recentId={recentId} q={q}/> : <EmptyState/>)}
+      {option==="drill" && (iRows.length ? <IndividualTable rows={iRows} drill={true} onOpen={onOpen} sort={sort} setSort={setSort} recentId={recentId} q={q}/> : <EmptyState/>)}
+      {option==="clarity" && (pRows.length ? <ExpandableTable rows={pRows} onOpen={onOpen} sort={sort} setSort={setSort} clarity={true} recentId={recentId} q={q}/> : <EmptyState/>)}
+
+      {shown>0 && <Pager shown={shown}/>}
+    </div>
+  );
+}
+
+function App(){
+  const [option, setOption] = useState("toggle");
+  const [aiHist, setAiHist] = useState(true);
+  const [view, setView] = useState("search");
+  const [netId, setNetId] = useState(null);
+  const [recentId, setRecentId] = useState(null);  // briefly highlights the row you came back to
+  const recentTimer = React.useRef(null);
+  const [navOpen, setNavOpen] = useState(false);   // sidenav collapsed by default
+  const open = (id) => { setNetId(id); setView("detail"); };
+  // Returning from a detail highlights the originating row, then fades it out
+  // after a few seconds so it doesn't stay marked forever.
+  const back = () => {
+    setView("search");
+    setRecentId(netId);
+    if(recentTimer.current) clearTimeout(recentTimer.current);
+    recentTimer.current = setTimeout(()=>setRecentId(null), 3200);
+  };
+  // Switching option starts that option clean — clear the row highlight and
+  // return to search. The key={option} below remounts SearchView so its
+  // filters / sort / expansion don't bleed across options.
+  const switchOption = (o) => { setOption(o); setView("search"); setNetId(null); setRecentId(null); if(recentTimer.current) clearTimeout(recentTimer.current); };
+  const ChevDouble = ({dir}) => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      {dir==="left"
+        ? <Fragment><path d="M11 17l-5-5 5-5"/><path d="M18 17l-5-5 5-5"/></Fragment>
+        : <Fragment><path d="M13 17l5-5-5-5"/><path d="M6 17l5-5-5-5"/></Fragment>}
+    </svg>
+  );
+  return (
+    <div className="app">
+      <div className="topbar">
+        <span className="brand"><b>Acme</b> Financial</span>
+      </div>
+      {/* Floating menu toggle — transparent, sits by the page title (not the navbar). */}
+      <button className={"nav-fab"+(navOpen?" open":"")} onClick={()=>setNavOpen(o=>!o)} title={navOpen?"Collapse menu":"Expand menu"} aria-label={navOpen?"Collapse menu":"Expand menu"}>
+        <ChevDouble dir={navOpen?"left":"right"}/>
+      </button>
+      <div className="body">
+        {navOpen && <SideNav/>}
+        <div className="content">
+          {view==="search"
+            ? <SearchView key={option} option={option} onOpen={open} recentId={recentId}/>
+            : <ConsolidatedDetail netId={netId} onBack={back} clarity={option==="clarity"}/>}
+        </div>
+      </div>
+      <Switcher option={option} setOption={switchOption} aiHist={aiHist} setAiHist={setAiHist}/>
+      <Assistant hasHistory={aiHist} onOpen={open}/>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
