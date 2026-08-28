@@ -666,6 +666,50 @@
 
 <!-- ============ PROVIDER SIGN-IN CHOOSER ============ -->
 
+<!-- ============ PROVIDER SIGN-IN CHOOSER (ported) ============ -->
+<div class="view" id="view-provlogin">
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Provider sign in</span>
+        <h2>Where would you like to sign in?</h2>
+        <p class="lead">Your payment products and your banking and lending, each with its own sign in.</p>
+      </div>
+      <div class="grid g2" id="tour-provlogin">
+        <div class="card blue">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M3 9h18" stroke="currentColor" stroke-width="1.7"/><path d="M7 14h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+          <h3>Provider Payment Network</h3>
+          <p>One place for your payment products. See and reconcile payer payments, manage remittances, and get paid faster.</p>
+          <ul class="flist">
+            <li><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="#0C55B8" stroke-width="1.5"/><path d="M5.5 9.2l2.2 2.2 4.6-4.8" stroke="#0C55B8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>View and reconcile claim payments</li>
+            <li><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="#0C55B8" stroke-width="1.5"/><path d="M5.5 9.2l2.2 2.2 4.6-4.8" stroke="#0C55B8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Manage remittances and 835 files</li>
+            <li><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="#0C55B8" stroke-width="1.5"/><path d="M5.5 9.2l2.2 2.2 4.6-4.8" stroke="#0C55B8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Enroll TINs and payment methods</li>
+          </ul>
+          <div class="foot"><button class="btn btn-primary btn-sm" onclick="window.open('https://tam-design-payments-uhg.vercel.app/payer-portal/?portal=payments&auth=1&ops=1','_blank','noopener')">Sign in to payments</button></div>
+        </div>
+        <div class="card blue">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-5 9 5" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M5 9.5v8.5M9 9.5v8.5M15 9.5v8.5M19 9.5v8.5" stroke="currentColor" stroke-width="1.7"/><path d="M3 20h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <h3>Optum Banking Solutions</h3>
+          <p>Your Optum Bank operating account, term loans, working capital, and treasury dashboard, all with your One Healthcare ID.</p>
+          <ul class="flist">
+            <li><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="#0C55B8" stroke-width="1.5"/><path d="M5.5 9.2l2.2 2.2 4.6-4.8" stroke="#0C55B8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Manage your operating account</li>
+            <li><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="#0C55B8" stroke-width="1.5"/><path d="M5.5 9.2l2.2 2.2 4.6-4.8" stroke="#0C55B8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Apply for and service lending</li>
+            <li><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="#0C55B8" stroke-width="1.5"/><path d="M5.5 9.2l2.2 2.2 4.6-4.8" stroke="#0C55B8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>See real-time cash flow and settlement</li>
+          </ul>
+          <div class="foot"><button class="btn btn-primary btn-sm" onclick="window.open('https://tam-design-payments-uhg.vercel.app/banking-solutions','_blank','noopener')">Sign in to banking</button></div>
+        </div>
+      </div>
+      <div class="center" style="margin-top:30px;display:flex;flex-direction:column;gap:10px;align-items:center">
+        <p class="lead" style="font-size:1rem">New to Optum? You'll need a One Healthcare ID to sign in to either experience.</p>
+        <button class="btn btn-ghost" onclick="window.open('https://identity.onehealthcareid.com/oneapp/index.html#/registration','_blank','noopener')">Create a One Healthcare ID</button>
+      </div>
+      <p class="calc-disc" style="margin-top:22px">One sign in is coming. The unified provider experience will bring payments and banking together with your One Healthcare ID.</p>
+    </div>
+  </section>
+</div>
+
+<!-- ============ PROVIDER LANDING ============ -->
+
 <!-- ============ PROVIDER LANDING ============ -->
 <div class="view" id="view-provider">
   <div class="phero">
@@ -1155,14 +1199,14 @@
   }
   function signinGo(which){
     const s=document.getElementById('signin'); if(s)s.classList.remove('open');
-    if(which==='providers'){window.open('https://tam-design-payments.vercel.app','_blank','noopener');}
+    if(which==='providers'){go('provlogin');}
     else if(which==='individuals'){alert('Routes to the account holder portal for HSA, FSA, and individual health accounts.');}
     else{alert('Routes to the employer and client portal.');}
   }
   document.addEventListener('click',()=>{const s=document.getElementById('signin');if(s)s.classList.remove('open');});
 
   /* ---------- routing ---------- */
-  const views=['home','consumer','provider','product'];
+  const views=['home','consumer','provider','product','provlogin'];
   function setAud(aud){
     document.querySelectorAll('#navAud button').forEach(b=>b.classList.toggle('active',b.dataset.aud===aud));
   }
@@ -1172,6 +1216,7 @@
     if(view==='provider'){buildPersonas();setAud('provider');}
     else if(view==='home'){setAud(aud||'consumer');}
     else if(view==='consumer'){setAud('consumer');}
+    else if(view==='provlogin'){setAud('provider');}
     else{setAud(view==='product'?'provider':'');}
     if(history.replaceState)history.replaceState(null,'','#'+view);else location.hash=view;
     window.scrollTo({top:0,behavior:'auto'});
