@@ -44,6 +44,28 @@
   .appband-qr img{width:100%;height:100%;display:block;border-radius:6px}
   .appband-visual{align-self:end;padding-top:28px}
   .appband-visual img{width:100%;max-width:380px;display:block;margin:0 auto;border-radius:16px 16px 0 0}
+
+  /* flywheel (converge visual) */
+  .flywheel{position:relative;width:100%;max-width:660px;margin:32px auto 0;aspect-ratio:1/1}
+  .fw-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+  .fw-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:190px;height:190px;border-radius:50%;background:radial-gradient(120% 120% at 30% 25%,#FF7A47,#E2481B);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;box-shadow:0 0 0 10px rgba(255,97,43,.10),0 22px 50px rgba(255,97,43,.34);z-index:3}
+  .fw-center .fw-cic{margin-bottom:8px;display:flex}
+  .fw-center b{font-size:1.1rem;letter-spacing:-.01em;line-height:1.15}
+  .fw-center span{font-size:.75rem;opacity:.92;margin-top:5px}
+  .fw-node{position:absolute;transform:translate(-50%,-50%);width:176px;z-index:2}
+  .fw-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 14px 14px;box-shadow:0 10px 26px rgba(28,30,42,.10);text-align:center;position:relative}
+  .fw-n{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:28px;height:28px;border-radius:50%;background:var(--orange);color:#fff;font-weight:750;font-size:.85rem;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(255,97,43,.42)}
+  .fw-ic{width:36px;height:36px;margin:8px auto 9px;display:flex;align-items:center;justify-content:center}
+  .fw-card b{display:block;font-size:.98rem;letter-spacing:-.01em;margin-bottom:3px}
+  .fw-card span{display:block;font-size:.8rem;color:var(--muted);line-height:1.35}
+  .fw-cap{text-align:center;color:var(--muted);font-size:.92rem;margin-top:26px}
+  .fw-cap b{color:var(--ink)}
+  @media(max-width:900px){
+    .flywheel{aspect-ratio:auto;max-width:420px;display:flex;flex-direction:column;gap:16px}
+    .fw-svg{display:none}
+    .fw-center,.fw-node{position:static;transform:none;width:100%}
+    .fw-center{width:186px;height:186px;margin:0 auto}
+  }
 </style></head><body>
 <title>Optum Bank — Banking built for healthcare</title>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAFKklEQVRogdWaW2xUVRSGv7XPlHIrISGYIsUiKfQyDUhAwDfxFSwSJARrm2HQiiSKIsQ3HY2JRrybeAFbmrZBSU1oTdD4xKMQERUZOhUQ2lA1mHrrlFiYc5YPM9UWOp3ZZ6aN/sk8zD77X+tfM3uvs/Y6R8gDNBQsBu5BdDUqFQiLEOagzARAiKP0o/yAaAzkOMoxaY7+nKtv8S26vmIOTqAWtA5Y6dPMl6i24nmHpCXW78eAdQD60NISXHcP8DAw3Y/TMTCIcgAv8Iq0fNtnQ8w6AG1YUcC1oZ2IvgCppZF/XEVkHzP+elHePj+UDSGrADS8tBx1DwPLcpKXPb7BdbdIS+z7TBNNpgkaDm5C3ZNMnniAO3Cckxqu3php4rgBaDgYQvmIiVsy46EI1XYNV+8Yb1LaAHRb1SMoB4FA3qVlDwfVdzVU9Vi6CWPugeSy4TDgTJg0O7iod780d3XceOGmAHR7sAyPr4BZkyIte8RRc6c0fxcbOThqCenm4BQ8Pua/Jx5gJuId0oYVBSMHR++BInYzudnGFsu5PrRr5MA/S0jrl83HSXQDM3Jw0ItIJ6pHEecS17kMQAElqLsQWA9sABbk4CNOgbdE9nf9BCMzjJPYi3/xfQjPM1DVKO3t7hjXu1OfzzXCLi5VbULkZWChD18zSZg9wFOQ+geShZnTi5/aRqSDqVon70TjNjQNlxehgTagxtonDOK6pdIS60/uAWMewF9h9ia3ndlkKx5AmroHKI1uBH3Lh98ZOM5WGN7EIvXWJkQ6KI3ulgieDwFJExE8Ss8+CXxiTVbqAEQbKudx3fRhV1pfZhqVfn75MbUkl1MMuNWGRsIpNlwza7E+F+gz+RIPqeUEz9rSCHhrDaKrLYm9xIMtlpzMiFcdhFTazRaqawwqFXaetCNNqswJ0t7uonTakSg3CGVWJJXPrOZbwfvUkrDYALOtKA7nLZ1kD1NwwZIx22B7WCkk51ZIWkx1rQ70QFHGI+Wk4o8haz0GsEuHcdcmV9uhYJqt7QED/GZFMc4iSycWSNja/t2g2G0cYZ2lEwvbZr0l45xJ9iqtsEE3b877WVkjdweAe+1IdBuQ45a+FlDUFbLkZEbPle1AiRXH6BeioWAxwo/Y1UN9SKIyVcPkDK0tm0VBYQxhng2NhFNsUi3uk5Y+56OBNo1k7uxlVBHBMKWwzVI8ICek9fSVpADVVh++a+ipej2XIDSCobf6DWzXPoBoGwwfaDzvEDBoL0Eepyd4RMPlRbZMrS2bRU+wE9W0XbdxMEjC/QhSAUhLrB/lgA9DADVo4IKGqnelMsm40AhGw8F6CgpjJLsUPiDvDT8QyXdb5TJKJ0aP4jkXme4l6/urpgQSizBmHUoNttlmNAZQlgw/nhqVeTQUfBrhpRyMTzxE90jT2VeHv47egFOmvgZ8PdmasoecIjBtVBfj/9XcFWelNJ3uHjl4UwqUxuh5REJA3o+NOcBFqL1RPKR5wCFNZ44g7Jx4XVlBgR3SFB2zd5T2JiRN0f0I24DERCnLAi7oo3Iw+kG6CRnrHw1V3oeYFsD6ZpUj/kSoS/fLDyO7x6yhysWIOQwsz4u0jJBTGN0ijdGMDYSs6hhp7jpH6dxVqDwB5KUCTYOriDxHXO/KRjz4edUg2UvdCzSQ2117JAYR3sdjn+0LIDm+7OFsBR4EVvmwpSAnEG1D+FAao7/60eE7gFFK6pbeQsBbi+oaDBUotwNz+bfnFAd+QbiIRwyR4yTMMWk9fSVX338DSJu3towd0coAAAAASUVORK5CYII=">
@@ -742,51 +764,7 @@
   </div>
 
   <!-- products, and how they fit together -->
-  <section id="tour-eco" style="background:var(--ground-2)">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="eyebrow">The vision</span>
-        <h2>Products, and how they fit together</h2>
-        <p class="lead">Every product connects to one operating account. Payments flow in, capital flows out, and your claims tie it together.</p>
-      </div>
-      <div class="eco2">
-        <div class="eco2-card ec-payer">
-          <h4>🧾 Payer claim payments <span class="chk">&check;</span></h4>
-          <div class="eco2-item"><b>200+ in-network payer sources</b></div>
-          <div class="eco2-item"><b>Lockbox services</b><span>Paper to digital conversion</span></div>
-        </div>
-        <div class="eco2-card ec-dash">
-          <h4>📊 Comprehensive dashboard</h4>
-          <div class="top">Real-time banking and treasury insights</div>
-        </div>
-        <div class="eco2-card ec-hub">
-          <span class="a a-up">&uarr;</span><span class="a a-left">&larr;</span><span class="a a-right">&rarr;</span><span class="a a-down">&darr;</span>
-          <b>🏛️ Optum Bank Account</b>
-          <small>The operating account at the center</small>
-        </div>
-        <div class="eco2-card ec-cash">
-          <h4>⚡ Cash Acceleration</h4>
-          <div class="big">Up to 25 days</div>
-          <div class="top">Faster claim payments</div>
-        </div>
-        <div class="eco2-card ec-card">
-          <span class="eco2-pill">Linked to line of credit</span>
-          <h4>💳 Credit cards</h4>
-          <div class="eco2-item"><b>Mastercard, open loop</b><span>Universal acceptance</span></div>
-          <div class="eco2-item"><b>Optum S3, closed loop</b><span>Discounted purchases</span></div>
-        </div>
-        <div class="eco2-card ec-lend">
-          <h4>💰 Lending</h4>
-          <div class="eco2-item" style="flex-direction:row;align-items:center;gap:8px"><b>Working capital loan</b><span class="chk">&check;</span></div>
-          <div class="eco2-item"><b>Term loan</b></div>
-          <div class="eco2-item"><b>Equipment loan</b></div>
-          <div class="eco2-item"><b>Line of credit</b></div>
-          <div class="eco2-note">Auto-repayment via claims means a discounted fee</div>
-        </div>
-      </div>
-      <div class="eco2-legend"><span class="chk">&check;</span> In market today</div>
-    </div>
-  </section>
+  
 
   <!-- 4-step journey -->
   <section id="tour-journey" style="padding-bottom:40px;background:var(--ground-2)">
@@ -796,12 +774,38 @@
         <h2>Converge capital, claims payments, and banking</h2>
         <p class="lead">Get in through any door. Each step makes the next one pay off.</p>
       </div>
-      <div class="cycle">
-        <div class="step"><div class="dot">1</div><b>Open a bank account</b><span>Centralize deposits, payer payments, and operating funds in a healthcare-focused account.</span></div>
-        <div class="step"><div class="dot">2</div><b>Direct your claims payments</b><span>Get paid up to 2 days faster with auto-matched remittances and payer deposits.</span></div>
-        <div class="step"><div class="dot">3</div><b>Access working capital and lending</b><span>Financing tailored to provider cash flow cycles, repaid from the claims you are already owed.</span></div>
-        <div class="step"><div class="dot">4</div><b>Gain financial insights</b><span>See real-time payment, banking, and treasury insights in one dashboard.</span></div>
+      <div class="flywheel">
+        <svg class="fw-svg" viewBox="0 0 660 660" aria-hidden="true">
+          <defs>
+            <linearGradient id="fwring" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#FF612B"/><stop offset="0.5" stop-color="#0C55B8"/><stop offset="1" stop-color="#157A5B"/>
+            </linearGradient>
+          </defs>
+          <line x1="330" y1="330" x2="330" y2="99" stroke="#DAD7D2" stroke-width="2" stroke-dasharray="3 6"/>
+          <line x1="330" y1="330" x2="561" y2="330" stroke="#DAD7D2" stroke-width="2" stroke-dasharray="3 6"/>
+          <line x1="330" y1="330" x2="330" y2="561" stroke="#DAD7D2" stroke-width="2" stroke-dasharray="3 6"/>
+          <line x1="330" y1="330" x2="99" y2="330" stroke="#DAD7D2" stroke-width="2" stroke-dasharray="3 6"/>
+          <circle cx="330" cy="330" r="205" fill="none" stroke="url(#fwring)" stroke-width="3" stroke-dasharray="1.5 10" stroke-linecap="round" opacity="0.8"/>
+        </svg>
+        <div class="fw-center">
+          <span class="fw-cic"><svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-5 9 5" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M5 9.5v8.5M9 9.5v8.5M15 9.5v8.5M19 9.5v8.5" stroke="currentColor" stroke-width="1.7"/><path d="M3 20h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+          <b>Optum Bank Account</b>
+          <span>One connected relationship</span>
+        </div>
+        <div class="fw-node" style="left:50%;top:15%">
+          <div class="fw-card"><div class="fw-n">1</div><span class="fw-ic" style="color:#FF612B"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M3 9l9-5 9 5" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M5 9.5v8.5M9 9.5v8.5M15 9.5v8.5M19 9.5v8.5" stroke="currentColor" stroke-width="1.7"/><path d="M3 20h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><b>Open the account</b><span>Deposits and payer payments in one place.</span></div>
+        </div>
+        <div class="fw-node" style="left:85%;top:50%">
+          <div class="fw-card"><div class="fw-n">2</div><span class="fw-ic" style="color:#0C55B8"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 13v5a2 2 0 002 2h12a2 2 0 002-2v-5" stroke="currentColor" stroke-width="1.7"/><path d="M12 3v10m0 0l-3.5-3.5M12 13l3.5-3.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>Direct your claims</b><span>200+ payers and lockbox flow in, up to 2 days faster.</span></div>
+        </div>
+        <div class="fw-node" style="left:50%;top:85%">
+          <div class="fw-card"><div class="fw-n">3</div><span class="fw-ic" style="color:#157A5B"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6" rx="7" ry="3" stroke="currentColor" stroke-width="1.7"/><path d="M5 6v6c0 1.66 3.13 3 7 3s7-1.34 7-3V6" stroke="currentColor" stroke-width="1.7"/><path d="M5 12v6c0 1.66 3.13 3 7 3s7-1.34 7-3v-6" stroke="currentColor" stroke-width="1.7"/></svg></span><b>Access capital</b><span>Working capital, term loans, and lines of credit.</span></div>
+        </div>
+        <div class="fw-node" style="left:15%;top:50%">
+          <div class="fw-card"><div class="fw-n">4</div><span class="fw-ic" style="color:#1E6FD9"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 20V11M9 20V4M14 20v-6M19 20V8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></span><b>Gain insights</b><span>Real-time payment and treasury dashboard.</span></div>
+        </div>
       </div>
+      <p class="fw-cap"><b>Each step makes the next one pay off.</b> Payments in, capital out, and insights, all around one account.</p>
     </div>
   </section>
 
