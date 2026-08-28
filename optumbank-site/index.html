@@ -67,6 +67,19 @@
     .fw-center,.fw-node{position:static;transform:none;width:100%}
     .fw-center{width:186px;height:186px;margin:0 auto}
   }
+
+  /* apply pages + modal */
+  .apply-form{display:flex;flex-direction:column;gap:4px;max-width:420px;margin-top:26px}
+  .apply-form label{font-weight:650;font-size:.94rem;margin-top:14px}
+  .apply-form input{padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-size:1rem;font-family:inherit;background:#fff;color:var(--ink)}
+  .apply-form input:focus{outline:2px solid var(--blue-bright);outline-offset:0;border-color:var(--blue-bright)}
+  .apply-form .btn{margin-top:24px;align-self:flex-start}
+  .amodal{position:fixed;inset:0;background:rgba(12,18,38,.55);display:none;align-items:center;justify-content:center;z-index:2000;padding:24px}
+  .amodal.show{display:flex}
+  .amodal-box{background:#fff;border-radius:18px;padding:36px;max-width:460px;box-shadow:0 30px 70px rgba(0,0,0,.32);position:relative;text-align:center;animation:fade .3s ease}
+  .amodal-box h3{font-size:1.4rem;margin-bottom:10px}
+  .amodal-box p{color:var(--muted);margin-bottom:22px}
+  .amodal-x{position:absolute;top:12px;right:16px;border:0;background:transparent;font-size:1.7rem;color:var(--muted);cursor:pointer;line-height:1}
 </style></head><body>
 <title>Optum Bank — Banking built for healthcare</title>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADABAMAAACg8nE0AAAAKlBMVEVHcEz/YSv/YSr/YSv/YSv/YSv/YSv/YSv/YSv/YSv/YSv/YSv/YSv/YSt9ZrELAAAADXRSTlMAawswS9vshcj2G7Wf4Y55cgAABRtJREFUeNrVXM1rVFcUf5kMBIYsBqRWsQMxZiGaRSwqVjdBUdtFF2WKSiQLiWKLGUhBGyLMwkQXtmYhtqYiA6FFKuiiVfyoGIhZiLa6CDSTPMb7v3Q0Qabmna9776/F3zaTc969555zz+dNEiW2bP/wrwuHrjl37cSRx9/s+zmJitz2j+597Vpw9eiTfV3RyBe2PfsX9RUel9ZMx/n6bc8qLhPppTURVrFpA0H+NeoPPg7+/PuOxVdhiyhwn7+yiN8DJNF+xslID/f50u956lQY3utJ/w+nxKm9WPrOXffgsMlAv8mh3yzfp86EYaOkCx84I76wndZPnRnnLfR/rdgZpGf19POTzgNLakEXvnVeOKkVwx7nibs6+m2DvgwWiioLPea8MaWx3bdcAB4pVHgyhMGSrND7XRC+FCVcCWNQl+S81gXimLCAWiiDlF/CmAvGPHYBwhLWuwi4jF0Au4QDLgqOk9fAYBwGdepi2OEiYYK4Z2ZiMWhk3zy9LhrmcGeUUbZ8JR6DTDHfdBHxXcZN+TImg1ddIC1+iyJOCZYxtGqHZuIyaLy7R20uMoo+O3Ti+xejoy8eHtL8tmw+Q+nR07u7X/+2+5eD92rWc5QX/+On0y0JlsLBi+L39Nu07PA7YV7PGZuulYTPObfKPhbW1Qz2qDAo0M9wanPrBFe79Zs6hAAv02nOCYHiiPqQTk17RUKtB7XqF3v1sJ74YovLzokg/ZP2c25zgl7o04ngGBO15NbqhHCD+w42OGU9nQGVFkzw7vgujSbkJv1jIi7iWupSGKIJKSTapTBHvaqTQC2BkcJvK7/ZGRDTsUo6JKpZqshv9FQkVWNkPK9JDVQlKTMyntMw6JUcvI4AEQtiHhFusx906ZnPSALjwt/ndAx6hS+shu0Qt0eL/CGaT5QosceovWLwwbNBSrHexzqNRS0DnkSnaAzlLBy5y7PNv24OFgEjhHHO1A3oGdzgzF1J49cI6OB2ocqdAG0xoEIrAhnaNAz1K44I6ZYaZEzvc9NBba9pwzgOO+l9zlPyuWNhsJWi0k8fgKKFQRt9FDsDrmNFCDZLLm7BVPQhj8od0hI2bGWrGdIi75C9+xDXYojMNP5tY/A5mYGkbuQrNgafkLdyKdyWcvZ0nty8cRuDzaQoqzEUmVblxeQlc9kZQOnrK5LBiI1BB8lgBsugQTIo2hi0/X8MJrEMlvAM3n8ZwI8pXNHgpgJu7ODmGn7hwK/MSJd+ifQqwG5LGe94wV1HuPMLd9/hAQgZIEYJodI+fBAID2PhgTg+lQBPhsDTOXRCSm0sCmxCilTCNFJKDZ4URKY1l3UJnZhFppaPsx5HtOQ4PL2PK1Cs3IpMiWUqSomF+UVdcTHnxSJRYJlrv1zm6kQV6mbBpUbXLxrDSMVSttxbjlDuxRes4SV3eNOAb9tDXtv2IDRunAxv3JBaT6ZDW0/E5pnpwOYZePsPvoHJ2IK1xdyCBW8i07XB/ejfBodv5IO3IsZupiyD20EzPHN4Qyt7N5kxYPNvzMj2p9Bt0fjGbnhrejxVKPv4IAbQng56wCGSNnOzPughk2RjDWKGWjCGXcB/MKoEH7bCj4vBB97wI3vJ7RAGiqHDpBs9Ngkf/MSPruKHb+Hjw34D0HXDADR+hFsM8LSBIqPQ4DH6pqCfW+jbHwLAP2Vg4XDd87mHPPg5CeWDGM7/QQz8kx5NgB8lSeDPqiT4h2ES+NM2b1aBfZxnOcHi+bzQP3s8pz6p4haFAAAAAElFTkSuQmCC">
@@ -486,8 +499,8 @@
     <div class="wrap trust-in">
       <div class="stat"><b>$550B+</b><span>moved across provider payments each year</span></div>
       <div class="stat"><b>2.8M</b><span>providers in the Optum network</span></div>
-      <div class="stat"><b>1 in 5</b><span>U.S. medical claims touched by Optum</span></div>
-      <div class="stat"><b class="fdic-mark"><svg viewBox="2 15 44 16" role="img" aria-label="Member FDIC"><rect width="48" height="48" fill="#fff"/><g fill="#003256"><polygon points="6.82 18.89 6.82 21.34 11.01 21.34 11.01 24.58 6.82 24.58 6.82 30.35 3 30.35 3 15.65 11.44 15.65 11.44 18.89 6.82 18.89"/><rect x="28.06" y="15.65" width="3.82" height="14.7"/><path d="m45,20.58c-.78-1.05-2.05-1.62-3.35-1.62-2.34,0-3.92,1.79-3.92,4.07s1.6,4,3.98,4c1.25,0,2.5-.6,3.3-1.56v4.58c-1.27.39-2.18.68-3.37.68-2.05,0-4-.78-5.52-2.16-1.62-1.46-2.36-3.37-2.36-5.56,0-2.01.76-3.94,2.16-5.38,1.44-1.48,3.53-2.38,5.6-2.38,1.23,0,2.36.27,3.49.74v4.58Z"/><path d="m18.73,15.65h-5.42v14.7h5.42c4.07,0,7.47-3.22,7.47-7.35s-3.37-7.35-7.47-7.35Zm-.74,11.46h-.86v-8.23h.9c2.46,0,4.19,1.48,4.19,4.11,0,2.87-1.95,4.11-4.23,4.11Z"/></g></svg></b><span>insured, member FDIC</span></div>
+      <div class="stat"><b>1 in 5</b><span>U.S. medical claims payments processed by Optum</span></div>
+      <div class="stat"><b class="fdic-mark"><svg viewBox="2 15 44 16" role="img" aria-label="Member FDIC"><rect width="48" height="48" fill="#fff"/><g fill="#003256"><polygon points="6.82 18.89 6.82 21.34 11.01 21.34 11.01 24.58 6.82 24.58 6.82 30.35 3 30.35 3 15.65 11.44 15.65 11.44 18.89 6.82 18.89"/><rect x="28.06" y="15.65" width="3.82" height="14.7"/><path d="m45,20.58c-.78-1.05-2.05-1.62-3.35-1.62-2.34,0-3.92,1.79-3.92,4.07s1.6,4,3.98,4c1.25,0,2.5-.6,3.3-1.56v4.58c-1.27.39-2.18.68-3.37.68-2.05,0-4-.78-5.52-2.16-1.62-1.46-2.36-3.37-2.36-5.56,0-2.01.76-3.94,2.16-5.38,1.44-1.48,3.53-2.38,5.6-2.38,1.23,0,2.36.27,3.49.74v4.58Z"/><path d="m18.73,15.65h-5.42v14.7h5.42c4.07,0,7.47-3.22,7.47-7.35s-3.37-7.35-7.47-7.35Zm-.74,11.46h-.86v-8.23h.9c2.46,0,4.19,1.48,4.19,4.11,0,2.87-1.95,4.11-4.23,4.11Z"/></g></svg></b><span>Member FDIC, deposits insured</span></div>
     </div>
   </div>
 
@@ -904,8 +917,8 @@
       </div>
       <p class="lt-note">Term loans are available with or without a personal guarantee. Your rate depends on which you choose.</p>
       <div class="lt-cta">
-        <button class="btn btn-primary" onclick="scrollToId('calc')">Apply for Term Loan</button>
-        <button class="btn btn-ghost" onclick="scrollToId('calc')">Access Working Capital</button>
+        <button class="btn btn-primary" onclick="go('tlapply')">Apply for Term Loan</button>
+        <button class="btn btn-ghost" onclick="go('wcapply')">Access Working Capital</button>
       </div>
     </div>
   </section>
@@ -1007,6 +1020,7 @@
         </div>
       </div>
     </div>
+          <div class="center" style="margin-top:26px"><button class="btn btn-primary" onclick="window.open('https://bankingportal.optum.com/csportal/optum/#/oao/store-front','_blank','noopener')">Open an account</button></div>
   </section>
 
   <!-- proof -->
@@ -1101,6 +1115,65 @@
 </div>
 
 <!-- ============ FOOTER ============ -->
+<!-- ============ APPLY PAGES (ported) ============ -->
+<div class="view" id="view-tlapply">
+  <section>
+    <div class="wrap">
+      <a class="textlink" onclick="go('provider')" tabindex="0" style="cursor:pointer">&larr; Back to provider banking</a>
+      <div class="section-head" style="margin-top:22px">
+        <span class="eyebrow blue">Term loan application</span>
+        <h2>Apply in three easy steps</h2>
+        <p class="lead">Available with or without a personal guarantee. Your rate depends on which you choose.</p>
+      </div>
+      <div class="cycle" style="grid-template-columns:repeat(3,1fr);max-width:940px;margin:0 auto">
+        <div class="step"><div class="dot">1</div><b>Check eligibility</b><span>Enter your TIN and business email to see if you prequalify. No hard credit pull to look.</span></div>
+        <div class="step"><div class="dot">2</div><b>Choose your loan</b><span>Pick your amount and term. Secure the loan for a lower rate, or apply without a personal guarantee.</span></div>
+        <div class="step"><div class="dot">3</div><b>Submit and decide</b><span>Upload a few documents. Two reviewers check every application and respond, usually within a few business days.</span></div>
+      </div>
+      <div class="center" style="margin-top:34px"><button class="btn btn-primary" onclick="openApplyModal()">Start your application</button></div>
+    </div>
+  </section>
+</div>
+
+<!-- apply modal -->
+
+<div class="view" id="view-wcapply">
+  <section>
+    <div class="wrap">
+      <a class="textlink" onclick="go('provider')" tabindex="0" style="cursor:pointer">&larr; Back to provider banking</a>
+      <div style="max-width:520px;margin-top:22px">
+        <span class="eyebrow blue">Working Capital application</span>
+        <h1 style="font-size:clamp(1.8rem,3.2vw,2.4rem);margin:12px 0 14px">Hello, we're glad you're here</h1>
+        <p class="lead">Enter your organization's Taxpayer Identification Number (TIN) to check your eligibility and begin the registration process. All fields are required.</p>
+        <div class="apply-form">
+          <label for="wcTin">Your organization's 9 digit TIN</label>
+          <input id="wcTin" type="text" inputmode="numeric" placeholder="Enter TIN">
+          <label for="wcEmail">Your business email address</label>
+          <input id="wcEmail" type="email" placeholder="Enter email address">
+          <button class="btn btn-primary" onclick="openApplyModal()">Continue</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section style="background:var(--ground-2)">
+    <div class="wrap center" style="display:flex;flex-direction:column;gap:14px;align-items:center">
+      <h2>Have questions about the registration process?</h2>
+      <button class="btn btn-ghost" onclick="alert('Concept: opens an email to the Working Capital registration team.')">Email us</button>
+    </div>
+  </section>
+</div>
+
+<!-- ============ TERM LOAN APPLY ============ -->
+
+<div class="amodal" id="applyModal" onclick="if(event.target===this)closeApplyModal()">
+  <div class="amodal-box" role="dialog" aria-modal="true">
+    <button class="amodal-x" onclick="closeApplyModal()" aria-label="Close">&times;</button>
+    <h3>You're on your way</h3>
+    <p>From here, you would continue into the secure signup and registration process. This is a concept prototype, so the live application is not connected yet.</p>
+    <button class="btn btn-primary" onclick="closeApplyModal()">Got it</button>
+  </div>
+</div>
+
 <footer>
   <div class="wrap">
     <div class="cols">
@@ -1198,7 +1271,7 @@
   document.addEventListener('click',()=>{const s=document.getElementById('signin');if(s)s.classList.remove('open');});
 
   /* ---------- routing ---------- */
-  const views=['home','consumer','provider','product','provlogin'];
+  const views=['home','consumer','provider','product','provlogin','wcapply','tlapply'];
   function setAud(aud){
     document.querySelectorAll('#navAud button').forEach(b=>b.classList.toggle('active',b.dataset.aud===aud));
   }
@@ -1208,7 +1281,7 @@
     if(view==='provider'){buildPersonas();setAud('provider');}
     else if(view==='home'){setAud(aud||'consumer');}
     else if(view==='consumer'){setAud('consumer');}
-    else if(view==='provlogin'){setAud('provider');}
+    else if(view==='provlogin'||view==='wcapply'||view==='tlapply'){setAud('provider');}
     else{setAud(view==='product'?'provider':'');}
     if(history.replaceState)history.replaceState(null,'','#'+view);else location.hash=view;
     window.scrollTo({top:0,behavior:'auto'});
@@ -1254,6 +1327,10 @@
     const h=(location.hash||'#home').slice(1);
     go(views.includes(h)?h:'home', 'consumer');
   });
+
+  function openApplyModal(){document.getElementById('applyModal').classList.add('show');}
+  function closeApplyModal(){document.getElementById('applyModal').classList.remove('show');}
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('applyModal').classList.contains('show'))closeApplyModal();});
 </script>
 
 </body></html>
