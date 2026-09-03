@@ -38,7 +38,7 @@ export function defaultVariant(label: string, weight: number): EmailVariant {
   };
 }
 
-const MERGE_TAGS = ["{{provider.name}}", "{{first_offer}}"];
+const MERGE_TAGS = ["{{provider.name}}", "{{first_offer}}", "{{card_limit}}", "{{activation_link}}"];
 
 export function EmailEditor({ node, onChange, onClose }: Props) {
   const variants: EmailVariant[] =
@@ -113,14 +113,30 @@ export function EmailEditor({ node, onChange, onClose }: Props) {
           </span>
           <span className="tiny muted">No real messages are sent from this prototype.</span>
         </div>
-        <label className="row gap-2 center" style={{ cursor: "pointer" }}>
-          <input
-            type="checkbox"
-            checked={abOn}
-            onChange={(e) => toggleAb(e.target.checked)}
-          />
-          <span className="small strong">A/B test</span>
-        </label>
+        <div className="row gap-3 center">
+          <label className="row gap-2 center">
+            <span className="small strong">Send class</span>
+            <select
+              className="select"
+              value={node.sendClass ?? "marketing"}
+              onChange={(e) =>
+                onChange({ ...node, sendClass: e.target.value as "transactional" | "marketing" })
+              }
+              style={{ width: 150 }}
+            >
+              <option value="marketing">Marketing</option>
+              <option value="transactional">Transactional</option>
+            </select>
+          </label>
+          <label className="row gap-2 center" style={{ cursor: "pointer" }}>
+            <input
+              type="checkbox"
+              checked={abOn}
+              onChange={(e) => toggleAb(e.target.checked)}
+            />
+            <span className="small strong">A/B test</span>
+          </label>
+        </div>
       </div>
 
       <div className="ee-body col gap-3">

@@ -27,6 +27,7 @@ export const PRODUCTS = [
   "loc",
   "equipment",
   "cash_acceleration",
+  "provider_card",
 ] as const;
 export type Product = (typeof PRODUCTS)[number];
 
@@ -37,6 +38,7 @@ export const PRODUCT_LABEL: Record<Product, string> = {
   loc: "Line of Credit",
   equipment: "Equipment Financing",
   cash_acceleration: "Cash Acceleration",
+  provider_card: "Provider Card + LOC",
 };
 
 export const PRODUCT_SHORT: Record<Product, string> = {
@@ -46,6 +48,7 @@ export const PRODUCT_SHORT: Record<Product, string> = {
   loc: "LOC",
   equipment: "Equipment",
   cash_acceleration: "Cash Accel",
+  provider_card: "Card",
 };
 
 // Board stages: the color bands of the real PWC lead-status sheet, used as
@@ -149,12 +152,24 @@ export const TEAMS = [
 ] as const;
 export type Team = (typeof TEAMS)[number];
 
+// Delivery connectors (declared before the campaign/broadcast schemas that use it).
+export const CONNECTOR_NAMES = ["Marketo", "SendGrid", "Adobe Journey Optimizer"] as const;
+export type ConnectorName = (typeof CONNECTOR_NAMES)[number];
+
 export const FUNNEL_EVENTS = [
   "signup_started",
   "stuck_mid_funnel",
   "completed_signup",
   "account_funded",
   "loan_originated",
+  // Provider Card + LOC lifecycle (Awareness -> Acquisition -> Onboarding -> Activation -> Spend -> Growth)
+  "card_offer_viewed",
+  "card_applied",
+  "card_approved",
+  "card_activated",
+  "card_first_spend",
+  "card_recurring_spend",
+  "card_dormant",
 ] as const;
 export type FunnelEventType = (typeof FUNNEL_EVENTS)[number];
 
@@ -164,15 +179,23 @@ export const FUNNEL_EVENT_LABEL: Record<FunnelEventType, string> = {
   completed_signup: "Completed Signup",
   account_funded: "Account Funded",
   loan_originated: "Loan Originated",
+  card_offer_viewed: "Card Offer Viewed",
+  card_applied: "Card Applied",
+  card_approved: "Card Approved",
+  card_activated: "Card Activated",
+  card_first_spend: "Card First Spend",
+  card_recurring_spend: "Card Recurring Spend",
+  card_dormant: "Card Dormant",
 };
 
-export const FUNNEL_SURFACES = ["savana", "biz2x", "pwc"] as const;
+export const FUNNEL_SURFACES = ["savana", "biz2x", "pwc", "card"] as const;
 export type FunnelSurface = (typeof FUNNEL_SURFACES)[number];
 
 export const SURFACE_LABEL: Record<FunnelSurface, string> = {
   savana: "Savana (Bank Account)",
   biz2x: "Biz2X (Term Loan)",
   pwc: "Legacy PWC",
+  card: "Provider Card + LOC",
 };
 
 export const DISPOSITIONS = [
@@ -234,8 +257,16 @@ export const providerSchema = z.object({
   productsHeld: z.array(z.enum(PRODUCTS)),
   currentStage: z.enum(STAGES),
   createdAt: z.string(),
+  // Provider Card + LOC lifecycle (optional; lazily seeded so shipped dataset.json stays back-compatible)
+  cardStage: z
+    .enum(["none", "eligible", "applied", "approved", "activated", "spending", "dormant"])
+    .optional(),
+  cardLimit: z.number().optional(),
+  monthlyCardSpend: z.number().optional(),
+  cardUtilization: z.number().optional(), // 0-100
 });
 export type Provider = z.infer<typeof providerSchema>;
+export type CardStage = NonNullable<Provider["cardStage"]>;
 
 export const offerLeadSchema = z.object({
   id: z.string(),
@@ -370,11 +401,21 @@ export interface JourneyNode {
   name?: string;
   abTest?: boolean;
   variants?: EmailVariant[];
+  // Delivery class: transactional (activation/servicing, different consent rail)
+  // vs marketing (nurture/growth). Routed differently by an ESP or Adobe.
+  sendClass?: "transactional" | "marketing";
   // delay
   delayValue?: number;
   delayUnit?: "minutes" | "hours" | "days";
   // condition (branches on yes/no)
-  conditionKind?: "opened" | "clicked" | "attribute" | "event";
+  conditionKind?:
+    | "opened"
+    | "clicked"
+    | "attribute"
+    | "event"
+    | "card_activated"
+    | "card_first_spend"
+    | "card_spend_threshold";
   conditionLabel?: string;
   yes?: JourneyNode[];
   no?: JourneyNode[];
@@ -394,7 +435,7 @@ export const campaignSchema = z.object({
   name: z.string(),
   status: z.enum(["draft", "active", "paused", "complete"]),
   segmentName: z.string(),
-  connector: z.enum(["Marketo"]),
+  connector: z.enum(CONNECTOR_NAMES),
   journeySteps: z.array(
     z.object({ day: z.number(), channel: z.string(), template: z.string() })
   ),
@@ -471,7 +512,7 @@ export const broadcastSchema = z.object({
   replyTo: z.string(),
   blocks: z.any(), // EmailBlock[]
   audience: z.any(), // BroadcastAudience
-  connector: z.enum(["Marketo"]),
+  connector: z.enum(CONNECTOR_NAMES),
   audienceSize: z.number(),
   schedule: z.any(), // BroadcastSchedule
   metrics: z.object({
@@ -505,8 +546,13 @@ export type Appointment = z.infer<typeof appointmentSchema>;
 
 export const connectorSchema = z.object({
   id: z.string(),
-  name: z.enum(["Marketo"]),
+  name: z.enum(CONNECTOR_NAMES),
   kind: z.literal("esp"),
+  // Integration mode: direct ESP (delivery only, CRM owns orchestration),
+  // an orchestration platform (owns its own journeys), or an experience platform (Adobe).
+  mode: z.enum(["direct_esp", "orchestration_platform", "experience_platform"]),
+  // Where the connector sits on our roadmap: active today, on the roadmap, or legacy/sunsetting.
+  lifecycle: z.enum(["active", "roadmap", "legacy"]),
   status: z.enum(["connected_mock", "not_approved"]),
   isApprovedVendor: z.boolean(),
   note: z.string(),

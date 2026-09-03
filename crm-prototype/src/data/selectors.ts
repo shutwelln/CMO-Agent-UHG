@@ -65,6 +65,63 @@ export function funnelCounts(d: Dataset): FunnelCounts {
   };
 }
 
+// ----- Provider Card + LOC lifecycle -----
+export interface CardFunnelCounts {
+  offerViewed: number;
+  applied: number;
+  approved: number;
+  activated: number;
+  firstSpend: number;
+  recurringSpend: number;
+}
+
+export function cardFunnelCounts(d: Dataset): CardFunnelCounts {
+  const set = (t: string) =>
+    new Set(d.funnelEvents.filter((e) => e.eventType === t).map((e) => e.providerId));
+  return {
+    offerViewed: set("card_offer_viewed").size,
+    applied: set("card_applied").size,
+    approved: set("card_approved").size,
+    activated: set("card_activated").size,
+    firstSpend: set("card_first_spend").size,
+    recurringSpend: set("card_recurring_spend").size,
+  };
+}
+
+export interface CardProgramStats {
+  issued: number; // card exists (approved and beyond)
+  activated: number;
+  activationRate: number; // activated / issued
+  firstSpendReached: number;
+  firstSpendRate: number; // firstSpendReached / activated
+  activeSpenders: number;
+  dormant: number;
+  avgUtilization: number; // over active spenders
+  totalMonthlySpend: number;
+}
+
+export function cardProgramStats(d: Dataset): CardProgramStats {
+  const has = (p: Provider, ...stages: string[]) => p.cardStage != null && stages.includes(p.cardStage);
+  const issuedList = d.providers.filter((p) => has(p, "approved", "activated", "spending", "dormant"));
+  const activatedList = d.providers.filter((p) => has(p, "activated", "spending", "dormant"));
+  const firstSpendList = d.providers.filter((p) => has(p, "spending", "dormant"));
+  const spendingList = d.providers.filter((p) => has(p, "spending"));
+  const dormantList = d.providers.filter((p) => has(p, "dormant"));
+  const utilSum = spendingList.reduce((s, p) => s + (p.cardUtilization ?? 0), 0);
+  const totalSpend = d.providers.reduce((s, p) => s + (p.monthlyCardSpend ?? 0), 0);
+  return {
+    issued: issuedList.length,
+    activated: activatedList.length,
+    activationRate: issuedList.length ? (activatedList.length / issuedList.length) * 100 : 0,
+    firstSpendReached: firstSpendList.length,
+    firstSpendRate: activatedList.length ? (firstSpendList.length / activatedList.length) * 100 : 0,
+    activeSpenders: spendingList.length,
+    dormant: dormantList.length,
+    avgUtilization: spendingList.length ? utilSum / spendingList.length : 0,
+    totalMonthlySpend: totalSpend,
+  };
+}
+
 export function stageCounts(d: Dataset, leads: OfferLead[] = d.leads): Record<Stage, number> {
   const out = Object.fromEntries(STAGES.map((s) => [s, 0])) as Record<Stage, number>;
   for (const l of leads) out[l.stage]++;

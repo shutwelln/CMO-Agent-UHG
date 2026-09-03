@@ -4,7 +4,7 @@
 .hero-callout .hc-arrow { opacity: 0.6; }
 .hero-callout .hc-label { font-size: 12.5px; opacity: 0.85; margin-top: 6px; }
 .hero-callout .hc-body { flex: 1; }
-.hero-callout h2 { color: #fff; font-size: 19px; margin-bottom: 4px; }
+.hero-callout h2, .hero-callout h3 { color: #fff; font-size: 19px; margin-bottom: 4px; }
 .hero-callout p { opacity: 0.9; margin: 0; font-size: 13.5px; }
 
 /* Funnel chart */
@@ -129,6 +129,24 @@
 
 /* Setter -> closer handoff hint in the booking modal */
 .dispo-hint { font-size: 12.5px; color: var(--navy); background: var(--navy-tint); border-radius: 9px; padding: 10px 12px; line-height: 1.5; }
+
+/* Campaign template picker */
+.tmpl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+@media (max-width: 900px) { .tmpl-grid { grid-template-columns: 1fr 1fr; } }
+.tmpl-card { text-align: left; border: 1.5px solid var(--border); border-radius: 11px; padding: 12px 14px; background: #fff; cursor: pointer; font-family: inherit; transition: border-color 0.12s, box-shadow 0.12s; }
+.tmpl-card:hover { border-color: var(--navy); }
+.tmpl-card.selected { border-color: var(--p-card); box-shadow: 0 0 0 3px var(--p-card-bg); }
+.tmpl-card .tmpl-stage { font-size: 10.5px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--p-card); }
+.tmpl-card .tmpl-label { font-weight: 800; font-size: 14px; color: var(--navy); margin-top: 3px; }
+.tmpl-card .tmpl-desc { font-size: 12px; color: var(--text-muted); margin-top: 5px; line-height: 1.4; }
+
+/* Cardholder journey map */
+.card-journeymap { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+.cjm-stage { flex: 1 1 0; min-width: 150px; background: var(--p-card-bg); border: 1px solid #cfe7ea; border-radius: 10px; padding: 12px; }
+.cjm-top { display: flex; align-items: center; justify-content: space-between; }
+.cjm-badge { font-size: 11px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--p-card); }
+.cjm-arrow { color: var(--p-card); opacity: 0.7; }
+.cjm-touch { font-size: 12px; color: var(--text-main); margin-top: 8px; line-height: 1.4; }
 
 /* ============ Appointments ============ */
 .appt-row { display: flex; align-items: center; gap: 14px; padding: 14px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; background: #fff; }

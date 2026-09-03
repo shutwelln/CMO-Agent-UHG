@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Database, FileSpreadsheet, Cloud, DollarSign, Workflow } from "lucide-react";
+import { Database, FileSpreadsheet, Cloud, DollarSign, Workflow, Sparkles } from "lucide-react";
 import {
   PageHeader,
   Panel,
@@ -29,6 +29,8 @@ function iconFor(kind: string): { node: ReactNode; bg: string } {
         node: <DollarSign size={20} style={{ color: "var(--amber)" }} />,
         bg: "var(--amber-bg)",
       };
+    case "cdp":
+      return { node: <Sparkles size={20} style={{ color: "var(--navy)" }} />, bg: "var(--navy-tint)" };
     default:
       return { node: <Database size={20} />, bg: "var(--cream)" };
   }
@@ -101,6 +103,11 @@ export function DataSourcesAdmin() {
           <div>
             Salesforce Go is a downstream, read-only commission export. It receives closed-won deals
             and is not the CRM.
+          </div>
+          <div>
+            Adobe Experience Platform (Real-Time CDP) is the profile and consent source of truth we
+            build toward. Card lifecycle events stream in over Streaming Ingestion; AEP audiences
+            activate out to the CRM over a custom HTTP destination.
           </div>
         </div>
       </Panel>

@@ -32,6 +32,7 @@ import { countMatches } from "../../lib/segmentEngine";
 import { useRole, ROLE_LABEL } from "../../context/role";
 import { num } from "../../lib/format";
 import { JourneyBuilder, makeNode, flattenJourney, journeySteps } from "./JourneyBuilder";
+import { CARD_TEMPLATES } from "../../lib/cardJourneys";
 
 const STEPS = ["Trigger", "Journey", "Delivery", "Review"];
 const NOW_ISO = "2026-08-26T12:00:00.000Z";
@@ -92,6 +93,32 @@ export function CampaignBuilder() {
   const [eventType, setEventType] = useState<FunnelEventType>(FUNNEL_EVENTS[0]);
   const [connector, setConnector] = useState<Campaign["connector"]>(activeConnector);
   const [journey, setJourney] = useState<Journey>(() => seedJourney());
+  const [templateKey, setTemplateKey] = useState<string>("blank");
+
+  // Card templates whose trigger is a segment map to a seeded card segment.
+  const CARD_TEMPLATE_SEGMENT: Record<string, string> = {
+    acquisition: "seg_card_loc_nocard",
+    spend_growth: "seg_card_lowutil",
+  };
+
+  const applyTemplate = (key: string) => {
+    setTemplateKey(key);
+    if (key === "blank") {
+      setJourney(seedJourney());
+      return;
+    }
+    const tpl = CARD_TEMPLATES.find((t) => t.key === key);
+    if (!tpl) return;
+    setJourney(tpl.build());
+    if (tpl.trigger.type === "event" && tpl.trigger.event) {
+      setTriggerType("event");
+      setEventType(tpl.trigger.event);
+    } else {
+      setTriggerType("segment");
+      const segId = CARD_TEMPLATE_SEGMENT[key];
+      if (segId && data.segments.some((s) => s.id === segId)) setSegmentId(segId);
+    }
+  };
 
   const segment: Segment | undefined = useMemo(
     () => data.segments.find((s) => s.id === segmentId),
@@ -176,6 +203,36 @@ export function CampaignBuilder() {
 
       {step === 0 && (
         <div className="col gap-4">
+          <Panel>
+            <PanelHeader
+              title="Start from a template"
+              action={<span className="tiny muted">Provider Card + LOC lifecycle</span>}
+            />
+            <div className="panel-body">
+              <div className="tmpl-grid">
+                <button
+                  className={`tmpl-card${templateKey === "blank" ? " selected" : ""}`}
+                  onClick={() => applyTemplate("blank")}
+                >
+                  <div className="tmpl-stage">Standard</div>
+                  <div className="tmpl-label">Blank lifecycle</div>
+                  <div className="tmpl-desc">Start from the default journey and build your own.</div>
+                </button>
+                {CARD_TEMPLATES.map((t) => (
+                  <button
+                    key={t.key}
+                    className={`tmpl-card${templateKey === t.key ? " selected" : ""}`}
+                    onClick={() => applyTemplate(t.key)}
+                  >
+                    <div className="tmpl-stage">{t.stage}</div>
+                    <div className="tmpl-label">{t.label}</div>
+                    <div className="tmpl-desc">{t.description}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </Panel>
+
           <div className="grid grid-2">
             <div
               className={`connector-card${triggerType === "segment" ? " selected" : ""}`}
@@ -275,7 +332,7 @@ export function CampaignBuilder() {
           <Panel>
             <PanelHeader title="Choose a delivery connector" />
             <div className="panel-body grid grid-2">
-              {data.connectors.map((cn) => (
+              {data.connectors.filter((cn) => cn.lifecycle !== "legacy").map((cn) => (
                 <div
                   key={cn.id}
                   className={`connector-card${connector === cn.name ? " selected" : ""}`}

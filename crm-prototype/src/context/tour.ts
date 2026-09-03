@@ -76,7 +76,7 @@ export const TOUR_STEPS: TourStep[] = [
     role: "sales_ops",
     path: "/admin/connectors",
     title: "11. Swappable delivery connectors",
-    body: "The CRM is ESP-agnostic. Marketo is the approved-vendor connector. Journeys and segments defined here map onto any approved connector, so nothing is locked to one platform.",
+    body: "The CRM owns orchestration; a connector only handles delivery, so a direct ESP is enough. SendGrid delivers the card launch today, Adobe Journey Optimizer is the strategic path built on Adobe Experience Platform, and Marketo is sunsetting. Journeys and segments defined here map onto any connector.",
   },
   {
     role: "sales_ops",

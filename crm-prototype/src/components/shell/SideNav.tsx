@@ -8,6 +8,7 @@ import {
   Megaphone,
   Send,
   Layers,
+  CreditCard,
   PhoneCall,
   CalendarCheck,
   UsersRound,
@@ -42,6 +43,7 @@ export function SideNav() {
   const leadCount = data ? data.leads.filter((l) => l.stage === "ready").length : 0;
   const campaignCount = data ? data.campaigns.filter((c) => c.status === "active").length : 0;
   const broadcastCount = data ? data.broadcasts.filter((b) => b.status === "scheduled").length : 0;
+  const cardCampaignCount = data ? data.campaigns.filter((c) => c.id.startsWith("camp_card_") && c.status === "active").length : 0;
 
   const groups: Group[] = [
     {
@@ -66,6 +68,12 @@ export function SideNav() {
         { to: "/campaigns", label: "Lifecycle Campaigns", icon: <Megaphone size={18} />, roles: ["marketing", "sales_ops"], count: campaignCount },
         { to: "/broadcasts", label: "Broadcasts", icon: <Send size={18} />, roles: ["marketing", "sales_ops"], count: broadcastCount },
         { to: "/segments", label: "Segments", icon: <Layers size={18} />, roles: ["marketing", "sales_ops"] },
+      ],
+    },
+    {
+      label: "Card Launch",
+      items: [
+        { to: "/card-lifecycle", label: "Provider Card + LOC", icon: <CreditCard size={18} />, roles: ["marketing", "sales_ops"], count: cardCampaignCount },
       ],
     },
     {

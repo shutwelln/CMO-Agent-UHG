@@ -620,9 +620,14 @@ export function generateDataset(seed = 42): Dataset {
     });
   });
 
-  // ----- Connectors -----
+  // ----- Connectors (delivery plane) -----
+  // The CRM owns orchestration; connectors only handle delivery. SendGrid is the
+  // active direct-ESP path for the card launch, Adobe Journey Optimizer is the
+  // concurrent strategic path, and Marketo is legacy/sunsetting.
   const connectors: Connector[] = [
-    { id: "conn_marketo", name: "Marketo", kind: "esp", status: "connected_mock", isApprovedVendor: true, note: "Approved vendor. Existing contract; a second instance can be provisioned for CRM-triggered journeys." },
+    { id: "conn_sendgrid", name: "SendGrid", kind: "esp", mode: "direct_esp", lifecycle: "active", status: "connected_mock", isApprovedVendor: true, note: "Direct ESP. The CRM owns segments, journeys, and triggers; SendGrid handles delivery, deliverability, suppression, and delivery-event webhooks (open, click, bounce, unsubscribe). Fastest path to ship the card launch." },
+    { id: "conn_ajo", name: "Adobe Journey Optimizer", kind: "esp", mode: "experience_platform", lifecycle: "roadmap", status: "not_approved", isApprovedVendor: false, note: "Strategic path, building toward. Real-time journeys on Adobe Experience Platform, API-triggered campaigns with High Throughput transactional delivery, and consent at the data plane. Leverages the company Adobe investment." },
+    { id: "conn_marketo", name: "Marketo", kind: "esp", mode: "orchestration_platform", lifecycle: "legacy", status: "connected_mock", isApprovedVendor: true, note: "Legacy, sunsetting. Shared-instance queue makes changes slow; not used for the card lifecycle. Existing non-card programs migrate off over time." },
   ];
 
   // ----- Data sources -----
@@ -672,6 +677,7 @@ export function generateDataset(seed = 42): Dataset {
     loc: [6_500_000, 90],
     equipment: [4_200_000, 70],
     cash_acceleration: [11_000_000, 340],
+    provider_card: [7_800_000, 1_100],
   };
   for (const prod of PRODUCTS) {
     const [tRev, tDeals] = productTargets[prod];

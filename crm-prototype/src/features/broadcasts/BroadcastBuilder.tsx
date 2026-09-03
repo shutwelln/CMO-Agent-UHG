@@ -404,7 +404,7 @@ export function BroadcastBuilder() {
           <Panel>
             <PanelHeader title="Choose a delivery connector" />
             <div className="panel-body grid grid-2">
-              {data.connectors.map((cn) => (
+              {data.connectors.filter((cn) => cn.lifecycle !== "legacy").map((cn) => (
                 <div
                   key={cn.id}
                   className={`connector-card${connector === cn.name ? " selected" : ""}`}

@@ -5,6 +5,7 @@ import type {
   Appointment,
   Broadcast,
   Campaign,
+  ConnectorName,
   Dataset,
   Disposition,
   Product,
@@ -12,6 +13,8 @@ import type {
   Stage,
 } from "./schema";
 import { seedBroadcasts } from "./generators/broadcastSeed";
+import { seedCardLifecycle, needsCardSeed } from "./generators/cardSeed";
+import { seedDeliveryPlane } from "./generators/connectorSeed";
 
 /*
  * In-memory data store. Loads the synthetic dataset once, then serves as the
@@ -47,8 +50,8 @@ interface State {
     fromLabel: string,
     subject: string
   ) => void;
-  setActiveConnector: (name: "Marketo") => void;
-  activeConnector: "Marketo";
+  setActiveConnector: (name: ConnectorName) => void;
+  activeConnector: ConnectorName;
 }
 
 let idc = 100000;
@@ -59,12 +62,18 @@ export const useData = create<State>((set, get) => ({
   data: null,
   loaded: false,
   ingestCommitted: false,
-  activeConnector: "Marketo",
+  activeConnector: "SendGrid",
 
   load: async () => {
     if (get().loaded) return;
     const res = await fetch(`${import.meta.env.BASE_URL}data/dataset.json`);
     const data = (await res.json()) as Dataset;
+    // Delivery + data plane (SendGrid/AJO/Marketo connectors, AEP data source).
+    seedDeliveryPlane(data);
+    // Provider Card + LOC lifecycle, seeded in-app for dataset back-compat.
+    if (needsCardSeed(data)) {
+      seedCardLifecycle(data);
+    }
     // Broadcasts are seeded in-app so the shipped dataset stays back-compatible.
     if (!data.broadcasts || data.broadcasts.length === 0) {
       data.broadcasts = seedBroadcasts(data);

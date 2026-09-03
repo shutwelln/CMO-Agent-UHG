@@ -35,6 +35,15 @@ export const ATTR_FIELDS: AttrField[] = [
   { key: "npxEnrolled", label: "NPx enrolled", type: "bool" },
   { key: "hasOptumBankAccount", label: "Has Optum Bank account", type: "bool" },
   { key: "primaryBankOnFile", label: "Primary bank on file", type: "bool" },
+  // Provider Card + LOC lifecycle attributes
+  {
+    key: "cardStage",
+    label: "Card stage",
+    type: "enum",
+    options: ["none", "eligible", "applied", "approved", "activated", "spending", "dormant"],
+  },
+  { key: "cardUtilization", label: "Card utilization %", type: "number" },
+  { key: "monthlyCardSpend", label: "Monthly card spend", type: "number" },
 ];
 
 export const EVENT_OPTIONS = FUNNEL_EVENTS.map((e) => ({ value: e, label: FUNNEL_EVENT_LABEL[e] }));

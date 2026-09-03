@@ -217,6 +217,9 @@ const CONDITION_KINDS: { value: NonNullable<JourneyNode["conditionKind"]>; label
   { value: "clicked", label: "Clicked a link" },
   { value: "attribute", label: "Matches an attribute" },
   { value: "event", label: "Performed an event" },
+  { value: "card_activated", label: "Activated the card" },
+  { value: "card_first_spend", label: "Made a first purchase" },
+  { value: "card_spend_threshold", label: "Reached a spend threshold" },
 ];
 
 function ConditionModal({

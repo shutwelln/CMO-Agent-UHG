@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import { Layout } from "./components/shell/Layout";
 import { DashboardRouter } from "./features/dashboards/DashboardRouter";
+import { CardLifecycleDashboard } from "./features/dashboards/CardLifecycleDashboard";
 import { ProviderDirectory } from "./features/providers/ProviderDirectory";
 import { Provider360 } from "./features/providers/Provider360";
 import { IngestWizard } from "./features/ingest/IngestWizard";
@@ -42,6 +43,7 @@ export const router = createBrowserRouter(
         { path: "broadcasts", element: <BroadcastsList /> },
         { path: "broadcasts/new", element: <BroadcastBuilder /> },
         { path: "broadcasts/:id", element: <BroadcastDetail /> },
+        { path: "card-lifecycle", element: <CardLifecycleDashboard /> },
         { path: "console", element: <SalesConsole /> },
         { path: "appointments", element: <AppointmentsPage /> },
         { path: "reporting/goals", element: <GoalsReport /> },

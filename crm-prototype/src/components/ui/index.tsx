@@ -138,6 +138,7 @@ const PRODUCT_TONE: Record<Product, string> = {
   loc: "loc",
   equipment: "equip",
   cash_acceleration: "cash",
+  provider_card: "card",
 };
 export function ProductBadge({ product }: { product: Product }) {
   const tone = PRODUCT_TONE[product];

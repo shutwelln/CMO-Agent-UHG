@@ -64,6 +64,8 @@
   --p-equip-bg: #efede6;
   --p-cash: #ff612b;
   --p-cash-bg: #fff1ec;
+  --p-card: #0a7d8c;
+  --p-card-bg: #e4f4f6;
 
   /* Type */
   --ui-font: "Figtree", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;

@@ -60,6 +60,27 @@ export function nextBestOffers(p: Provider): Offer[] {
     });
   }
 
+  // Provider Card drawn on the line of credit. Cross-sell to LOC holders (and
+  // high-volume groups) who do not yet have a card. Fixes the standalone LOC
+  // rule's "cards attach to the line" hook with a real card offer.
+  if (
+    !held.has("provider_card") &&
+    (held.has("loc") ||
+      highVolume ||
+      p.persona === "PE-backed Group" ||
+      p.persona === "Multi-Specialty Group" ||
+      p.persona === "Growing Group")
+  ) {
+    offers.push({
+      product: "provider_card",
+      headline: "Add a Provider Card to the line of credit",
+      detail: "Staff-usable purchasing card drawn on the LOC, with per-card limits and one statement.",
+      rationale: `${p.persona} with staff spend. The card puts idle line-of-credit capacity to work and consolidates practice purchasing.`,
+      incentive: "Statement credit on first spend",
+      score: held.has("loc") ? 82 : 64,
+    });
+  }
+
   // Line of credit for growing / multi-location groups
   if (!held.has("loc") && (p.persona === "Growing Group" || p.persona === "Multi-Specialty Group" || p.persona === "PE-backed Group")) {
     offers.push({
